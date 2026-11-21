@@ -25,3 +25,6 @@
 /* Let legend item names use the available header width. */
 .item-legend{width:100%;min-width:0;justify-content:space-evenly;align-content:center;gap:.65cqw 1cqw}.legend-item{font-size:1.35cqw;gap:.3cqw;white-space:normal;line-height:1.15}.legend-item>span{overflow-wrap:anywhere}.legend-item svg{width:2cqw;height:2cqw;flex:none}
 @media print{.item-legend{width:100%;justify-content:space-evenly;gap:1.5mm 2mm}.legend-item{font-size:12px;gap:1mm;line-height:1.1}.legend-item svg{width:5mm;height:5mm}}
+/* Emphasize the first grid column header label. */
+.grid-corner{font-size:1.3cqw;font-weight:800;line-height:1.1;text-align:center;padding:0 2px}
+@media print{.grid-corner{font-size:12px;font-weight:800}}

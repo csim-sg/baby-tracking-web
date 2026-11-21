@@ -35,3 +35,7 @@
 @media print{.grid-corner{background:linear-gradient(to bottom left,transparent calc(50% - .25mm),#3f4b43 50%,transparent calc(50% + .25mm)),#f4f6f0}}
 @media print{.grid-corner{background:linear-gradient(to bottom left,transparent calc(50% - .25mm),#111 50%,transparent calc(50% + .25mm)),#f4f6f0}}
 @media print{.grid-corner{background:linear-gradient(to bottom left,transparent calc(50% - .5mm),#000 50%,transparent calc(50% + .5mm)),#f4f6f0}}
+/* Render the diagonal as a foreground stroke so print background settings cannot drop it. */
+.grid-corner{background:#f4f6f0!important;isolation:isolate}.corner-diagonal{position:absolute;z-index:1;left:0;top:0;width:141.5%;height:1px;background:#000;transform-origin:left center;transform:rotate(45deg);pointer-events:none}.grid-corner span{z-index:2}
+@media print{.grid-corner{background:#fff!important}.corner-diagonal{height:1mm;background:#000;print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+.corner-diagonal{left:auto;right:0;transform-origin:right center;transform:rotate(-45deg)}

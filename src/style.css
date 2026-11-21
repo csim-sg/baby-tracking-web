@@ -39,3 +39,6 @@
 .grid-corner{background:#f4f6f0!important;isolation:isolate}.corner-diagonal{position:absolute;z-index:1;left:0;top:0;width:141.5%;height:1px;background:#000;transform-origin:left center;transform:rotate(45deg);pointer-events:none}.grid-corner span{z-index:2}
 @media print{.grid-corner{background:#fff!important}.corner-diagonal{height:1mm;background:#000;print-color-adjust:exact;-webkit-print-color-adjust:exact}}
 .corner-diagonal{left:auto;right:0;transform-origin:right center;transform:rotate(-45deg)}
+/* Make every tracker table rule black, not only the diagonal corner stroke. */
+.grid-wrap{border-color:#000}.grid-corner,.time-heading,.item-heading,.grid-cell{border-color:#000}.print-day+.print-day{border-top-color:#000}
+@media print{.grid-wrap{border:0.25mm solid #000}.grid-corner,.time-heading,.item-heading,.grid-cell{border-right:0.25mm solid #000;border-bottom:0.25mm solid #000}.print-day+.print-day{border-top:0.3mm solid #000}.grid-wrap,.grid-corner,.time-heading,.item-heading,.grid-cell{print-color-adjust:exact;-webkit-print-color-adjust:exact}}

@@ -34,6 +34,22 @@ The repository currently has no test script or test directory.
 5. The configured GitHub repository is `csim-sg/baby-tracking-web`, and the project board is #4. Board workflow operations use its canonical `Workflow State` field.
 6. Durable project documentation lives at `/Users/chrissim/Projects/Docs/02-Architecture-Landscape/projects/baby-tracking-web`. Start with `PROJECT_OVERVIEW.md` and follow its linked architecture and project-structure notes.
 
+## Project Configuration
+
+`.github-project.env` is the committed source of shared `ANT_TEAM_*` project configuration; it contains project metadata, not secrets. Edit values there when repository routing or project metadata changes. Re-running the initialization script preserves existing values and only fills missing keys.
+
+- GitHub owner: `csim-sg` (user account).
+- GitHub repository: `csim-sg/baby-tracking-web`.
+- GitHub Project: #4, `Baby Tracking`.
+- Workflow field: `Workflow State`. The existing built-in `Status` field is separate and unchanged.
+- Canonical workflow options: `Open`, `Backlog`, `Need attentions`, `Ready`, `In Progress`, `In Review`, `Ready to Merge`, `Blocked`, and `Done`. Their option IDs are pinned in `.github-project.env`; use the GitHub helper rather than copying IDs into commands or code.
+- Worktree root: `/Users/chrissim/Projects/worktree/baby-tracker`.
+- Documentation vault: `/Users/chrissim/Projects/Docs`.
+- Documentation repository: `Antpolis/documentation`.
+- Project documentation path: `/Users/chrissim/Projects/Docs/02-Architecture-Landscape/projects/baby-tracking-web`.
+
+To inspect the full values or use them in a direct shell command, source `.github-project.env`. For GitHub operations, prefer the helper script, which loads this file itself.
+
 ## Change Guidance
 
 Keep sheet configuration and print behavior aligned between the interactive preview and printed A4 landscape output. Do not add server persistence, paid account behavior, spreadsheet integrations, or mobile architecture without an approved requirement and recorded durable context.

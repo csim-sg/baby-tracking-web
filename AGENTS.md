@@ -48,7 +48,7 @@ The repository currently has no test script or test directory.
 - Documentation repository: `Antpolis/documentation`.
 - Project documentation path: `/Users/chrissim/Projects/Docs/02-Architecture-Landscape/projects/baby-tracking-web`.
 
-To inspect the full values or use them in a direct shell command, source `.github-project.env`. For GitHub operations, prefer the helper script, which loads this file itself.
+Run `source .github-project.env` to expose the `ANT_TEAM_*` environment values in your current shell. For GitHub operations, prefer the helper script, which loads this file itself.
 
 ## Change Guidance
 

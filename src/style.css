@@ -28,3 +28,5 @@
 /* Emphasize the first grid column header label. */
 .grid-corner{font-size:1.3cqw;font-weight:800;line-height:1.1;text-align:center;padding:0 2px}
 @media print{.grid-corner{font-size:12px;font-weight:800}}
+.item-heading{gap:0;padding-left:1px;padding-right:1px}.item-row-icon{margin:0;flex:none}
+@media print{.item-heading{gap:0;padding-left:.3mm;padding-right:.3mm}}

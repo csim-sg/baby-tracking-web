@@ -16,3 +16,6 @@
 @page{size:A4 landscape;margin:0}
 @media print{.paper{height:210mm;width:297mm;max-width:none;aspect-ratio:auto}.paper-wrap{width:297mm;height:210mm;padding:0;margin:0}.workspace,.builder-grid,.preview-column{margin:0;padding:0;width:297mm}.print-day{padding:7mm 6mm}}
 @media screen{.paper{aspect-ratio:297 / 210}}
+/* Give time headings and the item legend more visual weight at the sheet's scale. */
+.time-heading{font-size:1.12cqw;letter-spacing:-.035cqw;font-weight:700}.item-legend{gap:.7cqw 1.1cqw}.legend-item{font-size:1.12cqw;gap:.25cqw;font-weight:600}.legend-item svg{width:1.8cqw;height:1.8cqw}
+@media print{.time-heading{font-size:9px;letter-spacing:-.2px;font-weight:700}.item-legend{gap:2mm 3mm}.legend-item{font-size:11px;gap:1.4mm;font-weight:600}.legend-item svg{width:5mm;height:5mm}}

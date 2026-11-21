@@ -19,3 +19,4 @@
 /* Give time headings and the item legend more visual weight at the sheet's scale. */
 .time-heading{font-size:1.12cqw;letter-spacing:-.035cqw;font-weight:700}.item-legend{gap:.7cqw 1.1cqw}.legend-item{font-size:1.12cqw;gap:.25cqw;font-weight:600}.legend-item svg{width:1.8cqw;height:1.8cqw}
 @media print{.time-heading{font-size:9px;letter-spacing:-.2px;font-weight:700}.item-legend{gap:2mm 3mm}.legend-item{font-size:11px;gap:1.4mm;font-weight:600}.legend-item svg{width:5mm;height:5mm}}
+@media print{.print-head{min-height:8mm;height:8mm;margin:0 0 1mm;padding:0;gap:2mm;line-height:1}.print-date{gap:.5mm}.print-date span{line-height:1}.item-legend{line-height:1;gap:1mm 2mm}.legend-item{line-height:1}.print-day{padding:4mm 5mm}}

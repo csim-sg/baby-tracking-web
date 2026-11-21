@@ -42,3 +42,5 @@
 /* Make every tracker table rule black, not only the diagonal corner stroke. */
 .grid-wrap{border-color:#000}.grid-corner,.time-heading,.item-heading,.grid-cell{border-color:#000}.print-day+.print-day{border-top-color:#000}
 @media print{.grid-wrap{border:0.25mm solid #000}.grid-corner,.time-heading,.item-heading,.grid-cell{border-right:0.25mm solid #000;border-bottom:0.25mm solid #000}.print-day+.print-day{border-top:0.3mm solid #000}.grid-wrap,.grid-corner,.time-heading,.item-heading,.grid-cell{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+/* Diagonal should run from upper-left to lower-right. */
+.corner-diagonal{left:0;right:auto;transform-origin:left center;transform:rotate(45deg)}

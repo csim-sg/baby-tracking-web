@@ -44,3 +44,5 @@
 @media print{.grid-wrap{border:0.25mm solid #000}.grid-corner,.time-heading,.item-heading,.grid-cell{border-right:0.25mm solid #000;border-bottom:0.25mm solid #000}.print-day+.print-day{border-top:0.3mm solid #000}.grid-wrap,.grid-corner,.time-heading,.item-heading,.grid-cell{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
 /* Diagonal should run from upper-left to lower-right. */
 .corner-diagonal{left:0;right:auto;transform-origin:left center;transform:rotate(45deg)}
+.time-heading{display:flex;align-items:center;justify-content:center;min-width:0;max-width:100%;padding:0;overflow:hidden;white-space:nowrap;letter-spacing:-.04em;font-size:clamp(3.5px,.65cqw,7px);font-variant-numeric:tabular-nums}
+@media print{.time-heading{font-size:7px;letter-spacing:-.35px;padding:0 .15mm;overflow:hidden;white-space:nowrap}}

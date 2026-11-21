@@ -48,3 +48,5 @@
 @media print{.time-heading{font-size:7px;letter-spacing:-.35px;padding:0 .15mm;overflow:hidden;white-space:nowrap}}
 .time-heading{font-size:1.12cqw;letter-spacing:-.035cqw;padding:0;line-height:1;transform:none;writing-mode:horizontal-tb;text-indent:0;position:relative;left:0;top:0;place-self:stretch;box-sizing:border-box}
 @media print{.time-heading{font-size:9px;letter-spacing:-.2px;padding:0;line-height:1;transform:none;writing-mode:horizontal-tb;text-indent:0;left:0;top:0}}
+.paper,.paper-wrap,.grid-wrap,.grid-corner,.time-heading,.item-heading,.grid-cell{box-shadow:none!important;filter:none!important}
+@media print{.paper,.paper-wrap,.grid-wrap,.grid-corner,.time-heading,.item-heading,.grid-cell{box-shadow:none!important;filter:none!important}}

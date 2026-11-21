@@ -36,19 +36,32 @@ The repository currently has no test script or test directory.
 
 ## Project Configuration
 
-`.github-project.env` is the committed source of shared `ANT_TEAM_*` project configuration; it contains project metadata, not secrets. Edit values there when repository routing or project metadata changes. Re-running the initialization script preserves existing values and only fills missing keys.
+`.github-project.env` is the committed source of shared `ANT_TEAM_*` project configuration; it contains project metadata, not secrets. The current values are listed below so agents can use this guidance without reopening the environment file. If this section and `.github-project.env` ever disagree, the environment file is authoritative. Edit values there when repository routing or project metadata changes; re-running the initialization script preserves existing values and only fills missing keys.
 
-- GitHub owner: `csim-sg` (user account).
-- GitHub repository: `csim-sg/baby-tracking-web`.
-- GitHub Project: #4, `Baby Tracking`.
-- Workflow field: `Workflow State`. The existing built-in `Status` field is separate and unchanged.
-- Canonical workflow options: `Open`, `Backlog`, `Need attentions`, `Ready`, `In Progress`, `In Review`, `Ready to Merge`, `Blocked`, and `Done`. Their option IDs are pinned in `.github-project.env`; use the GitHub helper rather than copying IDs into commands or code.
-- Worktree root: `/Users/chrissim/Projects/worktree/baby-tracker`.
-- Documentation vault: `/Users/chrissim/Projects/Docs`.
-- Documentation repository: `Antpolis/documentation`.
-- Project documentation path: `/Users/chrissim/Projects/Docs/02-Architecture-Landscape/projects/baby-tracking-web`.
+```sh
+export ANT_TEAM_GITHUB_OWNER='csim-sg'
+export ANT_TEAM_GITHUB_OWNER_TYPE='user'
+export ANT_TEAM_GITHUB_REPO='csim-sg/baby-tracking-web'
+export ANT_TEAM_GITHUB_PROJECT_NUMBER='4'
+export ANT_TEAM_GITHUB_PROJECT_ID='PVT_kwHOAB4wV84Bsm_Z'
+export ANT_TEAM_GITHUB_WORKFLOW_STATE_FIELD_ID='PVTSSF_lAHOAB4wV84Bsm_Zzhq0Y40'
+export ANT_TEAM_GITHUB_WORKFLOW_STATE_OPTION_OPEN_ID='b30bed6e'
+export ANT_TEAM_GITHUB_WORKFLOW_STATE_OPTION_BACKLOG_ID='c95492c4'
+export ANT_TEAM_GITHUB_WORKFLOW_STATE_OPTION_NEED_ATTENTIONS_ID='abeb1bc3'
+export ANT_TEAM_GITHUB_WORKFLOW_STATE_OPTION_READY_ID='1b3787af'
+export ANT_TEAM_GITHUB_WORKFLOW_STATE_OPTION_IN_PROGRESS_ID='994af751'
+export ANT_TEAM_GITHUB_WORKFLOW_STATE_OPTION_IN_REVIEW_ID='fc73eb98'
+export ANT_TEAM_GITHUB_WORKFLOW_STATE_OPTION_READY_TO_MERGE_ID='f6fb9016'
+export ANT_TEAM_GITHUB_WORKFLOW_STATE_OPTION_BLOCKED_ID='fe1cab88'
+export ANT_TEAM_GITHUB_WORKFLOW_STATE_OPTION_DONE_ID='5563f588'
+export ANT_TEAM_WORKTREE_ROOT='/Users/chrissim/Projects/worktree/baby-tracker'
+export ANT_TEAM_DOCS_VAULT_PATH='/Users/chrissim/Projects/Docs'
+export ANT_TEAM_DOCS_PROJECT_NAME='baby-tracking-web'
+export ANT_TEAM_DOCS_REPOSITORY='Antpolis/documentation'
+export ANT_TEAM_DOCS_PROJECT_PATH='/Users/chrissim/Projects/Docs/02-Architecture-Landscape/projects/baby-tracking-web'
+```
 
-Run `source .github-project.env` to expose the `ANT_TEAM_*` environment values in your current shell. For GitHub operations, prefer the helper script, which loads this file itself.
+`ANT_TEAM_GITHUB_WORKFLOW_STATE_FIELD_ID` identifies Project #4's canonical `Workflow State` field; the built-in `Status` field is separate and unchanged. The option-ID variables map to the states `Open`, `Backlog`, `Need attentions`, `Ready`, `In Progress`, `In Review`, `Ready to Merge`, `Blocked`, and `Done`, respectively. Use `/Users/chrissim/.agents/scripts/gh_project_helper.sh` for board operations; it loads `.github-project.env` itself and resolves these IDs. To expose all values in a direct shell session, run `source .github-project.env`.
 
 ## Change Guidance
 

@@ -75,7 +75,8 @@ body {
   padding: 25px 8px;
 }
 
-.eyebrow, .step-label {
+.eyebrow,
+.step-label {
   color: #e79871;
   font-size: 10px;
   font-weight: 800;
@@ -224,7 +225,9 @@ body {
   gap: 8px;
 }
 
-.choice, .stepper, .item-chip {
+.choice,
+.stepper,
+.item-chip {
   border: 1px solid #eae9e2;
   background: white;
   border-radius: 9px;
@@ -233,7 +236,8 @@ body {
   cursor: pointer;
 }
 
-.choice.active, .item-chip.selected {
+.choice.active,
+.item-chip.selected {
   border-color: #a9c6a0;
   background: #f2f8ef;
   color: #547854;
@@ -567,7 +571,14 @@ footer {
     max-width: none;
     padding: 0;
   }
-  .topbar, .hero, .section-heading, .controls-card, .preview-head, .preview-footer, .bottom-note, footer {
+  .topbar,
+  .hero,
+  .section-heading,
+  .controls-card,
+  .preview-head,
+  .preview-footer,
+  .bottom-note,
+  footer {
     display: none !important;
   }
   .workspace {
@@ -657,7 +668,10 @@ footer {
   overflow: hidden;
 }
 
-.grid-corner, .time-heading, .item-heading, .grid-cell {
+.grid-corner,
+.time-heading,
+.item-heading,
+.grid-cell {
   min-width: 0;
   border-right: 1px solid #e1e5dc;
   border-bottom: 1px solid #e1e5dc;
@@ -718,14 +732,15 @@ footer {
 }
 
 .print-day {
-  --item-count:5;
+  --item-count: 5;
 }
 
 @media print {
   .grid-wrap {
     grid-template-rows: 12mm repeat(var(--item-count, 5), minmax(0, 1fr));
   }
-  .grid-corner, .time-heading {
+  .grid-corner,
+  .time-heading {
     font-size: 7px;
   }
   .item-heading {
@@ -979,7 +994,8 @@ footer {
   cursor: pointer;
 }
 
-.icon-picker-menu button:hover, .icon-picker-menu button.active {
+.icon-picker-menu button:hover,
+.icon-picker-menu button.active {
   background: #f0f6ec;
   color: #547854;
 }
@@ -999,7 +1015,8 @@ footer {
   grid-template-columns: minmax(38px, 1.1fr) repeat(24, minmax(0, 1fr));
 }
 
-.time-heading, .grid-cell {
+.time-heading,
+.grid-cell {
   width: 100%;
 }
 
@@ -1171,7 +1188,9 @@ footer {
     padding: 0;
     margin: 0;
   }
-  .workspace, .builder-grid, .preview-column {
+  .workspace,
+  .builder-grid,
+  .preview-column {
     margin: 0;
     padding: 0;
     width: 297mm;
@@ -1388,7 +1407,14 @@ footer {
   display: block;
   padding: 0 !important;
   overflow: hidden;
-  background: linear-gradient(to bottom right, transparent calc(50% - 0.5px), #aeb9aa 50%, transparent calc(50% + 0.5px)), #f4f6f0;
+  background:
+    linear-gradient(
+      to bottom right,
+      transparent calc(50% - 0.5px),
+      #aeb9aa 50%,
+      transparent calc(50% + 0.5px)
+    ),
+    #f4f6f0;
 }
 
 .grid-corner span {
@@ -1411,7 +1437,14 @@ footer {
 
 @media print {
   .grid-corner {
-    background: linear-gradient(to bottom right, transparent calc(50% - 0.15mm), #aeb9aa 50%, transparent calc(50% + 0.15mm)), #f4f6f0;
+    background:
+      linear-gradient(
+        to bottom right,
+        transparent calc(50% - 0.15mm),
+        #aeb9aa 50%,
+        transparent calc(50% + 0.15mm)
+      ),
+      #f4f6f0;
   }
   .grid-corner span {
     font-size: 8px;
@@ -1426,7 +1459,14 @@ footer {
   }
 }
 .grid-corner {
-  background: linear-gradient(to bottom left, transparent calc(50% - 0.5px), #aeb9aa 50%, transparent calc(50% + 0.5px)), #f4f6f0;
+  background:
+    linear-gradient(
+      to bottom left,
+      transparent calc(50% - 0.5px),
+      #aeb9aa 50%,
+      transparent calc(50% + 0.5px)
+    ),
+    #f4f6f0;
 }
 
 .grid-corner span:first-child {
@@ -1444,7 +1484,14 @@ footer {
 
 @media print {
   .grid-corner {
-    background: linear-gradient(to bottom left, transparent calc(50% - 0.15mm), #aeb9aa 50%, transparent calc(50% + 0.15mm)), #f4f6f0;
+    background:
+      linear-gradient(
+        to bottom left,
+        transparent calc(50% - 0.15mm),
+        #aeb9aa 50%,
+        transparent calc(50% + 0.15mm)
+      ),
+      #f4f6f0;
   }
   .grid-corner span:first-child {
     top: 12%;
@@ -1460,17 +1507,38 @@ footer {
 }
 @media print {
   .grid-corner {
-    background: linear-gradient(to bottom left, transparent calc(50% - 0.25mm), #3f4b43 50%, transparent calc(50% + 0.25mm)), #f4f6f0;
+    background:
+      linear-gradient(
+        to bottom left,
+        transparent calc(50% - 0.25mm),
+        #3f4b43 50%,
+        transparent calc(50% + 0.25mm)
+      ),
+      #f4f6f0;
   }
 }
 @media print {
   .grid-corner {
-    background: linear-gradient(to bottom left, transparent calc(50% - 0.25mm), #111 50%, transparent calc(50% + 0.25mm)), #f4f6f0;
+    background:
+      linear-gradient(
+        to bottom left,
+        transparent calc(50% - 0.25mm),
+        #111 50%,
+        transparent calc(50% + 0.25mm)
+      ),
+      #f4f6f0;
   }
 }
 @media print {
   .grid-corner {
-    background: linear-gradient(to bottom left, transparent calc(50% - 0.5mm), #000 50%, transparent calc(50% + 0.5mm)), #f4f6f0;
+    background:
+      linear-gradient(
+        to bottom left,
+        transparent calc(50% - 0.5mm),
+        #000 50%,
+        transparent calc(50% + 0.5mm)
+      ),
+      #f4f6f0;
   }
 }
 /* Render the diagonal as a foreground stroke so print background settings cannot drop it. */
@@ -1519,7 +1587,10 @@ footer {
   border-color: #000;
 }
 
-.grid-corner, .time-heading, .item-heading, .grid-cell {
+.grid-corner,
+.time-heading,
+.item-heading,
+.grid-cell {
   border-color: #000;
 }
 
@@ -1531,14 +1602,21 @@ footer {
   .grid-wrap {
     border: 0.25mm solid #000;
   }
-  .grid-corner, .time-heading, .item-heading, .grid-cell {
+  .grid-corner,
+  .time-heading,
+  .item-heading,
+  .grid-cell {
     border-right: 0.25mm solid #000;
     border-bottom: 0.25mm solid #000;
   }
   .print-day + .print-day {
     border-top: 0.3mm solid #000;
   }
-  .grid-wrap, .grid-corner, .time-heading, .item-heading, .grid-cell {
+  .grid-wrap,
+  .grid-corner,
+  .time-heading,
+  .item-heading,
+  .grid-cell {
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
@@ -1602,14 +1680,30 @@ footer {
     top: 0;
   }
 }
-.paper, .paper-wrap, .preview-column, .print-day, .grid-wrap, .grid-corner, .time-heading, .item-heading, .grid-cell {
+.paper,
+.paper-wrap,
+.preview-column,
+.print-day,
+.grid-wrap,
+.grid-corner,
+.time-heading,
+.item-heading,
+.grid-cell {
   box-shadow: none !important;
   filter: none !important;
   drop-shadow: none !important;
 }
 
 @media print {
-  .paper, .paper-wrap, .preview-column, .print-day, .grid-wrap, .grid-corner, .time-heading, .item-heading, .grid-cell {
+  .paper,
+  .paper-wrap,
+  .preview-column,
+  .print-day,
+  .grid-wrap,
+  .grid-corner,
+  .time-heading,
+  .item-heading,
+  .grid-cell {
     box-shadow: none !important;
     filter: none !important;
     drop-shadow: none !important;

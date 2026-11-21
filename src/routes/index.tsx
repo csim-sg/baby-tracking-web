@@ -374,38 +374,48 @@ function Home() {
                         <span>________________</span>
                       </div>
                     </div>
-                    <div
-                      className="grid-wrap"
+                    <table
+                      className="tracking-table"
+                      aria-label={`${
+                        main === "中文" ? "每日照护记录" : "Daily care tracker"
+                      } ${d + 1}`}
                       style={
                         { "--item-count": items.length } as React.CSSProperties
                       }
                     >
-                      <div className="grid-corner">
-                        <i className="corner-diagonal" aria-hidden="true" />
-                        <span className="corner-time-label">
-                          {main === "中文" ? "时间" : "Time"}
-                        </span>
-                        <span>{main === "中文" ? "事件" : "Event"}</span>
-                      </div>
-                      {times.map((t) => (
-                        <div className="time-heading" key={t}>
-                          {t}
-                        </div>
-                      ))}
-                      {items.map((x, i) => (
-                        <React.Fragment key={x}>
-                          <div
-                            className={`item-heading tint-${i % 5}`}
-                            aria-label={main === "中文" ? zh[x] || x : x}
-                          >
-                            <IconForItem item={x} customIcons={itemIcons} />
-                          </div>
+                      <thead>
+                        <tr>
+                          <th className="table-corner" scope="col">
+                            <i className="corner-diagonal" aria-hidden="true" />
+                            <span className="corner-time-label">
+                              {main === "中文" ? "时间" : "Time"}
+                            </span>
+                            <span>{main === "中文" ? "事件" : "Event"}</span>
+                          </th>
                           {times.map((t) => (
-                            <div className="grid-cell" key={`${x}-${t}`} />
+                            <th className="time-heading" key={t} scope="col">
+                              {t}
+                            </th>
                           ))}
-                        </React.Fragment>
-                      ))}
-                    </div>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {items.map((x, i) => (
+                          <tr key={x}>
+                            <th
+                              className={`item-heading tint-${i % 5}`}
+                              scope="row"
+                              aria-label={main === "中文" ? zh[x] || x : x}
+                            >
+                              <IconForItem item={x} customIcons={itemIcons} />
+                            </th>
+                            {times.map((t) => (
+                              <td className="tracking-cell" key={`${x}-${t}`} />
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 ))}
               </div>

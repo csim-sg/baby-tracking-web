@@ -394,8 +394,7 @@ hr {
   color: #738673;
 }
 
-.grid-wrap {
-  display: flex;
+.tracking-table {
   flex: 1;
   min-height: 0;
   border: 1px solid #d8ddd3;
@@ -657,10 +656,7 @@ footer {
     border-top: 1px dashed #aaa;
   }
 }
-.grid-wrap {
-  display: grid;
-  grid-template-columns: minmax(38px, 1.1fr) repeat(24, minmax(0, 1fr));
-  grid-template-rows: 23px repeat(var(--item-count, 5), minmax(0, 1fr));
+.tracking-table {
   flex: 1;
   min-height: 0;
   border: 1px solid #d8ddd3;
@@ -668,10 +664,10 @@ footer {
   overflow: hidden;
 }
 
-.grid-corner,
+.table-corner,
 .time-heading,
 .item-heading,
-.grid-cell {
+.tracking-cell {
   min-width: 0;
   border-right: 1px solid #e1e5dc;
   border-bottom: 1px solid #e1e5dc;
@@ -680,7 +676,7 @@ footer {
   justify-content: center;
 }
 
-.grid-corner {
+.table-corner {
   font-size: 6px;
   font-weight: 700;
   color: #68776b;
@@ -727,7 +723,7 @@ footer {
   background: #f4f0f8;
 }
 
-.grid-cell {
+.tracking-cell {
   background: white;
 }
 
@@ -736,10 +732,7 @@ footer {
 }
 
 @media print {
-  .grid-wrap {
-    grid-template-rows: 12mm repeat(var(--item-count, 5), minmax(0, 1fr));
-  }
-  .grid-corner,
+  .table-corner,
   .time-heading {
     font-size: 7px;
   }
@@ -1011,12 +1004,8 @@ footer {
   overflow: hidden;
 }
 
-.grid-wrap {
-  grid-template-columns: minmax(38px, 1.1fr) repeat(24, minmax(0, 1fr));
-}
-
 .time-heading,
-.grid-cell {
+.tracking-cell {
   width: 100%;
 }
 
@@ -1027,9 +1016,6 @@ footer {
     font-size: clamp(5px, 0.62vw, 8px);
     letter-spacing: -0.2px;
     white-space: nowrap;
-  }
-  .grid-wrap {
-    grid-template-columns: minmax(12mm, 1.1fr) repeat(24, minmax(0, 1fr));
   }
 }
 .item-legend {
@@ -1098,11 +1084,7 @@ footer {
   font-size: 0.85cqw;
 }
 
-.grid-wrap {
-  grid-template-rows: 4.2cqw repeat(var(--item-count, 5), minmax(0, 1fr));
-}
-
-.grid-corner {
+.table-corner {
   font-size: 0.65cqw;
 }
 
@@ -1152,10 +1134,7 @@ footer {
   .print-date span {
     font-size: 9px;
   }
-  .grid-wrap {
-    grid-template-rows: 12mm repeat(var(--item-count, 5), minmax(0, 1fr));
-  }
-  .grid-corner {
+  .table-corner {
     font-size: 7px;
   }
   .time-heading {
@@ -1311,11 +1290,7 @@ footer {
     font-size: 0.8cqw;
     line-height: 1;
   }
-  .grid-wrap {
-    grid-template-columns: minmax(4.04cqw, 1.1fr) repeat(24, minmax(0, 1fr));
-    grid-template-rows: 4.04cqw repeat(var(--item-count, 5), minmax(0, 1fr));
-  }
-  .grid-corner {
+  .table-corner {
     font-size: 0.62cqw;
   }
   .time-heading {
@@ -1369,8 +1344,8 @@ footer {
     height: 5mm;
   }
 }
-/* Emphasize the first grid column header label. */
-.grid-corner {
+/* Emphasize the first tracker table column header label. */
+.table-corner {
   font-size: 1.3cqw;
   font-weight: 800;
   line-height: 1.1;
@@ -1379,7 +1354,7 @@ footer {
 }
 
 @media print {
-  .grid-corner {
+  .table-corner {
     font-size: 12px;
     font-weight: 800;
   }
@@ -1402,7 +1377,7 @@ footer {
     padding-right: 0.3mm;
   }
 }
-.grid-corner {
+.table-corner {
   position: relative;
   display: block;
   padding: 0 !important;
@@ -1417,7 +1392,7 @@ footer {
     #f4f6f0;
 }
 
-.grid-corner span {
+.table-corner span {
   position: absolute;
   font-size: 0.82cqw;
   font-weight: 800;
@@ -1425,18 +1400,18 @@ footer {
   white-space: nowrap;
 }
 
-.grid-corner span:first-child {
+.table-corner span:first-child {
   top: 13%;
   left: 8%;
 }
 
-.grid-corner span:last-child {
+.table-corner span:last-child {
   right: 7%;
   bottom: 12%;
 }
 
 @media print {
-  .grid-corner {
+  .table-corner {
     background:
       linear-gradient(
         to bottom right,
@@ -1446,19 +1421,19 @@ footer {
       ),
       #f4f6f0;
   }
-  .grid-corner span {
+  .table-corner span {
     font-size: 8px;
   }
-  .grid-corner span:first-child {
+  .table-corner span:first-child {
     top: 12%;
     left: 8%;
   }
-  .grid-corner span:last-child {
+  .table-corner span:last-child {
     right: 7%;
     bottom: 11%;
   }
 }
-.grid-corner {
+.table-corner {
   background:
     linear-gradient(
       to bottom left,
@@ -1469,21 +1444,21 @@ footer {
     #f4f6f0;
 }
 
-.grid-corner span:first-child {
+.table-corner span:first-child {
   top: 13%;
   right: 8%;
   left: auto;
   text-align: right;
 }
 
-.grid-corner span:last-child {
+.table-corner span:last-child {
   left: 7%;
   right: auto;
   bottom: 12%;
 }
 
 @media print {
-  .grid-corner {
+  .table-corner {
     background:
       linear-gradient(
         to bottom left,
@@ -1493,20 +1468,20 @@ footer {
       ),
       #f4f6f0;
   }
-  .grid-corner span:first-child {
+  .table-corner span:first-child {
     top: 12%;
     right: 8%;
     left: auto;
     text-align: right;
   }
-  .grid-corner span:last-child {
+  .table-corner span:last-child {
     left: 7%;
     right: auto;
     bottom: 11%;
   }
 }
 @media print {
-  .grid-corner {
+  .table-corner {
     background:
       linear-gradient(
         to bottom left,
@@ -1518,7 +1493,7 @@ footer {
   }
 }
 @media print {
-  .grid-corner {
+  .table-corner {
     background:
       linear-gradient(
         to bottom left,
@@ -1530,7 +1505,7 @@ footer {
   }
 }
 @media print {
-  .grid-corner {
+  .table-corner {
     background:
       linear-gradient(
         to bottom left,
@@ -1542,7 +1517,7 @@ footer {
   }
 }
 /* Render the diagonal as a foreground stroke so print background settings cannot drop it. */
-.grid-corner {
+.table-corner {
   background: #f4f6f0 !important;
   isolation: isolate;
 }
@@ -1560,12 +1535,12 @@ footer {
   pointer-events: none;
 }
 
-.grid-corner span {
+.table-corner span {
   z-index: 2;
 }
 
 @media print {
-  .grid-corner {
+  .table-corner {
     background: #fff !important;
   }
   .corner-diagonal {
@@ -1583,14 +1558,14 @@ footer {
 }
 
 /* Make every tracker table rule black, not only the diagonal corner stroke. */
-.grid-wrap {
+.tracking-table {
   border-color: #000;
 }
 
-.grid-corner,
+.table-corner,
 .time-heading,
 .item-heading,
-.grid-cell {
+.tracking-cell {
   border-color: #000;
 }
 
@@ -1599,24 +1574,24 @@ footer {
 }
 
 @media print {
-  .grid-wrap {
+  .tracking-table {
     border: 0.25mm solid #000;
   }
-  .grid-corner,
+  .table-corner,
   .time-heading,
   .item-heading,
-  .grid-cell {
+  .tracking-cell {
     border-right: 0.25mm solid #000;
     border-bottom: 0.25mm solid #000;
   }
   .print-day + .print-day {
     border-top: 0.3mm solid #000;
   }
-  .grid-wrap,
-  .grid-corner,
+  .tracking-table,
+  .table-corner,
   .time-heading,
   .item-heading,
-  .grid-cell {
+  .tracking-cell {
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
@@ -1684,11 +1659,11 @@ footer {
 .paper-wrap,
 .preview-column,
 .print-day,
-.grid-wrap,
-.grid-corner,
+.tracking-table,
+.table-corner,
 .time-heading,
 .item-heading,
-.grid-cell {
+.tracking-cell {
   box-shadow: none !important;
   filter: none !important;
   drop-shadow: none !important;
@@ -1699,11 +1674,11 @@ footer {
   .paper-wrap,
   .preview-column,
   .print-day,
-  .grid-wrap,
-  .grid-corner,
+  .tracking-table,
+  .table-corner,
   .time-heading,
   .item-heading,
-  .grid-cell {
+  .tracking-cell {
     box-shadow: none !important;
     filter: none !important;
     drop-shadow: none !important;
@@ -1723,4 +1698,81 @@ footer {
 
 .corner-time-label {
   margin-top: 3px;
+}
+
+
+/* Use native table layout for the event-by-time tracker in preview and print. */
+.tracking-table {
+  display: table;
+  width: 100%;
+  height: 0;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 1px solid #000;
+  border-radius: 3px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.tracking-table thead {
+  height: 4.04cqw;
+}
+
+.tracking-table tbody {
+  height: calc(100% - 4.04cqw);
+}
+
+.tracking-table tr {
+  height: auto;
+}
+
+.tracking-table .table-corner,
+.tracking-table .time-heading,
+.tracking-table .item-heading,
+.tracking-table .tracking-cell {
+  display: table-cell;
+  box-sizing: border-box;
+  border: 0.25mm solid #000;
+  vertical-align: middle;
+}
+
+.tracking-table .table-corner {
+  position: relative;
+  width: 4.04cqw;
+}
+
+.tracking-table .time-heading {
+  width: auto;
+  text-align: center;
+}
+
+.tracking-table .item-heading {
+  width: 4.04cqw;
+  text-align: center;
+  padding: 0 0.3mm;
+}
+
+.tracking-table .tracking-cell {
+  background: #fff;
+}
+
+@media print {
+  .tracking-table {
+    border: 0.25mm solid #000;
+  }
+
+  .tracking-table thead {
+    height: 12mm;
+  }
+
+  .tracking-table tbody {
+    height: calc(100% - 12mm);
+  }
+
+  .tracking-table .table-corner,
+  .tracking-table .item-heading {
+    width: 12mm;
+  }
 }

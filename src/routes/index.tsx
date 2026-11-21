@@ -382,7 +382,9 @@ function Home() {
                     >
                       <div className="grid-corner">
                         <i className="corner-diagonal" aria-hidden="true" />
-                        <span>{main === "中文" ? "时间" : "Time"}</span>
+                        <span className="corner-time-label">
+                          {main === "中文" ? "时间" : "Time"}
+                        </span>
                         <span>{main === "中文" ? "事件" : "Event"}</span>
                       </div>
                       {times.map((t) => (

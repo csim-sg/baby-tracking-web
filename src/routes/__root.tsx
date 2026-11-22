@@ -7,11 +7,17 @@ import {
 import "../style.scss";
 export const Route = createRootRoute({
   component: () => (
-    <>
-      <HeadContent />
-      <Outlet />
-      <Scripts />
-    </>
+    <html lang="en">
+      <head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <HeadContent />
+      </head>
+      <body>
+        <Outlet />
+        <Scripts />
+      </body>
+    </html>
   ),
   head: () => ({
     meta: [

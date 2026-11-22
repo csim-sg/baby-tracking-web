@@ -1708,6 +1708,9 @@ footer {
   border-collapse: collapse;
   border-spacing: 0;
   border: 1px solid #000;
+  /* Collapsed cell borders can win over the table's perimeter border. */
+  outline: 1px solid #000;
+  outline-offset: -1px;
   border-radius: 3px;
   flex: 1;
   min-height: 0;
@@ -1759,6 +1762,8 @@ footer {
 @media print {
   .tracking-table {
     border: 0.25mm solid #000;
+    outline: 0.25mm solid #000;
+    outline-offset: -0.25mm;
   }
 
   .tracking-table thead {

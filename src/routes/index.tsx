@@ -350,6 +350,27 @@ function Home() {
                 {Array.from({ length: days }, (_, d) => (
                   <div className="print-day" key={d}>
                     <div className="print-head">
+                      {d === 0 && (
+                        <>
+                          <b className="sheet-title">☺ Tiny Daybook</b>
+                          <div className="item-legend">
+                            {items.map((x) => {
+                              const Icon = itemIcon(x, itemIcons);
+                              return (
+                                <span className="legend-item" key={x}>
+                                  <Icon aria-hidden="true" />
+                                  <span>
+                                    {main === "中文" ? zh[x] || x : x}
+                                    {sub === "None"
+                                      ? ""
+                                      : ` / ${sub === "中文" ? zh[x] || x : x}`}
+                                  </span>
+                                </span>
+                              );
+                            })}
+                          </div>
+                        </>
+                      )}
                       <div className="print-date">
                         {main === "中文" ? "日期" : "Date"}
                         {sub !== "None" &&

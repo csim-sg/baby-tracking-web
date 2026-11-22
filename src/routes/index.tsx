@@ -22,6 +22,7 @@ import {
   Star,
   BookOpen,
   Bed,
+  Clock3,
   LucideIcon,
 } from "lucide-react";
 export const Route = createFileRoute("/")({ component: Home });
@@ -71,31 +72,22 @@ const customIconOptions: Record<string, LucideIcon> = {
   Star,
   BookOpen,
   Bed,
+  Clock3,
+};
+const defaultItemIcons: Record<string, string> = {
+  diaper: "Baby",
+  pee: "Droplets",
+  formula: "Package",
+  breastfeeding: "Milk",
+  poop: "Toilet",
+  temperature: "Thermometer",
+  medicine: "Syringe",
+  food: "Soup",
+  sleep: "Moon",
 };
 function itemIcon(item: string, customIcons: Record<string, string> = {}) {
-  if (customIcons[item]) return customIconOptions[customIcons[item]] || Check;
-  switch (item.toLowerCase()) {
-    case "diaper":
-      return Baby;
-    case "pee":
-      return Droplets;
-    case "formula":
-      return Package;
-    case "breastfeeding":
-      return Milk;
-    case "poop":
-      return Toilet;
-    case "temperature":
-      return Thermometer;
-    case "medicine":
-      return Syringe;
-    case "food":
-      return Soup;
-    case "sleep":
-      return Moon;
-    default:
-      return Check;
-  }
+  const name = customIcons[item] || defaultItemIcons[item.toLowerCase()] || "Check";
+  return customIconOptions[name] || Check;
 }
 function IconForItem({
   item,
@@ -109,9 +101,11 @@ function IconForItem({
 }
 function IconPicker({
   value,
+  usedIcons,
   onChange,
 }: {
   value: string;
+  usedIcons: Set<string>;
   onChange: (value: string) => void;
 }) {
   const [open, setOpen] = useState(false);
@@ -136,6 +130,7 @@ function IconPicker({
               role="option"
               aria-selected={value === name}
               className={value === name ? "active" : ""}
+              disabled={usedIcons.has(name)}
               key={name}
               onClick={() => {
                 onChange(name);
@@ -163,22 +158,51 @@ function Home() {
       "Temperature",
     ]),
     [custom, setCustom] = useState(""),
+    [customTranslation, setCustomTranslation] = useState(""),
     [customIcon, setCustomIcon] = useState("Star"),
-    [itemIcons, setItemIcons] = useState<Record<string, string>>({});
+    [itemIcons, setItemIcons] = useState<Record<string, string>>({}),
+    [itemTranslations, setItemTranslations] = useState<
+      Record<string, { language: string; value: string }>
+    >({});
   const times = Array.from(
     { length: 24 },
     (_, i) => `${i % 12 || 12}${i < 12 ? "AM" : "PM"}`,
   );
+  const maxItems = days === 1 ? 16 : 7;
+  const usedIcons = new Set(
+    items.map(
+      (item) =>
+        itemIcons[item] || defaultItemIcons[item.toLowerCase()] || "Check",
+    ),
+  );
   const toggle = (x: string) =>
     setItems((s) =>
-      s.includes(x) ? s.filter((v) => v !== x) : s.length < 7 ? [...s, x] : s,
+      s.includes(x)
+        ? s.filter((v) => v !== x)
+        : s.length < maxItems
+          ? [...s, x]
+          : s,
     );
   const add = () => {
     const value = custom.trim();
-    if (value && !items.includes(value) && items.length < 7) {
+    if (
+      value &&
+      !items.includes(value) &&
+      items.length < maxItems &&
+      !usedIcons.has(customIcon)
+    ) {
       setItems([...items, value]);
       setItemIcons({ ...itemIcons, [value]: customIcon });
+      setItemTranslations((previous) => {
+        const translation = customTranslation.trim();
+        if (sub !== "None" && translation)
+          return { ...previous, [value]: { language: sub, value: translation } };
+        const next = { ...previous };
+        delete next[value];
+        return next;
+      });
       setCustom("");
+      setCustomTranslation("");
     }
   };
   return (
@@ -255,6 +279,12 @@ function Home() {
                 <button
                   className={"choice " + (days === n ? "active" : "")}
                   onClick={() => setDays(n)}
+                  disabled={n === 2 && items.length > 7}
+                  title={
+                    n === 2 && items.length > 7
+                      ? "Remove items to use two days per page"
+                      : undefined
+                  }
                   key={n}
                 >
                   <CalendarDays />
@@ -262,12 +292,15 @@ function Home() {
                 </button>
               ))}
             </div>
+            {days === 1 && items.length > 7 && (
+              <p>Remove items to switch to two days per page.</p>
+            )}
             <hr />
             <div className="control-title">
               <span className="number">02</span>
               <div>
                 <h3>What to track</h3>
-                <p>Select the items for your sheet · up to 7</p>
+                <p>Select the items for your sheet · up to {maxItems}</p>
               </div>
             </div>
             <div className="item-chips">
@@ -279,7 +312,7 @@ function Home() {
                       "item-chip " + (items.includes(x) ? "selected" : "")
                     }
                     onClick={() => toggle(x)}
-                    disabled={!items.includes(x) && items.length >= 7}
+                    disabled={!items.includes(x) && items.length >= maxItems}
                     key={x}
                   >
                     <Icon size={15} /> {x}
@@ -308,10 +341,27 @@ function Home() {
                 onKeyDown={(e) => e.key === "Enter" && add()}
                 placeholder="Add a custom item"
               />
-              <IconPicker value={customIcon} onChange={setCustomIcon} />
-              <button onClick={add} disabled={items.length >= 7}>
+              <IconPicker
+                value={customIcon}
+                usedIcons={usedIcons}
+                onChange={setCustomIcon}
+              />
+              <button
+                onClick={add}
+                disabled={items.length >= maxItems || usedIcons.has(customIcon)}
+              >
                 <Plus /> Add
               </button>
+              {sub !== "None" && (
+                <input
+                  className="custom-translation"
+                  value={customTranslation}
+                  onChange={(e) => setCustomTranslation(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && add()}
+                  aria-label={`Custom item name in ${sub}`}
+                  placeholder={`${sub} name (optional)`}
+                />
+              )}
             </div>
             <hr />
             <div className="control-title">
@@ -350,33 +400,34 @@ function Home() {
                 {Array.from({ length: days }, (_, d) => (
                   <div className="print-day" key={d}>
                     <div className="print-head">
-                      {d === 0 && (
-                        <>
-                          <b className="sheet-title">☺ Tiny Daybook</b>
-                          <div className="item-legend">
-                            {items.map((x) => {
-                              const Icon = itemIcon(x, itemIcons);
-                              return (
-                                <span className="legend-item" key={x}>
-                                  <Icon aria-hidden="true" />
-                                  <span>
-                                    {main === "中文" ? zh[x] || x : x}
-                                    {sub === "None"
-                                      ? ""
-                                      : ` / ${sub === "中文" ? zh[x] || x : x}`}
-                                  </span>
-                                </span>
-                              );
-                            })}
-                          </div>
-                        </>
-                      )}
                       <div className="print-date">
                         {main === "中文" ? "日期" : "Date"}
                         {sub !== "None" &&
                           ` / ${sub === "中文" ? "日期" : "Date"}`}
                         <span>________________</span>
                       </div>
+                      {d === 0 && (
+                        <div className="item-legend">
+                          {items.map((x) => {
+                            const Icon = itemIcon(x, itemIcons);
+                            return (
+                              <span className="legend-item" key={x}>
+                                <Icon aria-hidden="true" />
+                                <span>
+                                  {main === "中文" ? zh[x] || x : x}
+                                  {sub === "None"
+                                    ? ""
+                                    : ` / ${
+                                        (itemTranslations[x]?.language === sub &&
+                                          itemTranslations[x].value) ||
+                                        (sub === "中文" ? zh[x] || x : x)
+                                      }`}
+                                </span>
+                              </span>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                     <table
                       className="tracking-table"

@@ -1,0 +1,122 @@
+# T5 raw verification evidence log — issue #5, integrated head dc7dc9b3c0c6978cb3fc768353788f86e18e9dc2
+# Host: Linux; Chrome 158.0.8127.36 (google-chrome --version); Node 24.12.0; Docker 29.10.0.
+# All commands run in /home/chrissim/Projects/worktree/baby-tracking-web/issue-5 on branch task/5-final-evidence (clean, 0/0 vs new-main).
+# Interactive transcript values re-checked where cheap; exact command lines shown.
+
+## git state
+dc7dc9b3c0c6978cb3fc768353788f86e18e9dc2
+task/5-final-evidence
+0
+
+## npm ci (tail)
+found 0 vulnerabilities
+
+## npm run build (time output)
+npm run build  3.34s user 0.67s system 201% cpu 1.993 total -> PASS; emitted .output/public/assets/index-CPMP_0Z_.css
+
+## emitted CSS
+-rw-r--r-- 1 chrissim chrissim 24676 Nov 24 01:39 .output/public/assets/index-CPMP_0Z_.css
+a55a57bc60bbc269f68ee0fdaaeb155daaad83741022645a94fefec3cf8c318c  .output/public/assets/index-CPMP_0Z_.css
+
+## parity run 1 artifacts dir
+verify-2026-11-23T17-39-55-882Z
+verify-2026-11-23T17-40-51-442Z
+run-1 summary (result lines):
+build commit:      dc7dc9b3c0c6978cb3fc768353788f86e18e9dc2
+baseline ref:      674256c77ee228320e2cc7c20fcced2ab47c2095 (captured 2026-11-23T14:13:14.630Z)
+browser:           Chromium 158.0.8127.36 (channel: chrome)
+pdf gate:          16x1: 1 page(s), MediaBox 841.91998 x 594.95996 pt; 7x2: 1 page(s), MediaBox 841.91998 x 594.95996 pt
+paper rects:       16x1: 1122.515625 x 793.6875 px @ print; 7x2: 1122.515625 x 793.6875 px @ print
+fonts:             .hero h1=Nunito (loaded: true); .legend-item=DM Sans (loaded: true)
+selector inventory: 111 tokens, unresolved: 0, literally absent (element-styled): active, add-item, art-card, bottom-note, brand, brand-accent, brand-mark, choice-row, control-title, controls-card, download-link, eyebrow, field-label, hero, hero-art, hero-perks, icon-picker, icon-picker-menu, icon-picker-trigger, item-chips, language-fields, number, preview-footer, preview-head, section-heading, selected, step-label, tint-0, top-note, top-print, topbar
+differences:       0
+
+## parity run 2 (result lines)
+differences:       0
+
+## baseline immutability
+ebae72a6c05145d56960e63335df36f5e506dfa274945bdfa6175abc0a6caac8  scripts/parity/baseline/baseline.json
+8915f0f Add SPEC-001 parity harness and 674256c baseline (issue #1)
+
+## baseline-vs-current PDF sha256
+baseline 16x1 30e8c42c25c2c407db5180e0d99fe46e737d1ad89f1be513c8ba40791187d9f6 (evidence/issue-1-parity-baseline-674256c)
+baseline 7x2  c38b2d27bf488bff86ec04178492942c0e248545ab640f028b16890000d0664c (evidence/issue-1-parity-baseline-674256c)
+ad72dac14d17ec26eeab6c15f3c75e22da066ec183a44315fd948cb877e5b8c5  scripts/parity/artifacts/verify-2026-11-23T17-39-55-882Z/16x1.pdf
+8a63b47430e2f5b0c3d7e14882080968af33de4ce02ca971e68caa25a11d2106  scripts/parity/artifacts/verify-2026-11-23T17-39-55-882Z/7x2.pdf
+
+## SSR stylesheet link check (server PORT=4640 node .output/server/index.mjs)
+1
+<link rel="stylesheet" href="/assets/index-CPMP_0Z_.css" data-precedence="default"/>
+GET /assets/index-CPMP_0Z_.css -> 200 24676 bytes
+
+## docker build .
+#12 writing image sha256:62b02f2a3ae3f345ee1602c9cf8caf4acc51ad8167fa02afa36f9c6aa13f9cb1 done (PASS)
+
+## docker compose (temp override 3100:3000, repo compose.yaml untouched)
+docker compose -f compose.yaml -f /tmp/opencode/t5-compose-override.yml up --build -d
+baby-tracker issue-5-baby-tracker Up (health: starting) 0.0.0.0:3100->3000/tcp
+
+## container health + in-container fetch
+docker inspect --format '{{.State.Health.Status}}' baby-tracker -> healthy
+health log exit=0 (node fetch 127.0.0.1:3000)
+in-container wget http://127.0.0.1:3000/ -> SSR HTML, single stylesheet link /assets/index-CPMP_0Z_.css; asset fetch OK
+
+## host forwarding (honest limitation)
+curl http://localhost:3100/ -> status=000 (blocked in this environment); in-container evidence authoritative
+
+## runtime closure
+/app: only .output (nitro.json, public, server); no node_modules
+find / (image): no *tailwind*, no *playwright*, no *sass*
+ps: PID 1 node .output/server/index.mjs as uid 1000 (node)
+
+## teardown
+docker compose down: baby-tracker removed; freetoolset.dev (127.0.0.1:3000) untouched throughout
+
+## FR-09 exact-token searches in src/ (all expect 0)
+tracker-table -> 0
+sheet-title -> 0
+stepper -> 0
+--days -> 0 (re-verified: grep -rnF -e "--days" src/ -> 0 matches)
+--item-count -> 0 (re-verified: grep -rnF -e "--item-count" src/ -> 0 matches; broad item-count/item_count variants -> 0)
+print-day + .print-day -> 0
+194mm -> 0
+drop-shadow -> 1 (comment text only, app.css:765, documents the FR-09 deletion)
+margin:8mm variants -> 0; legit .print-head min-height/height 8mm retained (app.css:478-479)
+
+## authored !important in src/
+0
+
+## emitted CSS audits
+1
+1
+@page{size:A4 landscape;margin:0}
+emitted !important: 1 -> [hidden]:where(:not([hidden=until-found])){display:none!important} (Tailwind Preflight, framework-generated)
+@import "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@70 <- font @import first
+
+## third-party request surface
+SSR HTML external refs: http://www.w3.org only (SVG xmlns namespace strings, not fetched)
+emitted CSS external refs: https://fonts.googleapis.com only (single unchanged Google Fonts request)
+
+## scss/sass retirement
+find src -name '*.scss' -o -name '*.sass' -> 0
+package.json root: no sass; lockfile root package: no sass (2 'sass' strings are vite peerDependenciesMeta optional entries)
+npm ls sass -> (empty)
+no tailwind.config.* / postcss.config.* (correct, CSS-first)
+
+## scope containment (674256c..HEAD)
+.gitignore
+package-lock.json
+package.json
+scripts/parity/README.md
+scripts/parity/baseline/baseline.json
+scripts/parity/capture.mjs
+scripts/parity/config.mjs
+scripts/parity/diff.mjs
+scripts/parity/harness.mjs
+scripts/parity/pdfbytes.mjs
+scripts/parity/verify.mjs
+src/routes/__root.tsx
+src/routes/index.tsx
+src/style.scss
+src/styles/app.css
+vite.config.ts

@@ -1,0 +1,38 @@
+=== INTERACTION PASS ===
+PASS  initial legend items = 5
+PASS  initial print-days = 2
+PASS  chip unselect: class removed
+PASS  chip state visual: white when unselected, selected wash when selected — unselected=rgb(255, 255, 255) selected=rgb(242, 248, 239)
+PASS  icon picker opens
+PASS  icon picker lists 16 options — 16
+PASS  current icon option has active class — 1
+PASS  active option highlight bg rgb(242,248,239) (FR-10) — rgb(242, 248, 239)
+PASS  used icons disabled in picker (5 used) — 5
+PASS  disabled option opacity 0.4 — 0.4
+PASS  menu button hover bg rgb(240,246,236) (FR-10) — rgb(240, 246, 236)
+PASS  menu button font/size/bg (FR-10): DM Sans|10px|white — "DM Sans"|10px|rgb(255, 255, 255)
+PASS  picker closes on trigger re-click
+PASS  custom item with translation renders 'Piano / 钢琴' — Piano / 钢琴
+PASS  custom item without translation falls back to main name ('Walk / Walk') — Walk / Walk
+PASS  main=中文 switches Date label to 日期 — 日期 / 日期
+PASS  legend translates to zh (Diaper → 换尿布 present) — matching items=1
+PASS  sub=None hides the translation input
+PASS  sub=None removes '/ sub-name' suffix from legend — 喂奶粉
+PASS  switch to 1 day
+PASS  reached 16 items on 1 day (16/1 extreme) — 16
+PASS  at 16/1: Add button disabled (17th item blocked)
+PASS  at 16/1: unselected chips disabled
+PASS  at >7 items: 2-day choice disabled
+PASS  at >7 items: 2-day choice has title hint
+PASS  forced click does not switch to 2 days
+PASS  unselect down to 7 items
+PASS  2-day choice enabled again at 7 items
+PASS  switches to 2 days at 7 items
+PASS  at 7/2: unselected default chips disabled (8th item blocked)
+PASS  at 7/2: Add button disabled (8th item blocked)
+PASS  both print buttons + download link call window.print (3 calls) — 3
+PASS  keyboard: typing + Enter in input adds item — 1
+PASS  keyboard: focused chip toggles with Enter
+PASS  keyboard: all controls tabbable or intentionally disabled — disabled/limited=4/18 (limits make them disabled by design)
+
+interaction: 35/35 PASS

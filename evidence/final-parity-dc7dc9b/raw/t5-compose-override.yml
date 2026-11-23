@@ -1,0 +1,9 @@
+# TEMPORARY verification override for issue #5 (T5) — not committed.
+# Host port 3000 on this machine is already mapped by the unrelated
+# `freetoolset.dev` container, which must stay untouched. This override
+# remaps the host side to 3100 and leaves the repository's compose.yaml
+# unmodified. Remove after verification.
+services:
+  baby-tracker:
+    ports: !override
+      - "3100:3000"

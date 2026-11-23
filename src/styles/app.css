@@ -1,11 +1,12 @@
-/* Application stylesheet — plain-CSS port of the pre-Tailwind cascade (SPEC-001 T2),
- * with T3 chrome conversion.
+/* Application stylesheet (SPEC-001 Tailwind migration; T2 port, T3 chrome, T4
+ * semantic layer).
  *
  * Structure: Google Fonts import (first statement, unchanged per FR-04/AC-11),
- * Tailwind import, @theme tokens (T3 chrome + breakpoints), the T2 Preflight
- * neutralizations relocated into @layer base at T3 so utilities outrank them
- * (each is enumerated in the T2 PR handover for T3/T4 retirement), then the
- * unlayered sheet/print port (T4 converts it into the semantic layer).
+ * Tailwind import, @theme tokens (T3 chrome + breakpoints), @layer base (T2
+ * Preflight neutralizations, relocated at T3; kept because td/svg/* still
+ * serve the sheet), one @layer components block carrying the sheet/print
+ * semantic layer plus the shared-ancestor print-only geometry (T4), and the
+ * singular unlayered @page. No other unlayered statements.
  */
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@700;800;900&display=swap");
 @import "tailwindcss";
@@ -38,10 +39,11 @@
   --color-label-ink: #9ba198;
 }
 
-/* --- Preflight neutralizations (T2 checkpoint only; retire in T3/T4) -------
- * Relocated into @layer base at T3 (issue #3 sequencing checkpoint): within
- * base a later rule still beats Preflight, and utilities beat base, so the
- * effective cascade against the unlayered port below is unchanged.
+/* --- Preflight neutralizations (T2; relocated into @layer base at T3) -------
+ * Kept through T4: td, svg and * still serve the sheet (cell padding,
+ * legend/row icons, zero-width border styles); button/input/p/:root serve the
+ * T3 chrome utilities. Each is enumerated in the T2 PR handover.
+ * Within base a later rule still beats Preflight, and utilities beat base.
  * ----------------------------------------------------------------------- */
 @layer base {
   /* Preflight html { line-height: 1.5 } vs UA/baseline normal (inherited). */
@@ -89,791 +91,677 @@
   }
 }
 
-/* --- Effective (last-winning) port of the legacy stylesheet ---------------- */
-:root {
-  font-family: "DM Sans", sans-serif;
-  color: #293b39;
-  background: #fffdf9;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-}
-
-/* Chrome below is authored as Tailwind utilities in src/routes/index.tsx (T3).
- * The .stepper rules below are kept verbatim for T4: the stepper has no
- * markup today (dead selector, FR-09), so its declarations must not be
- * "converted" away here.
- */
-.stepper {
-  border: 1px solid #eae9e2;
-  background: white;
-  border-radius: 9px;
-  padding: 9px;
-  color: #637068;
-  cursor: pointer;
-}
-
-.stepper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 11px;
-}
-
-.stepper button {
-  border: 0;
-  border-radius: 6px;
-  background: #f2f5ef;
-  color: #587459;
-  font-size: 15px;
-  padding: 3px 9px;
-}
-
-.paper-wrap {
-  padding: 15px;
-  background: #f4f0e8;
-  border: 1px solid #ebe5d9;
-  border-radius: 13px;
-  overflow: hidden;
-}
-
-.paper {
-  background: #fff;
-  width: 100%;
-  display: grid;
-  overflow: hidden;
-}
-
-.print-day {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.print-head {
-  justify-content: space-between;
-  font-size: 7px;
-  color: #738673;
-}
-
-.tracker-table {
-  display: flex;
-  flex: 1;
-  min-width: 0;
-  flex-direction: column;
-}
-
-.tracker-table + .tracker-table {
-  border-left: 1px solid #d8ddd3;
-}
-
-.tracker-table > b {
-  height: 23px;
-  flex: 0 0 23px;
-  border-bottom: 1px solid #d8ddd3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  font-size: 6px;
-  color: #68776b;
-  background: #f3f7ef;
-}
-
-.tracker-table small {
-  font-size: 4px;
-  color: #a2aaa0;
-}
-
-.tracker-table > span {
-  flex: 1;
-  min-height: 0;
-  border-bottom: 1px solid #e7e9e3;
-  display: grid;
-  place-items: center;
-  font-size: 5px;
-  color: #879085;
-  background: #fbfcf9;
-}
-
-.tracker-table:not(:first-child) > span {
-  background: #fff;
-}
-
-@media (max-width: 820px) {
-  .paper-wrap {
-    padding: 12px;
+/* --- Sheet/print semantic layer (T4) ----------------------------------------
+ * One @layer components block: the sheet subtree (no element at or below
+ * .paper-wrap may carry a utility class), the literal sheet media queries,
+ * the print-only geometry of the shared layout ancestors, and the print body
+ * background. The global defaults carried over from the T2 port lead the
+ * block so that only @page remains unlayered. Relative rule order inside the
+ * layer is preserved from the T2 port, so equal-specificity last-wins pairs
+ * keep their winners.
+ * ------------------------------------------------------------------------- */
+@layer components {
+  /* Global defaults carried from the T2 port; layered here because the final
+   * state allows no unlayered normal declarations besides @page. */
+  :root {
+    font-family: "DM Sans", sans-serif;
+    color: #293b39;
+    background: #fffdf9;
   }
-}
 
-@media (max-width: 560px) {
-  .paper-wrap {
-    padding: 5px;
+  * {
+    box-sizing: border-box;
   }
-  .paper {
-    padding: 4px;
-  }
-  .print-day {
-    padding: 4px 2px;
-  }
-  .print-head {
-    height: 20px;
-    font-size: 5px;
-  }
-  .tracker-table > b {
-    height: 18px;
-    flex-basis: 18px;
-    font-size: 5px;
-  }
-  .tracker-table small {
-    font-size: 3px;
-  }
-  .tracker-table > span {
-    font-size: 4px;
-  }
-}
 
-@media print {
   body {
-    background: white;
+    margin: 0;
   }
-  .app-shell {
-    max-width: none;
-    padding: 0;
-  }
-  /* The eight FR-11 chrome elements are hidden in print by print:hidden
-   * utilities in src/routes/index.tsx (T3); the shared-ancestor print
-   * geometry below stays semantic until T4. */
-  .workspace {
-    border: 0;
-  }
-  .builder-grid {
-    display: block;
-  }
+
   .paper-wrap {
-    border: 0;
-    background: white;
-    border-radius: 0;
-    overflow: visible;
+    padding: 15px;
+    background: #f4f0e8;
+    border: 1px solid #ebe5d9;
+    border-radius: 13px;
+    overflow: hidden;
   }
+
   .paper {
-    padding: 0;
+    background: #fff;
+    width: 100%;
+    display: grid;
+    overflow: hidden;
   }
+
+  .print-day {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
   .print-head {
-    font-size: 9px;
-  }
-  .tracker-table > b {
-    height: 12mm;
-    flex-basis: 12mm;
-    font-size: 9px;
-  }
-  .tracker-table small {
+    justify-content: space-between;
     font-size: 7px;
+    color: #738673;
   }
-  .tracker-table > span {
-    font-size: 7px;
+
+  @media (max-width: 820px) {
+    .paper-wrap {
+      padding: 12px;
+    }
   }
-}
 
-.paper {
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr;
-}
+  @media (max-width: 560px) {
+    .paper-wrap {
+      padding: 5px;
+    }
+    .paper {
+      padding: 4px;
+    }
+    .print-day {
+      padding: 4px 2px;
+    }
+    .print-head {
+      height: 20px;
+      font-size: 5px;
+    }
+  }
 
-.paper.two-days {
-  grid-template-rows: 1fr 1fr;
-}
+  @media print {
+    body {
+      background: white;
+    }
+    /* The !important declarations on the shared layout ancestors below (and
+     * on .workspace padding in the full-bleed block further down) override
+     * their non-media screen-layout utilities (max-w-*, px-*, pt-*, pb-*,
+     * border-t, grid). Those utilities live in the utilities layer, which
+     * outranks components, so importance is what keeps the semantic
+     * full-bleed print geometry winning in print (FR-06/FR-11). */
+    .app-shell {
+      max-width: none !important;
+      padding: 0 !important;
+    }
+    /* The eight FR-11 chrome elements are hidden in print by print:hidden
+     * utilities in src/routes/index.tsx (T3); the shared-ancestor print
+     * geometry stays semantic. */
+    .workspace {
+      border: 0 !important;
+    }
+    .builder-grid {
+      display: block !important;
+    }
+    .paper-wrap {
+      border: 0;
+      background: white;
+      border-radius: 0;
+      overflow: visible;
+    }
+    .paper {
+      padding: 0;
+    }
+    .print-head {
+      font-size: 9px;
+    }
+  }
 
-.print-day + .print-day {
-  border-left: 0;
-}
-
-@media print {
   .paper {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
   }
+
   .paper.two-days {
     grid-template-rows: 1fr 1fr;
   }
-  .print-day + .print-day {
-    border-left: 0;
+
+  @media print {
+    .paper {
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+    }
+    .paper.two-days {
+      grid-template-rows: 1fr 1fr;
+    }
   }
-}
 
-.table-corner {
-  min-width: 0;
-  border-right: 1px solid #e1e5dc;
-  border-bottom: 1px solid #e1e5dc;
-  align-items: center;
-  justify-content: center;
-}
+  .table-corner {
+    min-width: 0;
+    border-right: 1px solid #e1e5dc;
+    border-bottom: 1px solid #e1e5dc;
+    align-items: center;
+    justify-content: center;
+  }
 
-.time-heading {
-  border-right: 1px solid #e1e5dc;
-  border-bottom: 1px solid #e1e5dc;
-}
+  .time-heading {
+    border-right: 1px solid #e1e5dc;
+    border-bottom: 1px solid #e1e5dc;
+  }
 
-.item-heading {
-  min-width: 0;
-  border-right: 1px solid #e1e5dc;
-  border-bottom: 1px solid #e1e5dc;
-  display: flex;
-  align-items: center;
-}
-
-.tracking-cell {
-  min-width: 0;
-  border-right: 1px solid #e1e5dc;
-  border-bottom: 1px solid #e1e5dc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.table-corner {
-  color: #68776b;
-}
-
-.time-heading {
-  color: #68776b;
-  background: #f4f6f0;
-}
-
-.item-heading {
-  line-height: 1.1;
-  font-size: 6px;
-  font-weight: 700;
-  color: #68776b;
-  background: #f3f7ef;
-  overflow: hidden;
-}
-
-.item-heading small {
-  font-size: 4px;
-  color: #a2aaa0;
-}
-
-.item-heading.tint-1 {
-  background: #fff3ed;
-}
-
-.item-heading.tint-2 {
-  background: #f2f5fa;
-}
-
-.item-heading.tint-3 {
-  background: #fff8e6;
-}
-
-.item-heading.tint-4 {
-  background: #f4f0f8;
-}
-
-.tracking-cell {
-  background: white;
-}
-
-.print-day {
-  --item-count: 5;
-}
-
-@media print {
   .item-heading {
-    font-size: 9px;
+    min-width: 0;
+    border-right: 1px solid #e1e5dc;
+    border-bottom: 1px solid #e1e5dc;
+    display: flex;
+    align-items: center;
   }
+
+  .tracking-cell {
+    min-width: 0;
+    border-right: 1px solid #e1e5dc;
+    border-bottom: 1px solid #e1e5dc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .table-corner {
+    color: #68776b;
+  }
+
+  .time-heading {
+    color: #68776b;
+    background: #f4f6f0;
+  }
+
+  .item-heading {
+    line-height: 1.1;
+    font-size: 6px;
+    font-weight: 700;
+    color: #68776b;
+    background: #f3f7ef;
+    overflow: hidden;
+  }
+
   .item-heading small {
-    font-size: 7px;
+    font-size: 4px;
+    color: #a2aaa0;
   }
-}
 
-.item-heading {
-  position: relative;
-}
+  .item-heading.tint-1 {
+    background: #fff3ed;
+  }
 
-.item-row-icon {
-  color: #789477;
-}
+  .item-heading.tint-2 {
+    background: #f2f5fa;
+  }
 
-.item-heading span {
-  max-width: 100%;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
+  .item-heading.tint-3 {
+    background: #fff8e6;
+  }
 
-.tint-1 .item-row-icon {
-  color: #d48d72;
-}
+  .item-heading.tint-4 {
+    background: #f4f0f8;
+  }
 
-.tint-2 .item-row-icon {
-  color: #8296b1;
-}
+  .tracking-cell {
+    background: white;
+  }
 
-.tint-3 .item-row-icon {
-  color: #b19a51;
-}
+  @media print {
+    .item-heading {
+      font-size: 9px;
+    }
+    .item-heading small {
+      font-size: 7px;
+    }
+  }
 
-.tint-4 .item-row-icon {
-  color: #9b84ae;
-}
-
-.item-heading {
-  flex-direction: row;
-  text-align: left;
-}
-
-.item-heading > span {
-  flex: 1;
-}
-
-.item-heading small {
-  display: none;
-}
-
-@media print {
   .item-heading {
+    position: relative;
+  }
+
+  .item-row-icon {
+    color: #789477;
+  }
+
+  .item-heading span {
+    max-width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tint-1 .item-row-icon {
+    color: #d48d72;
+  }
+
+  .tint-2 .item-row-icon {
+    color: #8296b1;
+  }
+
+  .tint-3 .item-row-icon {
+    color: #b19a51;
+  }
+
+  .tint-4 .item-row-icon {
+    color: #9b84ae;
+  }
+
+  .item-heading {
+    flex-direction: row;
     text-align: left;
   }
-}
 
-.print-head {
-  display: grid;
-  align-items: center;
-}
+  .item-heading > span {
+    flex: 1;
+  }
 
-.sheet-title {
-  white-space: nowrap;
-}
+  .item-heading small {
+    display: none;
+  }
 
-.item-legend {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-}
+  @media print {
+    .item-heading {
+      text-align: left;
+    }
+  }
 
-.legend-item {
-  display: inline-flex;
-  align-items: center;
-  color: #66766a;
-}
-
-.legend-item svg {
-  color: #789477;
-}
-
-.print-date {
-  display: flex;
-  flex-direction: column;
-  white-space: nowrap;
-  color: #788777;
-}
-
-.print-date span {
-  letter-spacing: 0.3px;
-  color: #aaa;
-}
-
-.item-heading {
-  justify-content: center;
-  padding: 0;
-}
-
-.time-heading,
-.tracking-cell {
-  width: 100%;
-}
-
-/* Keep the on-screen sheet proportional to the A4 landscape print area. */
-.paper-wrap {
-  container-type: inline-size;
-}
-
-.print-head {
-  margin-bottom: 1cqw;
-}
-
-@media print {
   .print-head {
-    margin-bottom: 3mm;
+    display: grid;
+    align-items: center;
   }
-  .sheet-title {
-    font-size: 10px;
+
+  .item-legend {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
   }
+
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    color: #66766a;
+  }
+
+  .legend-item svg {
+    color: #789477;
+  }
+
   .print-date {
-    font-size: 8px;
+    display: flex;
+    flex-direction: column;
+    white-space: nowrap;
+    color: #788777;
   }
+
   .print-date span {
-    font-size: 9px;
+    letter-spacing: 0.3px;
+    color: #aaa;
   }
-  .item-row-icon {
-    width: 5mm;
-    height: 5mm;
-  }
-}
 
-/* Full-bleed A4 landscape layout */
-@page {
-  size: A4 landscape;
-  margin: 0;
-}
-
-@media print {
-  .paper {
-    height: 210mm;
-    width: 297mm;
-    max-width: none;
-    aspect-ratio: auto;
+  .item-heading {
+    justify-content: center;
+    padding: 0;
   }
+
+  .time-heading,
+  .tracking-cell {
+    width: 100%;
+  }
+
+  /* Keep the on-screen sheet proportional to the A4 landscape print area. */
   .paper-wrap {
-    width: 297mm;
-    height: 210mm;
-    padding: 0;
-    margin: 0;
+    container-type: inline-size;
   }
-  .workspace,
-  .builder-grid,
-  .preview-column {
-    margin: 0;
-    padding: 0;
-    width: 297mm;
+
+  .print-head {
+    margin-bottom: 1cqw;
   }
-}
 
-@media screen {
-  .paper {
-    aspect-ratio: 297/210;
+  @media print {
+    .print-head {
+      margin-bottom: 3mm;
+    }
+    .print-date {
+      font-size: 8px;
+    }
+    .print-date span {
+      font-size: 9px;
+    }
+    .item-row-icon {
+      width: 5mm;
+      height: 5mm;
+    }
   }
-}
 
-/* Give time headings and the item legend more visual weight at the sheet's scale. */
-.time-heading {
-  font-weight: 700;
-}
+  @media print {
+    .paper {
+      height: 210mm;
+      width: 297mm;
+      max-width: none;
+      aspect-ratio: auto;
+    }
+    .paper-wrap {
+      width: 297mm;
+      height: 210mm;
+      padding: 0;
+      margin: 0;
+    }
+    .workspace,
+    .builder-grid,
+    .preview-column {
+      margin: 0;
+      /* !important: beats the non-media px/pt/pb padding utilities on
+       * .workspace (utilities layer outranks components); see the rationale
+       * at the top of the first print block. */
+      padding: 0 !important;
+      width: 297mm;
+    }
+  }
 
-.legend-item {
-  font-weight: 600;
-}
+  @media screen {
+    .paper {
+      aspect-ratio: 297/210;
+    }
+  }
 
-@media print {
+  /* Give time headings and the item legend more visual weight at the sheet's scale. */
   .time-heading {
     font-weight: 700;
   }
+
   .legend-item {
     font-weight: 600;
   }
-}
 
-@media print {
-  .print-head {
-    min-height: 8mm;
-    height: 8mm;
-    margin: 0 0 1mm;
-    padding: 0;
-    gap: 2mm;
-    line-height: 1;
+  @media print {
+    .time-heading {
+      font-weight: 700;
+    }
+    .legend-item {
+      font-weight: 600;
+    }
   }
-  .print-date {
-    gap: 0.5mm;
-  }
-  .print-date span {
-    line-height: 1;
-  }
-  .item-legend {
-    line-height: 1;
-  }
-  .print-day {
-    padding: 4mm 5mm;
-  }
-}
 
-/* Match preview measurements to the full-bleed 297 × 210 mm print sheet. */
-@media screen {
-  .paper {
-    padding: 0;
+  @media print {
+    .print-head {
+      min-height: 8mm;
+      height: 8mm;
+      margin: 0 0 1mm;
+      padding: 0;
+      gap: 2mm;
+      line-height: 1;
+    }
+    .print-date {
+      gap: 0.5mm;
+    }
+    .print-date span {
+      line-height: 1;
+    }
+    .item-legend {
+      line-height: 1;
+    }
+    .print-day {
+      padding: 4mm 5mm;
+    }
   }
-  .print-day {
-    padding: 1.35cqw;
-  }
-  .print-head {
-    min-height: 2.7cqw;
-    height: 2.7cqw;
-    margin: 0 0 0.34cqw;
-    padding: 0;
-    gap: 0.67cqw;
-    line-height: 1;
-  }
-  .sheet-title {
-    font-size: 0.89cqw;
-  }
-  .item-legend {
-    line-height: 1;
-  }
-  .print-date {
-    font-size: 0.71cqw;
-    gap: 0.05cqw;
-  }
-  .print-date span {
-    font-size: 0.8cqw;
-    line-height: 1;
-  }
-  .item-row-icon {
-    width: 1.69cqw;
-    height: 1.69cqw;
-  }
-}
 
-/* Let legend item names use the available header width. */
-.item-legend {
-  width: 100%;
-  min-width: 0;
-  align-content: center;
-  gap: 0.65cqw 1cqw;
-}
+  /* Match preview measurements to the full-bleed 297 × 210 mm print sheet. */
+  @media screen {
+    .paper {
+      padding: 0;
+    }
+    .print-day {
+      padding: 1.35cqw;
+    }
+    .print-head {
+      min-height: 2.7cqw;
+      height: 2.7cqw;
+      margin: 0 0 0.34cqw;
+      padding: 0;
+      gap: 0.67cqw;
+      line-height: 1;
+    }
+    .item-legend {
+      line-height: 1;
+    }
+    .print-date {
+      font-size: 0.71cqw;
+      gap: 0.05cqw;
+    }
+    .print-date span {
+      font-size: 0.8cqw;
+      line-height: 1;
+    }
+    .item-row-icon {
+      width: 1.69cqw;
+      height: 1.69cqw;
+    }
+  }
 
-.legend-item {
-  font-size: 1.35cqw;
-  gap: 0.3cqw;
-  white-space: normal;
-  line-height: 1.15;
-}
-
-.legend-item > span {
-  overflow-wrap: anywhere;
-}
-
-.legend-item svg {
-  width: 2cqw;
-  height: 2cqw;
-  flex: none;
-}
-
-@media print {
+  /* Let legend item names use the available header width. */
   .item-legend {
     width: 100%;
-    gap: 1.5mm 2mm;
+    min-width: 0;
+    align-content: center;
+    gap: 0.65cqw 1cqw;
   }
+
   .legend-item {
-    font-size: 12px;
-    gap: 1mm;
-    line-height: 1.1;
+    font-size: 1.35cqw;
+    gap: 0.3cqw;
+    white-space: normal;
+    line-height: 1.15;
   }
+
+  .legend-item > span {
+    overflow-wrap: anywhere;
+  }
+
   .legend-item svg {
-    width: 5mm;
-    height: 5mm;
+    width: 2cqw;
+    height: 2cqw;
+    flex: none;
   }
-}
 
-/* Emphasize the first tracker table column header label. */
-.table-corner {
-  font-size: 1.3cqw;
-  font-weight: 800;
-  line-height: 1.1;
-  text-align: center;
-}
+  @media print {
+    .item-legend {
+      width: 100%;
+      gap: 1.5mm 2mm;
+    }
+    .legend-item {
+      font-size: 12px;
+      gap: 1mm;
+      line-height: 1.1;
+    }
+    .legend-item svg {
+      width: 5mm;
+      height: 5mm;
+    }
+  }
 
-@media print {
+  /* Emphasize the first tracker table column header label. */
   .table-corner {
-    font-size: 12px;
+    font-size: 1.3cqw;
     font-weight: 800;
+    line-height: 1.1;
+    text-align: center;
   }
-}
 
-.item-heading {
-  gap: 0;
-  padding-left: 1px;
-  padding-right: 1px;
-}
+  @media print {
+    .table-corner {
+      font-size: 12px;
+      font-weight: 800;
+    }
+  }
 
-.item-row-icon {
-  margin: 0;
-  flex: none;
-}
-
-@media print {
   .item-heading {
     gap: 0;
-    padding-left: 0.3mm;
-    padding-right: 0.3mm;
+    padding-left: 1px;
+    padding-right: 1px;
   }
-}
 
-.table-corner {
-  position: relative;
-  display: block;
-  padding: 0 !important;
-  overflow: hidden;
-}
+  .item-row-icon {
+    margin: 0;
+    flex: none;
+  }
 
-.table-corner span {
-  position: absolute;
-  font-size: 0.82cqw;
-  font-weight: 800;
-  line-height: 1.05;
-  white-space: nowrap;
-}
+  @media print {
+    .item-heading {
+      gap: 0;
+      padding-left: 0.3mm;
+      padding-right: 0.3mm;
+    }
+  }
 
-@media print {
+  .table-corner {
+    position: relative;
+    display: block;
+    padding: 0;
+    overflow: hidden;
+  }
+
   .table-corner span {
-    font-size: 8px;
+    position: absolute;
+    font-size: 0.82cqw;
+    font-weight: 800;
+    line-height: 1.05;
+    white-space: nowrap;
   }
-}
 
-.table-corner span:first-child {
-  top: 13%;
-  right: 8%;
-  left: auto;
-  text-align: right;
-}
+  @media print {
+    .table-corner span {
+      font-size: 8px;
+    }
+  }
 
-.table-corner span:last-child {
-  left: 7%;
-  right: auto;
-  bottom: 12%;
-}
-
-@media print {
   .table-corner span:first-child {
-    top: 12%;
+    top: 13%;
     right: 8%;
     left: auto;
     text-align: right;
   }
+
   .table-corner span:last-child {
     left: 7%;
     right: auto;
-    bottom: 11%;
+    bottom: 12%;
   }
-}
 
-/* Render the diagonal as a foreground stroke so print background settings cannot drop it. */
-.table-corner {
-  background: #f4f6f0 !important;
-  isolation: isolate;
-}
+  @media print {
+    .table-corner span:first-child {
+      top: 12%;
+      right: 8%;
+      left: auto;
+      text-align: right;
+    }
+    .table-corner span:last-child {
+      left: 7%;
+      right: auto;
+      bottom: 11%;
+    }
+  }
 
-.corner-diagonal {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  width: 141.5%;
-  background: #000;
-  pointer-events: none;
-}
-
-.table-corner span {
-  z-index: 2;
-}
-
-@media print {
+  /* Render the diagonal as a foreground stroke so print background settings cannot drop it.
+   Plain background: no competing background declaration or utility targets .table-corner. */
   .table-corner {
-    background: #fff !important;
+    background: #f4f6f0;
+    isolation: isolate;
   }
+
   .corner-diagonal {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    width: 141.5%;
     background: #000;
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
+    pointer-events: none;
   }
-}
 
-/* Make every tracker table rule black, not only the diagonal corner stroke. */
-.tracking-table {
-  border-color: #000;
-}
+  .table-corner span {
+    z-index: 2;
+  }
 
-.table-corner,
-.time-heading,
-.item-heading,
-.tracking-cell {
-  border-color: #000;
-}
+  @media print {
+    .table-corner {
+      background: #fff;
+    }
+    .corner-diagonal {
+      background: #000;
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+  }
 
-@media print {
-  .tracking-table,
+  /* Make every tracker table rule black, not only the diagonal corner stroke. */
+  .tracking-table {
+    border-color: #000;
+  }
+
   .table-corner,
   .time-heading,
   .item-heading,
   .tracking-cell {
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
+    border-color: #000;
   }
-}
 
-/* Diagonal should run from upper-left to lower-right. */
-.corner-diagonal {
-  left: 0;
-  right: auto;
-  transform-origin: left center;
-  transform: rotate(45deg);
-}
+  @media print {
+    .tracking-table,
+    .table-corner,
+    .time-heading,
+    .item-heading,
+    .tracking-cell {
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+  }
 
-.time-heading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
-  max-width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-}
+  /* Diagonal should run from upper-left to lower-right. */
+  .corner-diagonal {
+    left: 0;
+    right: auto;
+    transform-origin: left center;
+    transform: rotate(45deg);
+  }
 
-@media print {
   .time-heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    max-width: 100%;
     overflow: hidden;
     white-space: nowrap;
+    font-variant-numeric: tabular-nums;
   }
-}
 
-.time-heading {
-  font-size: 1.12cqw;
-  letter-spacing: -0.035cqw;
-  padding: 0;
-  line-height: 1;
-  transform: none;
-  writing-mode: horizontal-tb;
-  text-indent: 0;
-  position: relative;
-  left: 0;
-  top: 0;
-  place-self: stretch;
-  box-sizing: border-box;
-}
+  @media print {
+    .time-heading {
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
 
-@media print {
   .time-heading {
-    font-size: 9px;
-    letter-spacing: -0.2px;
+    font-size: 1.12cqw;
+    letter-spacing: -0.035cqw;
     padding: 0;
     line-height: 1;
     transform: none;
     writing-mode: horizontal-tb;
     text-indent: 0;
+    position: relative;
     left: 0;
     top: 0;
+    place-self: stretch;
+    box-sizing: border-box;
   }
-}
 
-.paper,
-.paper-wrap,
-.preview-column,
-.print-day,
-.tracking-table,
-.table-corner,
-.time-heading,
-.item-heading,
-.tracking-cell {
-  box-shadow: none !important;
-  filter: none !important;
-  drop-shadow: none !important;
-}
+  @media print {
+    .time-heading {
+      font-size: 9px;
+      letter-spacing: -0.2px;
+      padding: 0;
+      line-height: 1;
+      transform: none;
+      writing-mode: horizontal-tb;
+      text-indent: 0;
+      left: 0;
+      top: 0;
+    }
+  }
 
-@media print {
+  /* Plain reset: no rule or utility sets a box-shadow on these selectors, so
+   * no importance is needed. `filter` is unused anywhere and `drop-shadow` is
+   * not a CSS property (both reset groups deleted at T4, FR-09). */
   .paper,
   .paper-wrap,
   .preview-column,
@@ -883,122 +771,140 @@ body {
   .time-heading,
   .item-heading,
   .tracking-cell {
-    box-shadow: none !important;
-    filter: none !important;
-    drop-shadow: none !important;
+    box-shadow: none;
   }
-}
 
-.corner-diagonal {
-  height: 1px;
-}
+  @media print {
+    .paper,
+    .paper-wrap,
+    .preview-column,
+    .print-day,
+    .tracking-table,
+    .table-corner,
+    .time-heading,
+    .item-heading,
+    .tracking-cell {
+      box-shadow: none;
+    }
+  }
 
-@media print {
   .corner-diagonal {
-    height: 0.25mm;
+    height: 1px;
   }
-}
 
-.corner-time-label {
-  margin-top: 3px;
-}
+  @media print {
+    .corner-diagonal {
+      height: 0.25mm;
+    }
+  }
 
-/* Use native table layout for the event-by-time tracker in preview and print. */
-.tracking-table {
-  display: table;
-  width: 100%;
-  height: 0;
-  table-layout: fixed;
-  border-collapse: separate;
-  border-spacing: 0;
-  border: 0.25mm solid #000;
-  border-radius: 3px;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-}
+  .corner-time-label {
+    margin-top: 3px;
+  }
 
-.tracking-table thead {
-  height: 4.04cqw;
-}
-
-.tracking-table tbody {
-  height: calc(100% - 4.04cqw);
-}
-
-.tracking-table tr {
-  height: auto;
-}
-
-.tracking-table .table-corner,
-.tracking-table .time-heading,
-.tracking-table .item-heading,
-.tracking-table .tracking-cell {
-  display: table-cell;
-  box-sizing: border-box;
-  border-right: 0.25mm solid #000;
-  border-bottom: 0.25mm solid #000;
-  vertical-align: middle;
-}
-
-.tracking-table tr > :last-child {
-  border-right: 0;
-}
-
-.tracking-table tbody tr:last-child > * {
-  border-bottom: 0;
-}
-
-.tracking-table .table-corner {
-  position: relative;
-  width: 4.04cqw;
-}
-
-.tracking-table .time-heading {
-  width: auto;
-  text-align: center;
-}
-
-.tracking-table .item-heading {
-  width: 4.04cqw;
-  text-align: center;
-  padding: 0 0.3mm;
-}
-
-.tracking-table .tracking-cell {
-  background: #fff;
-}
-
-@media print {
+  /* Use native table layout for the event-by-time tracker in preview and print. */
   .tracking-table {
-    border: 0.25mm solid #000;
-  }
-  .tracking-table .table-corner,
-  .tracking-table .item-heading {
-    width: 12mm;
-  }
-}
-
-.tracking-table .item-row-icon {
-  display: block;
-  width: auto;
-  height: auto;
-  flex: none;
-  max-width: 100%;
-  max-height: 100%;
-}
-
-@media print {
-  .tracking-table .item-row-icon {
+    display: table;
     width: 100%;
-    height: 100%;
+    height: 0;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 0.25mm solid #000;
+    border-radius: 3px;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .tracking-table thead {
+    height: 4.04cqw;
+  }
+
+  .tracking-table tbody {
+    height: calc(100% - 4.04cqw);
+  }
+
+  .tracking-table tr {
+    height: auto;
+  }
+
+  .tracking-table .table-corner,
+  .tracking-table .time-heading,
+  .tracking-table .item-heading,
+  .tracking-table .tracking-cell {
+    display: table-cell;
+    box-sizing: border-box;
+    border-right: 0.25mm solid #000;
+    border-bottom: 0.25mm solid #000;
+    vertical-align: middle;
+  }
+
+  .tracking-table tr > :last-child {
+    border-right: 0;
+  }
+
+  .tracking-table tbody tr:last-child > * {
+    border-bottom: 0;
+  }
+
+  .tracking-table .table-corner {
+    position: relative;
+    width: 4.04cqw;
+  }
+
+  .tracking-table .time-heading {
+    width: auto;
+    text-align: center;
+  }
+
+  .tracking-table .item-heading {
+    width: 4.04cqw;
+    text-align: center;
+    padding: 0 0.3mm;
+  }
+
+  .tracking-table .tracking-cell {
+    background: #fff;
+  }
+
+  @media print {
+    .tracking-table {
+      border: 0.25mm solid #000;
+    }
+    .tracking-table .table-corner,
+    .tracking-table .item-heading {
+      width: 12mm;
+    }
+  }
+
+  .tracking-table .item-row-icon {
+    display: block;
+    width: auto;
+    height: auto;
+    flex: none;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  @media print {
+    .tracking-table .item-row-icon {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .print-head {
+    grid-template-columns: auto 1fr;
+  }
+
+  .item-legend {
+    justify-content: flex-end;
   }
 }
 
-.print-head {
-  grid-template-columns: auto 1fr;
-}
-
-.item-legend {
-  justify-content: flex-end;
+/* Full-bleed A4 landscape layout (singular unlayered @page) */
+@page {
+  size: A4 landscape;
+  margin: 0;
 }

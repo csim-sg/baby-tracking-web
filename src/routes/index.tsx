@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Baby,
   CalendarDays,
@@ -516,9 +516,6 @@ function Home() {
                       aria-label={`${
                         main === "中文" ? "每日照护记录" : "Daily care tracker"
                       } ${d + 1}`}
-                      style={
-                        { "--item-count": items.length } as React.CSSProperties
-                      }
                     >
                       <thead>
                         <tr>

@@ -1,57 +1,64 @@
-/* Application stylesheet — plain-CSS port of the pre-Tailwind cascade (SPEC-001 T2).
+/* Application stylesheet — plain-CSS port of the pre-Tailwind cascade (SPEC-001 T2),
+ * with T3 chrome conversion.
  *
  * Structure: Google Fonts import (first statement, unchanged per FR-04/AC-11),
- * Tailwind import, Preflight neutralizations (T2 checkpoint only — each is
- * enumerated in the T2 PR handover for T3/T4 retirement), then the effective
- * (last-winning) port of the legacy stylesheet. Rules are unlayered on
- * purpose so the baseline cascade wins the T2 zero-visual-delta checkpoint.
+ * Tailwind import, @theme tokens (T3 chrome + breakpoints), the T2 Preflight
+ * neutralizations relocated into @layer base at T3 so utilities outrank them
+ * (each is enumerated in the T2 PR handover for T3/T4 retirement), then the
+ * unlayered sheet/print port (T4 converts it into the semantic layer).
  */
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@700;800;900&display=swap");
 @import "tailwindcss";
 
-/* --- Preflight neutralizations (T2 checkpoint only; retire in T3/T4) ------- */
-/* Preflight html { line-height: 1.5 } vs UA/baseline normal (inherited). */
-:root {
-  line-height: normal;
-}
-/* Preflight * { margin: 0 } vs UA p { margin-block: 1em }. */
-p {
-  margin-block: 1em;
-}
-/* Preflight * { padding: 0 } vs UA td { padding: 1px }. */
-td {
-  padding: 1px;
-}
-/* Preflight button { font: inherit } vs UA control font (baseline computed:
-   Arial 13.3333px / 400; app font declarations all out-specify this rule). */
-button {
-  font-family: Arial;
-  font-size: 13.3333px;
-  font-weight: 400;
-}
-/* Preflight input { color: inherit } vs UA fieldtext (baseline rgb(0, 0, 0)),
-   and Preflight input { background-color: transparent } vs UA field
-   (baseline rgb(255, 255, 255); the app declares no input background). */
-input {
-  color: rgb(0, 0, 0);
-  background-color: rgb(255, 255, 255);
-}
-/* Preflight ::placeholder { color: color-mix(...) } vs UA rgb(117, 117, 117). */
-::placeholder {
-  color: rgb(117, 117, 117);
-}
-/* Preflight svg { display: block; vertical-align: middle } vs UA inline /
-   baseline for the inline-context icons (flex/grid contexts blockify
-   identically; app svg rules out-specify this rule). */
-svg {
-  display: inline;
-  vertical-align: baseline;
-}
-/* Preflight * { border: 0 solid } vs UA border-style none — restores baseline
-   border-*-style "none" wherever the app does not declare a border (app
-   border declarations all come later and win). */
-* {
-  border-style: none;
+/* --- Preflight neutralizations (T2 checkpoint only; retire in T3/T4) -------
+ * Relocated into @layer base at T3 (issue #3 sequencing checkpoint): within
+ * base a later rule still beats Preflight, and utilities beat base, so the
+ * effective cascade against the unlayered port below is unchanged.
+ * ----------------------------------------------------------------------- */
+@layer base {
+  /* Preflight html { line-height: 1.5 } vs UA/baseline normal (inherited). */
+  :root {
+    line-height: normal;
+  }
+  /* Preflight * { margin: 0 } vs UA p { margin-block: 1em }. */
+  p {
+    margin-block: 1em;
+  }
+  /* Preflight * { padding: 0 } vs UA td { padding: 1px }. */
+  td {
+    padding: 1px;
+  }
+  /* Preflight button { font: inherit } vs UA control font (baseline computed:
+     Arial 13.3333px / 400; app font declarations all out-specify this rule). */
+  button {
+    font-family: Arial;
+    font-size: 13.3333px;
+    font-weight: 400;
+  }
+  /* Preflight input { color: inherit } vs UA fieldtext (baseline rgb(0, 0, 0)),
+     and Preflight input { background-color: transparent } vs UA field
+     (baseline rgb(255, 255, 255); the app declares no input background). */
+  input {
+    color: rgb(0, 0, 0);
+    background-color: rgb(255, 255, 255);
+  }
+  /* Preflight ::placeholder { color: color-mix(...) } vs UA rgb(117, 117, 117). */
+  ::placeholder {
+    color: rgb(117, 117, 117);
+  }
+  /* Preflight svg { display: block; vertical-align: middle } vs UA inline /
+     baseline for the inline-context icons (flex/grid contexts blockify
+     identically; app svg rules out-specify this rule). */
+  svg {
+    display: inline;
+    vertical-align: baseline;
+  }
+  /* Preflight * { border: 0 solid } vs UA border-style none — restores baseline
+     border-*-style "none" wherever the app does not declare a border (app
+     border declarations all come later and win). */
+  * {
+    border-style: none;
+  }
 }
 
 /* --- Effective (last-winning) port of the legacy stylesheet ---------------- */

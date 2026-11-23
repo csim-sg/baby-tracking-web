@@ -6,7 +6,9 @@
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "start": "node .output/server/index.mjs",
-    "format": "prettier --write \"src/**/*.{ts,tsx,scss}\" vite.config.ts index.html package.json"
+    "format": "prettier --write \"src/**/*.{ts,tsx,scss}\" vite.config.ts index.html package.json",
+    "parity:capture": "node scripts/parity/capture.mjs",
+    "parity:verify": "node scripts/parity/verify.mjs"
   },
   "dependencies": {
     "@tanstack/react-router": "^1.169.7",
@@ -19,6 +21,7 @@
     "vite": "^8.0.0"
   },
   "devDependencies": {
+    "playwright-core": "1.65.1",
     "prettier": "^3.10.1",
     "sass": "^1.108.2",
     "typescript": "^5.7.2"

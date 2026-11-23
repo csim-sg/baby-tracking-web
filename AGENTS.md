@@ -8,7 +8,7 @@ This repository is `csim-sg/baby-tracking-web`. It is a printable child daily-ca
 
 - `src/routes/index.tsx` contains the sheet configuration, preview, and print action.
 - `src/routes/__root.tsx`, `src/main.tsx`, `src/router.tsx`, and `src/ssr.tsx` are the TanStack Start and router entry points.
-- `src/style.scss` contains application and print styles.
+- `src/styles/app.css` contains the Tailwind-managed application and print styles.
 - `vite.config.ts` configures the Vite/TanStack Start build and Nitro Node server output.
 - `Dockerfile` and `compose.yaml` define the container build and deployment.
 
@@ -22,8 +22,10 @@ TanStack Start renders the application with SSR. Sheet configuration is held in 
 - `npm run build` creates the production build.
 - `npm run start` starts the built Nitro server.
 - `npm run format` formats the source files.
+- `npm run parity:verify` verifies the served production build against the committed styling baseline. Build and serve the production build first (`npm run build && npm run start`), then run it with `BASE_URL` pointing at that server (see `scripts/parity/README.md`).
+- `npm run parity:capture` captures a parity baseline document. Widening a tolerance or recapturing the committed baseline to make a run pass is a specification change, not a fix.
 
-The repository currently has no test script or test directory.
+The styling parity harness under `scripts/parity/` guards visual and print equivalence against the committed baseline (`scripts/parity/baseline/baseline.json`); there is no conventional unit-test suite or CI workflow.
 
 ## Delivery Workflow
 

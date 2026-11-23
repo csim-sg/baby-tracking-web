@@ -1,0 +1,16 @@
+PARITY RUN SUMMARY
+mode:              verify
+build commit:      dc7dc9b3c0c6978cb3fc768353788f86e18e9dc2
+baseline ref:      674256c77ee228320e2cc7c20fcced2ab47c2095 (captured 2026-11-23T14:13:14.630Z)
+browser:           Chromium 158.0.8127.36 (channel: chrome)
+server:            http://localhost:4640
+viewport widths:   1280, 820, 819, 560, 559
+media:             screen + print
+content extremes:  16x1, 7x2 (16x1 = 1d x 16 items; 7x2 = 2d x 7 items)
+matrix:            23 selectors (13 sheet + 10 chrome) x 53 properties -> 460 entries
+pdf gate:          16x1: 1 page(s), MediaBox 841.91998 x 594.95996 pt; 7x2: 1 page(s), MediaBox 841.91998 x 594.95996 pt
+paper rects:       16x1: 1122.515625 x 793.6875 px @ print; 7x2: 1122.515625 x 793.6875 px @ print
+fonts:             .hero h1=Nunito (loaded: true); .legend-item=DM Sans (loaded: true)
+selector inventory: 111 tokens, unresolved: 0, literally absent (element-styled): active, add-item, art-card, bottom-note, brand, brand-accent, brand-mark, choice-row, control-title, controls-card, download-link, eyebrow, field-label, hero, hero-art, hero-perks, icon-picker, icon-picker-menu, icon-picker-trigger, item-chips, language-fields, number, preview-footer, preview-head, section-heading, selected, step-label, tint-0, top-note, top-print, topbar
+differences:       0
+artifacts:         /home/chrissim/Projects/worktree/baby-tracking-web/issue-5/scripts/parity/artifacts/verify-2026-11-23T17-40-51-442Z

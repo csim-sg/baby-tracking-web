@@ -1,5 +1,60 @@
-@charset "UTF-8";
+/* Application stylesheet — plain-CSS port of the pre-Tailwind cascade (SPEC-001 T2).
+ *
+ * Structure: Google Fonts import (first statement, unchanged per FR-04/AC-11),
+ * Tailwind import, Preflight neutralizations (T2 checkpoint only — each is
+ * enumerated in the T2 PR handover for T3/T4 retirement), then the effective
+ * (last-winning) port of the legacy stylesheet. Rules are unlayered on
+ * purpose so the baseline cascade wins the T2 zero-visual-delta checkpoint.
+ */
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@700;800;900&display=swap");
+@import "tailwindcss";
+
+/* --- Preflight neutralizations (T2 checkpoint only; retire in T3/T4) ------- */
+/* Preflight html { line-height: 1.5 } vs UA/baseline normal (inherited). */
+:root {
+  line-height: normal;
+}
+/* Preflight * { margin: 0 } vs UA p { margin-block: 1em }. */
+p {
+  margin-block: 1em;
+}
+/* Preflight * { padding: 0 } vs UA td { padding: 1px }. */
+td {
+  padding: 1px;
+}
+/* Preflight button { font: inherit } vs UA control font (baseline computed:
+   Arial 13.3333px / 400; app font declarations all out-specify this rule). */
+button {
+  font-family: Arial;
+  font-size: 13.3333px;
+  font-weight: 400;
+}
+/* Preflight input { color: inherit } vs UA fieldtext (baseline rgb(0, 0, 0)),
+   and Preflight input { background-color: transparent } vs UA field
+   (baseline rgb(255, 255, 255); the app declares no input background). */
+input {
+  color: rgb(0, 0, 0);
+  background-color: rgb(255, 255, 255);
+}
+/* Preflight ::placeholder { color: color-mix(...) } vs UA rgb(117, 117, 117). */
+::placeholder {
+  color: rgb(117, 117, 117);
+}
+/* Preflight svg { display: block; vertical-align: middle } vs UA inline /
+   baseline for the inline-context icons (flex/grid contexts blockify
+   identically; app svg rules out-specify this rule). */
+svg {
+  display: inline;
+  vertical-align: baseline;
+}
+/* Preflight * { border: 0 solid } vs UA border-style none — restores baseline
+   border-*-style "none" wherever the app does not declare a border (app
+   border declarations all come later and win). */
+* {
+  border-style: none;
+}
+
+/* --- Effective (last-winning) port of the legacy stylesheet ---------------- */
 :root {
   font-family: "DM Sans", sans-serif;
   color: #293b39;
@@ -226,12 +281,19 @@ body {
 }
 
 .choice,
-.stepper,
-.item-chip {
+.stepper {
   border: 1px solid #eae9e2;
   background: white;
   border-radius: 9px;
   padding: 9px;
+  color: #637068;
+  cursor: pointer;
+}
+
+.item-chip {
+  border: 1px solid #eae9e2;
+  background: white;
+  border-radius: 9px;
   color: #637068;
   cursor: pointer;
 }
@@ -369,37 +431,20 @@ hr {
 .paper {
   background: #fff;
   width: 100%;
-  aspect-ratio: 1.414;
   display: grid;
-  grid-template-columns: repeat(var(--days), 1fr);
-  padding: 8px;
-  box-shadow: 0 2px 5px rgba(71, 58, 38, 0.0705882353);
   overflow: hidden;
 }
 
 .print-day {
   min-width: 0;
-  padding: 6px 7px;
   display: flex;
   flex-direction: column;
 }
 
 .print-head {
-  display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
-  height: 26px;
   font-size: 7px;
   color: #738673;
-}
-
-.tracking-table {
-  flex: 1;
-  min-height: 0;
-  border: 1px solid #d8ddd3;
-  border-radius: 3px;
-  overflow: hidden;
 }
 
 .tracker-table {
@@ -513,6 +558,7 @@ footer {
     padding: 12px;
   }
 }
+
 @media (max-width: 560px) {
   .app-shell {
     padding: 0 14px;
@@ -558,10 +604,7 @@ footer {
     font-size: 4px;
   }
 }
-@page {
-  size: A4 landscape;
-  margin: 8mm;
-}
+
 @media print {
   body {
     background: white;
@@ -582,34 +625,20 @@ footer {
   }
   .workspace {
     border: 0;
-    padding: 0;
   }
   .builder-grid {
     display: block;
   }
-  .preview-column {
-    width: 100%;
-  }
   .paper-wrap {
     border: 0;
-    padding: 0;
     background: white;
     border-radius: 0;
     overflow: visible;
   }
   .paper {
-    width: 100%;
-    height: 190mm;
-    aspect-ratio: auto;
     padding: 0;
-    box-shadow: none;
-  }
-  .print-day {
-    padding: 7mm 6mm;
   }
   .print-head {
-    height: 13mm;
-    margin-bottom: 3mm;
     font-size: 9px;
   }
   .tracker-table > b {
@@ -624,6 +653,7 @@ footer {
     font-size: 7px;
   }
 }
+
 .paper {
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
@@ -654,17 +684,28 @@ footer {
     border-left: 0;
   }
 }
-.tracking-table {
-  flex: 1;
-  min-height: 0;
-  border: 1px solid #d8ddd3;
-  border-radius: 3px;
-  overflow: hidden;
+
+.table-corner {
+  min-width: 0;
+  border-right: 1px solid #e1e5dc;
+  border-bottom: 1px solid #e1e5dc;
+  align-items: center;
+  justify-content: center;
 }
 
-.table-corner,
-.time-heading,
-.item-heading,
+.time-heading {
+  border-right: 1px solid #e1e5dc;
+  border-bottom: 1px solid #e1e5dc;
+}
+
+.item-heading {
+  min-width: 0;
+  border-right: 1px solid #e1e5dc;
+  border-bottom: 1px solid #e1e5dc;
+  display: flex;
+  align-items: center;
+}
+
 .tracking-cell {
   min-width: 0;
   border-right: 1px solid #e1e5dc;
@@ -675,24 +716,16 @@ footer {
 }
 
 .table-corner {
-  font-size: 6px;
-  font-weight: 700;
   color: #68776b;
-  background: #f4f6f0;
 }
 
 .time-heading {
-  font-size: 5px;
   color: #68776b;
   background: #f4f6f0;
-  writing-mode: vertical-rl;
-  transform: none;
 }
 
 .item-heading {
-  flex-direction: column;
   line-height: 1.1;
-  padding: 1px;
   font-size: 6px;
   font-weight: 700;
   color: #68776b;
@@ -730,10 +763,6 @@ footer {
 }
 
 @media print {
-  .table-corner,
-  .time-heading {
-    font-size: 7px;
-  }
   .item-heading {
     font-size: 9px;
   }
@@ -741,6 +770,7 @@ footer {
     font-size: 7px;
   }
 }
+
 .item-chip {
   display: inline-flex;
   align-items: center;
@@ -755,13 +785,9 @@ footer {
 
 .item-heading {
   position: relative;
-  gap: 2px;
 }
 
 .item-row-icon {
-  width: 10px;
-  height: 10px;
-  flex: none;
   color: #789477;
 }
 
@@ -788,20 +814,8 @@ footer {
   color: #9b84ae;
 }
 
-@media print {
-  .item-row-icon {
-    width: 4mm;
-    height: 4mm;
-  }
-  .item-heading {
-    gap: 1mm;
-  }
-}
 .item-heading {
   flex-direction: row;
-  justify-content: flex-start;
-  gap: 2px;
-  padding: 1px 3px;
   text-align: left;
 }
 
@@ -813,29 +827,15 @@ footer {
   display: none;
 }
 
-.item-row-icon {
-  width: 9px;
-  height: 9px;
-}
-
 @media print {
   .item-heading {
-    gap: 1.5mm;
-    padding: 1mm 1.5mm;
     text-align: left;
   }
-  .item-row-icon {
-    width: 4mm;
-    height: 4mm;
-  }
 }
+
 .print-head {
-  height: auto;
-  min-height: 26px;
   display: grid;
-  grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 8px;
 }
 
 .sheet-title {
@@ -845,33 +845,23 @@ footer {
 .item-legend {
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-wrap: wrap;
-  gap: 3px 8px;
 }
 
 .legend-item {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  font-size: 5px;
   color: #66766a;
-  white-space: nowrap;
 }
 
 .legend-item svg {
-  width: 8px;
-  height: 8px;
-  flex: none;
   color: #789477;
 }
 
 .print-date {
   display: flex;
   flex-direction: column;
-  gap: 2px;
   white-space: nowrap;
-  font-size: 6px;
   color: #788777;
 }
 
@@ -885,38 +875,6 @@ footer {
   padding: 0;
 }
 
-.item-row-icon {
-  width: 12px;
-  height: 12px;
-}
-
-@media print {
-  .print-head {
-    min-height: 13mm;
-    gap: 3mm;
-  }
-  .sheet-title {
-    font-size: 10px;
-  }
-  .item-legend {
-    gap: 1mm 2mm;
-  }
-  .legend-item {
-    font-size: 7px;
-    gap: 1mm;
-  }
-  .legend-item svg {
-    width: 3.5mm;
-    height: 3.5mm;
-  }
-  .print-date {
-    font-size: 8px;
-  }
-  .item-row-icon {
-    width: 5mm;
-    height: 5mm;
-  }
-}
 .add-item select {
   max-width: 95px;
   border: 1px solid #ebe9e3;
@@ -932,6 +890,7 @@ footer {
     max-width: 76px;
   }
 }
+
 .add-item {
   position: relative;
 }
@@ -996,167 +955,45 @@ footer {
   cursor: not-allowed;
 }
 
-.time-heading {
-  writing-mode: horizontal-tb;
-  transform: none;
-  white-space: nowrap;
-  font-size: clamp(4px, 0.62vw, 7px);
-  line-height: 1;
-  letter-spacing: -0.25px;
-  padding: 0;
-  overflow: hidden;
-}
-
 .time-heading,
 .tracking-cell {
   width: 100%;
 }
 
-@media print {
-  .time-heading {
-    writing-mode: horizontal-tb;
-    transform: none;
-    font-size: clamp(5px, 0.62vw, 8px);
-    letter-spacing: -0.2px;
-    white-space: nowrap;
-  }
-}
-.item-legend {
-  gap: 5px 10px;
-}
-
-.legend-item {
-  font-size: 7px;
-  gap: 4px;
-}
-
-.legend-item svg {
-  width: 11px;
-  height: 11px;
-}
-
-@media print {
-  .item-legend {
-    gap: 2mm 3mm;
-  }
-  .legend-item {
-    font-size: 9px;
-    gap: 1.2mm;
-  }
-  .legend-item svg {
-    width: 4mm;
-    height: 4mm;
-  }
-}
 /* Keep the on-screen sheet proportional to the A4 landscape print area. */
 .paper-wrap {
   container-type: inline-size;
 }
 
-.paper {
-  aspect-ratio: 281/194;
-}
-
 .print-head {
-  height: auto;
-  min-height: 4.5cqw;
   margin-bottom: 1cqw;
-  gap: 1cqw;
-}
-
-.sheet-title {
-  font-size: 0.95cqw;
-}
-
-.legend-item {
-  font-size: 0.85cqw;
-  gap: 0.2cqw;
-}
-
-.legend-item svg {
-  width: 1.4cqw;
-  height: 1.4cqw;
-}
-
-.print-date {
-  font-size: 0.75cqw;
-  gap: 0.2cqw;
-}
-
-.print-date span {
-  font-size: 0.85cqw;
-}
-
-.table-corner {
-  font-size: 0.65cqw;
-}
-
-.time-heading {
-  font-size: 0.72cqw;
-  letter-spacing: -0.02cqw;
-}
-
-.item-row-icon {
-  width: 1.8cqw;
-  height: 1.8cqw;
-}
-
-.print-day {
-  padding: 2cqw 2.1cqw;
-}
-
-.item-legend {
-  gap: 0.45cqw 0.9cqw;
 }
 
 @media print {
-  .paper {
-    aspect-ratio: auto;
-    height: 194mm;
-  }
   .print-head {
-    min-height: 13mm;
     margin-bottom: 3mm;
-    gap: 3mm;
   }
   .sheet-title {
     font-size: 10px;
   }
-  .legend-item {
-    font-size: 9px;
-    gap: 1.2mm;
-  }
-  .legend-item svg {
-    width: 4mm;
-    height: 4mm;
-  }
   .print-date {
     font-size: 8px;
-    gap: 1mm;
   }
   .print-date span {
     font-size: 9px;
-  }
-  .table-corner {
-    font-size: 7px;
-  }
-  .time-heading {
-    font-size: 8px;
-    letter-spacing: -0.2px;
   }
   .item-row-icon {
     width: 5mm;
     height: 5mm;
   }
-  .print-day {
-    padding: 7mm 6mm;
-  }
 }
+
 /* Full-bleed A4 landscape layout */
 @page {
   size: A4 landscape;
   margin: 0;
 }
+
 @media print {
   .paper {
     height: 210mm;
@@ -1177,56 +1014,32 @@ footer {
     padding: 0;
     width: 297mm;
   }
-  .print-day {
-    padding: 7mm 6mm;
-  }
 }
+
 @media screen {
   .paper {
     aspect-ratio: 297/210;
   }
 }
+
 /* Give time headings and the item legend more visual weight at the sheet's scale. */
 .time-heading {
-  font-size: 1.12cqw;
-  letter-spacing: -0.035cqw;
   font-weight: 700;
 }
 
-.item-legend {
-  gap: 0.7cqw 1.1cqw;
-}
-
 .legend-item {
-  font-size: 1.12cqw;
-  gap: 0.25cqw;
   font-weight: 600;
-}
-
-.legend-item svg {
-  width: 1.8cqw;
-  height: 1.8cqw;
 }
 
 @media print {
   .time-heading {
-    font-size: 9px;
-    letter-spacing: -0.2px;
     font-weight: 700;
   }
-  .item-legend {
-    gap: 2mm 3mm;
-  }
   .legend-item {
-    font-size: 11px;
-    gap: 1.4mm;
     font-weight: 600;
   }
-  .legend-item svg {
-    width: 5mm;
-    height: 5mm;
-  }
 }
+
 @media print {
   .print-head {
     min-height: 8mm;
@@ -1244,15 +1057,12 @@ footer {
   }
   .item-legend {
     line-height: 1;
-    gap: 1mm 2mm;
-  }
-  .legend-item {
-    line-height: 1;
   }
   .print-day {
     padding: 4mm 5mm;
   }
 }
+
 /* Match preview measurements to the full-bleed 297 × 210 mm print sheet. */
 @media screen {
   .paper {
@@ -1273,17 +1083,7 @@ footer {
     font-size: 0.89cqw;
   }
   .item-legend {
-    gap: 0.34cqw 0.67cqw;
     line-height: 1;
-  }
-  .legend-item {
-    font-size: 0.98cqw;
-    gap: 0.12cqw;
-    line-height: 1;
-  }
-  .legend-item svg {
-    width: 1.69cqw;
-    height: 1.69cqw;
   }
   .print-date {
     font-size: 0.71cqw;
@@ -1293,23 +1093,16 @@ footer {
     font-size: 0.8cqw;
     line-height: 1;
   }
-  .table-corner {
-    font-size: 0.62cqw;
-  }
-  .time-heading {
-    font-size: 0.8cqw;
-    letter-spacing: -0.018cqw;
-  }
   .item-row-icon {
     width: 1.69cqw;
     height: 1.69cqw;
   }
 }
+
 /* Let legend item names use the available header width. */
 .item-legend {
   width: 100%;
   min-width: 0;
-  justify-content: space-evenly;
   align-content: center;
   gap: 0.65cqw 1cqw;
 }
@@ -1334,7 +1127,6 @@ footer {
 @media print {
   .item-legend {
     width: 100%;
-    justify-content: space-evenly;
     gap: 1.5mm 2mm;
   }
   .legend-item {
@@ -1347,13 +1139,13 @@ footer {
     height: 5mm;
   }
 }
+
 /* Emphasize the first tracker table column header label. */
 .table-corner {
   font-size: 1.3cqw;
   font-weight: 800;
   line-height: 1.1;
   text-align: center;
-  padding: 0 2px;
 }
 
 @media print {
@@ -1362,6 +1154,7 @@ footer {
     font-weight: 800;
   }
 }
+
 .item-heading {
   gap: 0;
   padding-left: 1px;
@@ -1380,19 +1173,12 @@ footer {
     padding-right: 0.3mm;
   }
 }
+
 .table-corner {
   position: relative;
   display: block;
   padding: 0 !important;
   overflow: hidden;
-  background:
-    linear-gradient(
-      to bottom right,
-      transparent calc(50% - 0.5px),
-      #aeb9aa 50%,
-      transparent calc(50% + 0.5px)
-    ),
-    #f4f6f0;
 }
 
 .table-corner span {
@@ -1403,48 +1189,10 @@ footer {
   white-space: nowrap;
 }
 
-.table-corner span:first-child {
-  top: 13%;
-  left: 8%;
-}
-
-.table-corner span:last-child {
-  right: 7%;
-  bottom: 12%;
-}
-
 @media print {
-  .table-corner {
-    background:
-      linear-gradient(
-        to bottom right,
-        transparent calc(50% - 0.15mm),
-        #aeb9aa 50%,
-        transparent calc(50% + 0.15mm)
-      ),
-      #f4f6f0;
-  }
   .table-corner span {
     font-size: 8px;
   }
-  .table-corner span:first-child {
-    top: 12%;
-    left: 8%;
-  }
-  .table-corner span:last-child {
-    right: 7%;
-    bottom: 11%;
-  }
-}
-.table-corner {
-  background:
-    linear-gradient(
-      to bottom left,
-      transparent calc(50% - 0.5px),
-      #aeb9aa 50%,
-      transparent calc(50% + 0.5px)
-    ),
-    #f4f6f0;
 }
 
 .table-corner span:first-child {
@@ -1461,16 +1209,6 @@ footer {
 }
 
 @media print {
-  .table-corner {
-    background:
-      linear-gradient(
-        to bottom left,
-        transparent calc(50% - 0.15mm),
-        #aeb9aa 50%,
-        transparent calc(50% + 0.15mm)
-      ),
-      #f4f6f0;
-  }
   .table-corner span:first-child {
     top: 12%;
     right: 8%;
@@ -1483,42 +1221,7 @@ footer {
     bottom: 11%;
   }
 }
-@media print {
-  .table-corner {
-    background:
-      linear-gradient(
-        to bottom left,
-        transparent calc(50% - 0.25mm),
-        #3f4b43 50%,
-        transparent calc(50% + 0.25mm)
-      ),
-      #f4f6f0;
-  }
-}
-@media print {
-  .table-corner {
-    background:
-      linear-gradient(
-        to bottom left,
-        transparent calc(50% - 0.25mm),
-        #111 50%,
-        transparent calc(50% + 0.25mm)
-      ),
-      #f4f6f0;
-  }
-}
-@media print {
-  .table-corner {
-    background:
-      linear-gradient(
-        to bottom left,
-        transparent calc(50% - 0.5mm),
-        #000 50%,
-        transparent calc(50% + 0.5mm)
-      ),
-      #f4f6f0;
-  }
-}
+
 /* Render the diagonal as a foreground stroke so print background settings cannot drop it. */
 .table-corner {
   background: #f4f6f0 !important;
@@ -1528,13 +1231,9 @@ footer {
 .corner-diagonal {
   position: absolute;
   z-index: 1;
-  left: 0;
   top: 0;
   width: 141.5%;
-  height: 1px;
   background: #000;
-  transform-origin: left center;
-  transform: rotate(45deg);
   pointer-events: none;
 }
 
@@ -1547,17 +1246,10 @@ footer {
     background: #fff !important;
   }
   .corner-diagonal {
-    height: 1mm;
     background: #000;
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
-}
-.corner-diagonal {
-  left: auto;
-  right: 0;
-  transform-origin: right center;
-  transform: rotate(-45deg);
 }
 
 /* Make every tracker table rule black, not only the diagonal corner stroke. */
@@ -1573,9 +1265,6 @@ footer {
 }
 
 @media print {
-  .tracking-table {
-    border: 0.25mm solid #000;
-  }
   .tracking-table,
   .table-corner,
   .time-heading,
@@ -1585,6 +1274,7 @@ footer {
     -webkit-print-color-adjust: exact;
   }
 }
+
 /* Diagonal should run from upper-left to lower-right. */
 .corner-diagonal {
   left: 0;
@@ -1599,23 +1289,18 @@ footer {
   justify-content: center;
   min-width: 0;
   max-width: 100%;
-  padding: 0;
   overflow: hidden;
   white-space: nowrap;
-  letter-spacing: -0.04em;
-  font-size: clamp(3.5px, 0.65cqw, 7px);
   font-variant-numeric: tabular-nums;
 }
 
 @media print {
   .time-heading {
-    font-size: 7px;
-    letter-spacing: -0.35px;
-    padding: 0 0.15mm;
     overflow: hidden;
     white-space: nowrap;
   }
 }
+
 .time-heading {
   font-size: 1.12cqw;
   letter-spacing: -0.035cqw;
@@ -1644,6 +1329,7 @@ footer {
     top: 0;
   }
 }
+
 .paper,
 .paper-wrap,
 .preview-column,
@@ -1673,6 +1359,7 @@ footer {
     drop-shadow: none !important;
   }
 }
+
 .corner-diagonal {
   height: 1px;
 }
@@ -1686,7 +1373,6 @@ footer {
 .corner-time-label {
   margin-top: 3px;
 }
-
 
 /* Use native table layout for the event-by-time tracker in preview and print. */
 .tracking-table {
@@ -1758,7 +1444,6 @@ footer {
   .tracking-table {
     border: 0.25mm solid #000;
   }
-
   .tracking-table .table-corner,
   .tracking-table .item-heading {
     width: 12mm;

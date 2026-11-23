@@ -4,7 +4,7 @@ import {
   Outlet,
   Scripts,
 } from "@tanstack/react-router";
-import "../style.scss";
+import "../styles/app.css";
 export const Route = createRootRoute({
   component: () => (
     <html lang="en">

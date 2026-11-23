@@ -1,0 +1,6 @@
+
+> parity:capture
+> node scripts/parity/capture.mjs --demo-missing-selector .no-such-selector --artifacts scripts/parity/artifacts/failures/demo-missing-selector
+
+PRECONDITION FAILURE [selector]: selector(s) not found in the served page for extreme 16x1: .no-such-selector
+result:            FAIL

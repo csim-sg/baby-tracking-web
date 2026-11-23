@@ -1,0 +1,15 @@
+PARITY RUN SUMMARY
+mode:              capture
+build commit:      674256c77ee228320e2cc7c20fcced2ab47c2095
+browser:           Chromium 158.0.8127.36 (channel: chrome)
+server:            http://localhost:4600
+viewport widths:   1280, 820, 819, 560, 559
+media:             screen + print
+content extremes:  16x1, 7x2 (16x1 = 1d x 16 items; 7x2 = 2d x 7 items)
+matrix:            23 selectors (13 sheet + 10 chrome) x 53 properties -> 460 entries
+pdf gate:          16x1: 1 page(s), MediaBox 841.91998 x 594.95996 pt; 7x2: 1 page(s), MediaBox 841.91998 x 594.95996 pt
+paper rects:       16x1: 1122.515625 x 793.6875 px @ print; 7x2: 1122.515625 x 793.6875 px @ print
+fonts:             .hero h1=Nunito (loaded: true); .legend-item=DM Sans (loaded: true)
+selector inventory: 58 tokens, unresolved: 0, literally absent (element-styled): tint-0
+differences:       n/a (capture mode)
+artifacts:         /home/chrissim/Projects/worktree/baby-tracking-web/issue-1/scripts/parity/artifacts/baseline-674256c

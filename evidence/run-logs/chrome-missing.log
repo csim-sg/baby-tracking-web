@@ -1,0 +1,6 @@
+
+> parity:capture
+> node scripts/parity/capture.mjs --artifacts scripts/parity/artifacts/failures/demo-chrome
+
+PRECONDITION FAILURE [Chrome]: could not launch Google Chrome (/nonexistent/chrome): browserType.launch: Failed to launch chromium because executable doesn't exist at /nonexistent/chrome
+result:            FAIL

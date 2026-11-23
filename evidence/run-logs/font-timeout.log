@@ -1,0 +1,6 @@
+
+> parity:capture
+> node scripts/parity/capture.mjs --artifacts scripts/parity/artifacts/failures/demo-font-timeout
+
+PRECONDITION FAILURE [font timeout]: PARITY_FONT_TIMEOUT_MS=0 does not allow waiting for document.fonts.ready
+result:            FAIL

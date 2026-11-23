@@ -1,0 +1,6 @@
+
+> parity:capture
+> node scripts/parity/capture.mjs --artifacts scripts/parity/artifacts/failures/demo-server
+
+PRECONDITION FAILURE [server]: no response from http://localhost:9 (fetch failed). Build and serve the production output first: npm ci && npm run build && npm run start
+result:            FAIL

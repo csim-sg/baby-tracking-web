@@ -235,7 +235,7 @@ function Home() {
     }
   };
   return (
-    <main className="app-shell mx-auto max-w-[1180px] px-[34px] max-md:px-[20px] max-sm:px-[14px]">
+    <main className="app-shell mx-auto [@media_screen]:max-w-[1180px] [@media_screen]:px-[34px] [@media_screen]:max-md:px-[20px] [@media_screen]:max-sm:px-[14px]">
       <header className="topbar flex h-[74px] items-center justify-between border-b border-b-line print:hidden">
         <a className="brand flex items-center gap-2 font-display text-[20px] font-black text-[#283b38]">
           <span className="brand-mark rounded-xl bg-[#e8f2e9] p-1.5 text-[#5b8b68]">
@@ -295,7 +295,7 @@ function Home() {
           </div>
         </div>
       </section>
-      <section className="workspace border-t border-t-line px-2 pt-[27px] pb-[15px]">
+      <section className="workspace [@media_screen]:border-t [@media_screen]:border-t-line [@media_screen]:px-2 [@media_screen]:pt-[27px] [@media_screen]:pb-[15px]">
         <div className="section-heading mb-[18px] print:hidden">
           <div>
             <span className="step-label text-[10px] font-extrabold tracking-[1.3px] text-[#e79871]">
@@ -310,7 +310,7 @@ function Home() {
             </p>
           </div>
         </div>
-        <div className="builder-grid grid grid-cols-[0.88fr_1.12fr] gap-[18px] max-md:grid-cols-[1fr]">
+        <div className="builder-grid [@media_screen]:grid [@media_screen]:grid-cols-[0.88fr_1.12fr] gap-[18px] [@media_screen]:max-md:grid-cols-[1fr]">
           <div className="controls-card rounded-2xl border border-line bg-white px-[20px] py-[18px] [box-shadow:0_5px_20px_rgba(97,85,61,0.031372549)] print:hidden">
             <div className="control-title mb-[13px] flex items-center gap-2.5">
               <span className="number grid h-[27px] w-[27px] place-items-center rounded-lg bg-[#fff0e8] font-display text-[10px] font-extrabold text-[#e49a78]">

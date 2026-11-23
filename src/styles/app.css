@@ -484,25 +484,6 @@ body {
   padding: 0;
 }
 
-/* The .add-item select rules below are kept verbatim for T4 (FR-09): no
- * <select> exists inside .add-item today, so they style nothing and are
- * neither converted nor deleted in T3. */
-.add-item select {
-  max-width: 95px;
-  border: 1px solid #ebe9e3;
-  border-radius: 8px;
-  background: #fff;
-  color: #526056;
-  padding: 0 5px;
-  font: 9px "DM Sans";
-}
-
-@media (max-width: 560px) {
-  .add-item select {
-    max-width: 76px;
-  }
-}
-
 .time-heading,
 .tracking-cell {
   width: 100%;

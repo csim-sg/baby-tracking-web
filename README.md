@@ -1,7 +1,8 @@
 # Toddlebook
 
-Printable 24-hour child care logs, rendered with TanStack Start. The hosted
-domain will be `toddlebook.com` once DNS and deployment access are ready.
+Printable 24-hour child care logs, rendered with TanStack Start. Live at
+[`toddlebook.com`](https://toddlebook.com) (also
+[`www.toddlebook.com`](https://www.toddlebook.com)).
 
 The page loads the `GTM-NP4XPXZS` Google Tag Manager script immediately. Its
 inline setup is the supplied `gtag('js', …)` snippet; no consent gate is
@@ -40,15 +41,21 @@ preinstalled browser may be a different version. CI never recaptures the
 baseline.
 
 `compose.prod.yaml` removes the published host port and routes through the
-existing Docker host's external `ingress-network` and Traefik at
-`toddlebook.com` (also `www.toddlebook.com`). Deployment runs **only after a
-successful CI push to `main`** and only when the repository variable
-`DEPLOY_ENABLED` is `true`. Changes on `new-main` are not deployed. Configure
-the protected `production` GitHub environment before enabling this:
+production Docker host's external `ingress-network` and Traefik. Deployment
+runs **only after a successful CI push to `main`** and only when the repository
+variable `DEPLOY_ENABLED` is `true`; changes on `new-main` are not deployed.
+This is configured and enabled. The current production deployment is healthy;
+the latest deployment workflow is [run 45370960605](https://github.com/csim-sg/baby-tracking-web/actions/runs/45370960605).
+
+The `production` GitHub environment and SSH deployment credentials are
+configured. No required-reviewer gate is set on the environment. The workflow
+uses pinned SSH host-key verification and deploys only the Toddlebook Compose
+project; it does not modify or stop other projects on the host.
+
+If setting up a replacement deployment host:
 
 1. Point both domain records at the production Traefik host, verify HTTPS and
-   that the Docker host has `ingress-network`. The domain currently resolves
-   to a parking service; do not enable deployment until DNS is ready.
+   that the Docker host has `ingress-network`.
 2. Set repository variables `DEPLOY_SSH_HOST` (the SSH-reachable Docker host)
    and `DEPLOY_SSH_USER` (an account with Docker access). Set secrets
    `DEPLOY_SSH_KEY` and `DEPLOY_SSH_KNOWN_HOSTS` (the **verified, pinned** SSH
@@ -70,10 +77,10 @@ the protected `production` GitHub environment before enabling this:
    Deployment decrypts it into runner temporary storage and passes it to
    Compose; no runtime secrets file is required for the current, stateless app.
 
-4. Enable `DEPLOY_ENABLED=true` only after the above checks. Require a
-   reviewer on the `production` environment if deployments should need
-   human approval. Keep `main` protected; the current styling migration is
-   on `new-main`, and promoting it is a separate decision.
+4. Enable `DEPLOY_ENABLED=true` only after the above checks. Add a required
+   reviewer to the `production` environment if deployments should need human
+   approval.
 
-The deployment workflow is deliberately inactive without the enable variable.
-It never changes or stops other Compose projects on the Docker host.
+SOPS/AWS KMS support is optional and currently unused: this stateless app has
+no runtime secrets. The deployment workflow remains inactive whenever
+`DEPLOY_ENABLED` is not `true`.

@@ -14,7 +14,7 @@ This repository is `csim-sg/baby-tracking-web`. Toddlebook is a printable 24-hou
 
 ## Architecture And Runtime
 
-TanStack Start renders the application with SSR. Sheet configuration is held in browser-side React state; there is no application database, login, or server-side sheet processing. Printing uses the browser print dialog. The production build emits Nitro output, and the container starts `node .output/server/index.mjs` on port 3000.
+TanStack Start renders the application with SSR. Sheet configuration is held in browser-side React state; there is no application database, login, or server-side sheet processing. The GTM script loads immediately on every page (no consent gate). Printing uses the browser print dialog. The production build emits Nitro output, and the container starts `node .output/server/index.mjs` on port 3000.
 
 ## Commands
 

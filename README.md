@@ -3,6 +3,10 @@
 Printable 24-hour child care logs, rendered with TanStack Start. The hosted
 domain will be `toddlebook.com` once DNS and deployment access are ready.
 
+The page loads the `GTM-NP4XPXZS` Google Tag Manager script immediately. Its
+inline setup is the supplied `gtag('js', …)` snippet; no consent gate is
+implemented.
+
 ## Local development
 
 ```sh

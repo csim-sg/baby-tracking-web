@@ -21,10 +21,19 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - name: Install baseline Chrome for Testing
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 3 \
+            https://storage.googleapis.com/chrome-for-testing-public/158.0.8127.36/linux64/chrome-linux64.zip \
+            -o "$RUNNER_TEMP/chrome.zip"
+          echo "dba9cc838e1ce269c33ea68170881127bd15d078fc3ca5891c90802819a4d7c7  $RUNNER_TEMP/chrome.zip" | sha256sum -c -
+          unzip -q "$RUNNER_TEMP/chrome.zip" -d "$RUNNER_TEMP"
       - name: Verify production sheet parity
         run: |
           set -euo pipefail
-          google-chrome --version
+          export PARITY_CHROME_EXECUTABLE="$RUNNER_TEMP/chrome-linux64/chrome"
+          "$PARITY_CHROME_EXECUTABLE" --version
           PORT=3000 npm run start > "$RUNNER_TEMP/toddlebook-server.log" 2>&1 &
           server=$!
           trap 'kill "$server" 2>/dev/null || true' EXIT

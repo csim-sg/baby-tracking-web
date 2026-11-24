@@ -30,8 +30,10 @@ To use another host port, change the left side of `3000:3000` in `compose.yaml`.
 
 CI on pull requests and pushes to `main`/`new-main` installs dependencies,
 builds the app and image, and verifies the served production sheet against
-the committed parity baseline. It requires Google Chrome on the GitHub-hosted
-runner; it never recaptures the baseline.
+the committed parity baseline. It installs the exact Chrome for Testing
+158.0.8127.36 build used for that baseline (checksum-verified); the runner's
+preinstalled browser may be a different version. CI never recaptures the
+baseline.
 
 `compose.prod.yaml` removes the published host port and routes through the
 existing Docker host's external `ingress-network` and Traefik at

@@ -241,7 +241,7 @@ function Home() {
           <span className="brand-mark rounded-xl bg-[#e8f2e9] p-1.5 text-[#5b8b68]">
             <Baby />
           </span>
-          Tiny<span className="brand-accent text-[#f19b72]">Daybook</span>
+          Toddle<span className="brand-accent text-[#f19b72]">book</span>
         </a>
         <span className="top-note text-[12px] text-[#929b93] max-sm:hidden">
           A little record of a lot of love
@@ -578,7 +578,7 @@ function Home() {
         </div>
       </section>
       <footer className="flex h-[44px] items-center justify-between border-t border-t-line text-[9px] text-[#a4a69d] print:hidden">
-        © 2026 Tiny Daybook <span>Made for the moments that matter　♥</span>
+        © 2026 Toddlebook <span>Made for the moments that matter　♥</span>
       </footer>
     </main>
   );

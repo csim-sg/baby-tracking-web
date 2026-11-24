@@ -1,0 +1,87 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    branches: [main]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: toddlebook-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # Keep deployment inert until DNS, SSH access, and environment protection are configured.
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - name: Reject superseded CI runs
+        run: |
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$GITHUB_SHA_TO_DEPLOY"
+        env:
+          GITHUB_SHA_TO_DEPLOY: ${{ github.event.workflow_run.head_sha }}
+      - name: Configure SSH for remote Docker
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.DEPLOY_SSH_KNOWN_HOSTS }}
+          SSH_HOST: ${{ vars.DEPLOY_SSH_HOST }}
+          SSH_USER: ${{ vars.DEPLOY_SSH_USER }}
+        run: |
+          set -euo pipefail
+          test -n "$SSH_KEY" && test -n "$SSH_KNOWN_HOSTS"
+          test -n "$SSH_HOST" && test -n "$SSH_USER"
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$SSH_KEY" > "$HOME/.ssh/id_ed25519"
+          chmod 600 "$HOME/.ssh/id_ed25519"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+          docker context create production --docker "host=ssh://${SSH_USER}@${SSH_HOST}"
+          docker --context production info --format '{{.Name}}'
+      - name: Authenticate to AWS for encrypted runtime configuration
+        if: hashFiles('secrets/runtime.enc.env') != ''
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ap-southeast-1
+          role-to-assume: ${{ vars.DEPLOY_AWS_ROLE_ARN }}
+      - name: Decrypt optional runtime configuration
+        if: hashFiles('secrets/runtime.enc.env') != ''
+        run: |
+          set -euo pipefail
+          curl -fsSL -o "$RUNNER_TEMP/sops" \
+            https://github.com/getsops/sops/releases/download/v3.13.3/sops-v3.13.3.linux.amd64
+          echo "e5bec3346a873ae91d871550f3e698c1aad962aff462a080e40f25fde17fef6b  $RUNNER_TEMP/sops" | sha256sum -c -
+          chmod 700 "$RUNNER_TEMP/sops"
+          umask 077
+          "$RUNNER_TEMP/sops" -d --input-type dotenv --output-type dotenv \
+            secrets/runtime.enc.env > "$RUNNER_TEMP/runtime.env"
+          # Compose reads this file locally and passes environment values to the remote engine.
+          printf 'services:\n  toddlebook:\n    env_file:\n      - %s\n' "$RUNNER_TEMP/runtime.env" > "$RUNNER_TEMP/runtime-compose.yaml"
+      - name: Deploy and wait for container health
+        run: |
+          set -euo pipefail
+          files=(-f compose.yaml -f compose.prod.yaml)
+          if [ -f "$RUNNER_TEMP/runtime.env" ]; then
+            files+=(-f "$RUNNER_TEMP/runtime-compose.yaml")
+          fi
+          docker --context production network inspect ingress-network >/dev/null
+          docker --context production compose -p toddlebook "${files[@]}" up --build -d --wait
+          docker --context production compose -p toddlebook "${files[@]}" ps
+      - name: Remove temporary credentials
+        if: always()
+        run: rm -f "$HOME/.ssh/id_ed25519" "$RUNNER_TEMP/runtime.env" "$RUNNER_TEMP/runtime-compose.yaml" "$RUNNER_TEMP/sops"

@@ -1,0 +1,18 @@
+# Overlay for the production Docker host. Do not publish the application port.
+services:
+  toddlebook:
+    ports: !reset []
+    networks:
+      - ingress-network
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: ingress-network
+      traefik.http.routers.toddlebook.rule: Host(`toddlebook.com`) || Host(`www.toddlebook.com`)
+      traefik.http.routers.toddlebook.entrypoints: websecure
+      traefik.http.routers.toddlebook.tls: "true"
+      traefik.http.routers.toddlebook.tls.certresolver: letsencrypt
+      traefik.http.services.toddlebook.loadbalancer.server.port: "3000"
+
+networks:
+  ingress-network:
+    external: true

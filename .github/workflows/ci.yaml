@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, new-main]
+  push:
+    branches: [main, new-main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Verify production sheet parity
+        run: |
+          set -euo pipefail
+          google-chrome --version
+          PORT=3000 npm run start > "$RUNNER_TEMP/toddlebook-server.log" 2>&1 &
+          server=$!
+          trap 'kill "$server" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:3000/ > /dev/null; then break; fi
+            sleep 1
+          done
+          BASE_URL=http://127.0.0.1:3000 npm run parity:verify
+      - name: Build production container
+        run: docker build .

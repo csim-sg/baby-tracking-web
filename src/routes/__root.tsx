@@ -21,10 +21,10 @@ export const Route = createRootRoute({
   ),
   head: () => ({
     meta: [
-      { title: "Tiny Daybook — printable baby tracker" },
+      { title: "Toddlebook — 24-hour child care log" },
       {
         name: "description",
-        content: "Create a sweet, printable baby care tracker.",
+        content: "Create a printable 24-hour care log for parents and helpers.",
       },
     ],
   }),

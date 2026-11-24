@@ -2,4 +2,7 @@ node_modules/
 dist/
 .output/
 .env*
+secrets/*
+!secrets/*.enc.env
 .DS_Store
+scripts/parity/artifacts/

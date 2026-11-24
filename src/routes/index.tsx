@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Baby,
   CalendarDays,
@@ -22,6 +22,7 @@ import {
   Star,
   BookOpen,
   Bed,
+  Clock3,
   LucideIcon,
 } from "lucide-react";
 export const Route = createFileRoute("/")({ component: Home });
@@ -71,31 +72,41 @@ const customIconOptions: Record<string, LucideIcon> = {
   Star,
   BookOpen,
   Bed,
+  Clock3,
 };
+const defaultItemIcons: Record<string, string> = {
+  diaper: "Baby",
+  pee: "Droplets",
+  formula: "Package",
+  breastfeeding: "Milk",
+  poop: "Toilet",
+  temperature: "Thermometer",
+  medicine: "Syringe",
+  food: "Soup",
+  sleep: "Moon",
+};
+/* T3 chrome conversion: static Tailwind class maps. State markers
+ * (choice/active, item-chip/selected, picker-menu "active") stay semantic so
+ * state still renders through complete literal strings only — no state- or
+ * user-derived value is constructed into a class name (FR-19). */
+const CHOICE_IDLE_CLASSES =
+  "choice border border-chip-line rounded-[9px] bg-white p-[9px] text-chip-ink cursor-pointer";
+const CHOICE_ACTIVE_CLASSES =
+  "choice active border border-active-line rounded-[9px] bg-active-wash p-[9px] text-active-green cursor-pointer";
+const CHIP_IDLE_CLASSES =
+  "item-chip inline-flex items-center gap-[5px] rounded-[9px] border border-chip-line bg-white p-[7px] text-[9px] text-chip-ink cursor-pointer disabled:opacity-45 disabled:cursor-not-allowed";
+const CHIP_SELECTED_CLASSES =
+  "item-chip selected inline-flex items-center gap-[5px] rounded-[9px] border border-active-line bg-active-wash p-[7px] text-[9px] text-active-green cursor-pointer disabled:opacity-45 disabled:cursor-not-allowed";
+const ADD_ITEM_INPUT_CLASSES =
+  "min-w-0 flex-1 rounded-lg border border-control-line p-2 font-body text-[10px]";
+const PICKER_OPTION_CLASSES =
+  "w-full flex items-center gap-2 rounded-md bg-white p-[7px] text-left font-body text-[10px] text-[#58665c] cursor-pointer hover:bg-[#f0f6ec] hover:text-active-green disabled:opacity-40 disabled:cursor-not-allowed";
+const PICKER_OPTION_ACTIVE_CLASSES =
+  "active w-full flex items-center gap-2 rounded-md bg-active-wash p-[7px] text-left font-body text-[10px] text-active-green cursor-pointer hover:bg-[#f0f6ec] disabled:opacity-40 disabled:cursor-not-allowed";
 function itemIcon(item: string, customIcons: Record<string, string> = {}) {
-  if (customIcons[item]) return customIconOptions[customIcons[item]] || Check;
-  switch (item.toLowerCase()) {
-    case "diaper":
-      return Baby;
-    case "pee":
-      return Droplets;
-    case "formula":
-      return Package;
-    case "breastfeeding":
-      return Milk;
-    case "poop":
-      return Toilet;
-    case "temperature":
-      return Thermometer;
-    case "medicine":
-      return Syringe;
-    case "food":
-      return Soup;
-    case "sleep":
-      return Moon;
-    default:
-      return Check;
-  }
+  const name =
+    customIcons[item] || defaultItemIcons[item.toLowerCase()] || "Check";
+  return customIconOptions[name] || Check;
 }
 function IconForItem({
   item,
@@ -109,33 +120,43 @@ function IconForItem({
 }
 function IconPicker({
   value,
+  usedIcons,
   onChange,
 }: {
   value: string;
+  usedIcons: Set<string>;
   onChange: (value: string) => void;
 }) {
   const [open, setOpen] = useState(false);
   const Icon = customIconOptions[value] || Check;
   return (
-    <div className="icon-picker">
+    <div className="icon-picker relative flex-none">
       <button
         type="button"
-        className="icon-picker-trigger"
+        className="icon-picker-trigger h-full min-w-[42px] flex items-center justify-center gap-1 rounded-lg bg-control-wash px-2.5 py-0 text-control-green cursor-pointer"
         aria-label="Choose icon for custom item"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
       >
         <Icon size={14} />
-        <ChevronDown size={12} />
+        <ChevronDown size={12} className="w-[14px]" />
       </button>
       {open && (
-        <div className="icon-picker-menu" role="listbox">
+        <div
+          className="icon-picker-menu absolute bottom-[calc(100%_+_6px)] left-0 z-10 max-h-[200px] w-[150px] overflow-auto rounded-[10px] border border-control-line bg-white p-1 [box-shadow:0_8px_24px_rgba(53,68,63,0.1254901961)]"
+          role="listbox"
+        >
           {Object.entries(customIconOptions).map(([name, OptionIcon]) => (
             <button
               type="button"
               role="option"
               aria-selected={value === name}
-              className={value === name ? "active" : ""}
+              className={
+                value === name
+                  ? PICKER_OPTION_ACTIVE_CLASSES
+                  : PICKER_OPTION_CLASSES
+              }
+              disabled={usedIcons.has(name)}
               key={name}
               onClick={() => {
                 onChange(name);
@@ -163,126 +184,203 @@ function Home() {
       "Temperature",
     ]),
     [custom, setCustom] = useState(""),
+    [customTranslation, setCustomTranslation] = useState(""),
     [customIcon, setCustomIcon] = useState("Star"),
-    [itemIcons, setItemIcons] = useState<Record<string, string>>({});
+    [itemIcons, setItemIcons] = useState<Record<string, string>>({}),
+    [itemTranslations, setItemTranslations] = useState<
+      Record<string, { language: string; value: string }>
+    >({});
   const times = Array.from(
     { length: 24 },
     (_, i) => `${i % 12 || 12}${i < 12 ? "AM" : "PM"}`,
   );
+  const maxItems = days === 1 ? 16 : 7;
+  const usedIcons = new Set(
+    items.map(
+      (item) =>
+        itemIcons[item] || defaultItemIcons[item.toLowerCase()] || "Check",
+    ),
+  );
   const toggle = (x: string) =>
     setItems((s) =>
-      s.includes(x) ? s.filter((v) => v !== x) : s.length < 7 ? [...s, x] : s,
+      s.includes(x)
+        ? s.filter((v) => v !== x)
+        : s.length < maxItems
+          ? [...s, x]
+          : s,
     );
   const add = () => {
     const value = custom.trim();
-    if (value && !items.includes(value) && items.length < 7) {
+    if (
+      value &&
+      !items.includes(value) &&
+      items.length < maxItems &&
+      !usedIcons.has(customIcon)
+    ) {
       setItems([...items, value]);
       setItemIcons({ ...itemIcons, [value]: customIcon });
+      setItemTranslations((previous) => {
+        const translation = customTranslation.trim();
+        if (sub !== "None" && translation)
+          return {
+            ...previous,
+            [value]: { language: sub, value: translation },
+          };
+        const next = { ...previous };
+        delete next[value];
+        return next;
+      });
       setCustom("");
+      setCustomTranslation("");
     }
   };
   return (
-    <main className="app-shell">
-      <header className="topbar">
-        <a className="brand">
-          <span className="brand-mark">
+    <main className="app-shell mx-auto [@media_screen]:max-w-[1180px] [@media_screen]:px-[34px] [@media_screen]:max-md:px-[20px] [@media_screen]:max-sm:px-[14px]">
+      <header className="topbar flex h-[74px] items-center justify-between border-b border-b-line print:hidden">
+        <a className="brand flex items-center gap-2 font-display text-[20px] font-black text-[#283b38]">
+          <span className="brand-mark rounded-xl bg-[#e8f2e9] p-1.5 text-[#5b8b68]">
             <Baby />
           </span>
-          Tiny<span className="brand-accent">Daybook</span>
+          Toddle<span className="brand-accent text-[#f19b72]">book</span>
         </a>
-        <span className="top-note">A little record of a lot of love</span>
-        <button className="top-print" onClick={() => window.print()}>
+        <span className="top-note text-[12px] text-[#929b93] max-sm:hidden">
+          A little record of a lot of love
+        </span>
+        <button
+          className="top-print flex items-center gap-2 rounded-[11px] border border-[#dce9d8] bg-[#f2f7ed] px-[15px] py-[10px] font-bold text-[#496d4e] cursor-pointer"
+          onClick={() => window.print()}
+        >
           <Printer size={16} /> Print sheet
         </button>
       </header>
-      <section className="hero">
+      <section className="hero grid grid-cols-[1fr_1fr] items-center min-h-[300px] px-2 py-[25px] max-sm:grid-cols-[1fr] max-sm:px-1 max-sm:py-[28px] print:hidden">
         <div>
-          <div className="eyebrow">
+          <div className="eyebrow text-[10px] font-extrabold tracking-[1.3px] text-[#e79871]">
             YOUR LITTLE ONE, DAY BY DAY <Sparkles size={14} />
           </div>
-          <h1>
+          <h1 className="font-display font-black text-[47px] leading-[1.05] tracking-[-1.7px] mt-[15px] mb-[12px] max-sm:text-[40px]">
             Little moments,
             <br />
-            <em>all in one place.</em>
+            <em className="not-italic text-[#e59b79]">all in one place.</em>
           </h1>
-          <p>
+          <p className="text-[13px] leading-[1.7] max-w-[415px] text-[#828a82]">
             A sweet, simple tracker for feeds, naps, and everything in between.
             Set it up, print it out, and make it yours.
           </p>
-          <div className="hero-perks">
+          <div className="hero-perks mt-[18px] flex gap-6 text-[11px] text-[#68786e]">
             <span>
-              <Heart /> Made for busy parents
+              <Heart className="w-4 align-middle text-[#e39a7c]" /> Made for
+              busy parents
             </span>
             <span>
-              <Printer /> Print-ready, always
+              <Printer className="w-4 align-middle text-[#e39a7c]" />
+              {" Print-ready, always"}
             </span>
           </div>
         </div>
-        <div className="hero-art">
-          <div className="art-card">
-            <b>A lovely little day　☺</b>
-            <p>MONDAY, OCT 21</p>
+        <div className="hero-art grid h-[240px] place-items-center rounded-[48%] bg-[#f8efd8] max-sm:h-[190px]">
+          <div className="art-card rounded-[17px] border border-[#f1eadf] bg-white px-[22px] py-[18px] leading-[2] [transform:rotate(3deg)] text-[12px] text-[#708275] [box-shadow:0_14px_35px_rgba(86,66,34,0.0784313725)]">
+            <b className="font-display font-extrabold text-[15px] leading-[normal] text-[#547961]">
+              A lovely little day　☺
+            </b>
+            <p className="border-b border-dashed border-b-[#e8e0d7] text-[9px] leading-[1.7] tracking-[1px] text-[#b4aaa0]">
+              MONDAY, OCT 21
+            </p>
             <div>🥛　━━━━━━━━　8:10</div>
             <div>💧　━━━━━━━━　9:35</div>
             <div>🌡　━━━━━━━━　10:00</div>
-            <p>you’re doing great　♥</p>
+            <p className="border-b border-dashed border-b-[#e8e0d7] text-[9px] leading-[1.7] tracking-[1px] text-[#b4aaa0]">
+              you’re doing great　♥
+            </p>
           </div>
         </div>
       </section>
-      <section className="workspace">
-        <div className="section-heading">
+      <section className="workspace [@media_screen]:border-t [@media_screen]:border-t-line [@media_screen]:px-2 [@media_screen]:pt-[27px] [@media_screen]:pb-[15px]">
+        <div className="section-heading mb-[18px] print:hidden">
           <div>
-            <span className="step-label">MAKE IT YOURS</span>
-            <h2>Build your day sheet</h2>
-            <p>
+            <span className="step-label text-[10px] font-extrabold tracking-[1.3px] text-[#e79871]">
+              MAKE IT YOURS
+            </span>
+            <h2 className="font-display font-black text-[25px] my-[5px]">
+              Build your day sheet
+            </h2>
+            <p className="m-0 text-[11px] text-[#8a918b]">
               Choose what to track, then print a fresh page whenever you need
               one.
             </p>
           </div>
         </div>
-        <div className="builder-grid">
-          <div className="controls-card">
-            <div className="control-title">
-              <span className="number">01</span>
+        <div className="builder-grid [@media_screen]:grid [@media_screen]:grid-cols-[0.88fr_1.12fr] gap-[18px] [@media_screen]:max-md:grid-cols-[1fr]">
+          <div className="controls-card rounded-2xl border border-line bg-white px-[20px] py-[18px] [box-shadow:0_5px_20px_rgba(97,85,61,0.031372549)] print:hidden">
+            <div className="control-title mb-[13px] flex items-center gap-2.5">
+              <span className="number grid h-[27px] w-[27px] place-items-center rounded-lg bg-[#fff0e8] font-display text-[10px] font-extrabold text-[#e49a78]">
+                01
+              </span>
               <div>
-                <h3>Page setup</h3>
-                <p>Pick your print layout</p>
+                <h3 className="m-0 font-display text-[13px] font-extrabold text-[#35443f]">
+                  Page setup
+                </h3>
+                <p className="my-[2px] text-[10px] text-[#9a9d95]">
+                  Pick your print layout
+                </p>
               </div>
             </div>
-            <div className="field-label">DAYS PER PAGE</div>
-            <div className="choice-row">
+            <div className="field-label mt-[10px] mb-[7px] text-[8px] font-extrabold tracking-[1px] text-label-ink">
+              DAYS PER PAGE
+            </div>
+            <div className="choice-row grid grid-cols-[1fr_1fr] gap-2">
               {[1, 2].map((n) => (
                 <button
-                  className={"choice " + (days === n ? "active" : "")}
+                  className={
+                    days === n ? CHOICE_ACTIVE_CLASSES : CHOICE_IDLE_CLASSES
+                  }
                   onClick={() => setDays(n)}
+                  disabled={n === 2 && items.length > 7}
+                  title={
+                    n === 2 && items.length > 7
+                      ? "Remove items to use two days per page"
+                      : undefined
+                  }
                   key={n}
                 >
-                  <CalendarDays />
-                  {n} day{n > 1 ? "s" : ""} {days === n && <Check />}
+                  <CalendarDays className="w-4 align-middle" />
+                  {n} day{n > 1 ? "s" : ""}{" "}
+                  {days === n && <Check className="w-4 align-middle" />}
                 </button>
               ))}
             </div>
-            <hr />
-            <div className="control-title">
-              <span className="number">02</span>
+            {days === 1 && items.length > 7 && (
+              <p>Remove items to switch to two days per page.</p>
+            )}
+            <hr className="my-[15px] border-t border-t-[#f0ede7]" />
+            <div className="control-title mb-[13px] flex items-center gap-2.5">
+              <span className="number grid h-[27px] w-[27px] place-items-center rounded-lg bg-[#fff0e8] font-display text-[10px] font-extrabold text-[#e49a78]">
+                02
+              </span>
               <div>
-                <h3>What to track</h3>
-                <p>Select the items for your sheet · up to 7</p>
+                <h3 className="m-0 font-display text-[13px] font-extrabold text-[#35443f]">
+                  What to track
+                </h3>
+                <p className="my-[2px] text-[10px] text-[#9a9d95]">
+                  Select the items for your sheet · up to {maxItems}
+                </p>
               </div>
             </div>
-            <div className="item-chips">
+            <div className="item-chips flex flex-wrap gap-1.5">
               {defaults.map((x) => {
                 const Icon = itemIcon(x);
                 return (
                   <button
                     className={
-                      "item-chip " + (items.includes(x) ? "selected" : "")
+                      items.includes(x)
+                        ? CHIP_SELECTED_CLASSES
+                        : CHIP_IDLE_CLASSES
                     }
                     onClick={() => toggle(x)}
-                    disabled={!items.includes(x) && items.length >= 7}
+                    disabled={!items.includes(x) && items.length >= maxItems}
                     key={x}
                   >
-                    <Icon size={15} /> {x}
+                    <Icon className="size-3.5 flex-none align-middle" /> {x}
                   </button>
                 );
               })}
@@ -292,40 +390,73 @@ function Home() {
                   const Icon = itemIcon(x, itemIcons);
                   return (
                     <button
-                      className="item-chip selected"
+                      className={CHIP_SELECTED_CLASSES}
                       onClick={() => toggle(x)}
                       key={x}
                     >
-                      <Icon size={15} /> {x} <span aria-hidden="true">×</span>
+                      <Icon className="size-3.5 flex-none align-middle" /> {x}{" "}
+                      <span aria-hidden="true">×</span>
                     </button>
                   );
                 })}
             </div>
-            <div className="add-item">
+            <div className="add-item relative mt-[9px] flex gap-1.5">
               <input
+                className={ADD_ITEM_INPUT_CLASSES}
                 value={custom}
                 onChange={(e) => setCustom(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && add()}
                 placeholder="Add a custom item"
               />
-              <IconPicker value={customIcon} onChange={setCustomIcon} />
-              <button onClick={add} disabled={items.length >= 7}>
-                <Plus /> Add
+              <IconPicker
+                value={customIcon}
+                usedIcons={usedIcons}
+                onChange={setCustomIcon}
+              />
+              <button
+                className="flex items-center gap-1 rounded-lg bg-control-wash px-2.5 py-0 text-control-green cursor-pointer"
+                onClick={add}
+                disabled={items.length >= maxItems || usedIcons.has(customIcon)}
+              >
+                <Plus className="w-[14px]" /> Add
               </button>
+              {sub !== "None" && (
+                <input
+                  className={
+                    ADD_ITEM_INPUT_CLASSES +
+                    " custom-translation flex-[1_0_100%]"
+                  }
+                  value={customTranslation}
+                  onChange={(e) => setCustomTranslation(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && add()}
+                  aria-label={`Custom item name in ${sub}`}
+                  placeholder={`${sub} name (optional)`}
+                />
+              )}
             </div>
-            <hr />
-            <div className="control-title">
-              <span className="number">03</span>
+            <hr className="my-[15px] border-t border-t-[#f0ede7]" />
+            <div className="control-title mb-[13px] flex items-center gap-2.5">
+              <span className="number grid h-[27px] w-[27px] place-items-center rounded-lg bg-[#fff0e8] font-display text-[10px] font-extrabold text-[#e49a78]">
+                03
+              </span>
               <div>
-                <h3>Your languages</h3>
-                <p>Main language and optional helper</p>
+                <h3 className="m-0 font-display text-[13px] font-extrabold text-[#35443f]">
+                  Your languages
+                </h3>
+                <p className="my-[2px] text-[10px] text-[#9a9d95]">
+                  Main language and optional helper
+                </p>
               </div>
             </div>
-            <div className="language-fields">
+            <div className="language-fields grid grid-cols-[1fr_1fr] gap-[9px]">
               {[main, sub].map((l, i) => (
-                <label key={i}>
+                <label
+                  key={i}
+                  className="text-[8px] font-extrabold text-label-ink"
+                >
                   {i ? "SUB LANGUAGE" : "MAIN LANGUAGE"}
                   <select
+                    className="mt-[6px] block w-full rounded-lg border border-control-line bg-white p-2 font-body text-[10px] font-normal text-[#526056]"
                     value={l}
                     onChange={(e) =>
                       i ? setSub(e.target.value) : setMain(e.target.value)
@@ -341,8 +472,8 @@ function Home() {
             </div>
           </div>
           <div className="preview-column">
-            <div className="preview-head">
-              <b>LIVE PREVIEW</b>
+            <div className="preview-head flex justify-between px-[2px] pt-[2px] pb-[9px] text-[9px] text-[#959b92] print:hidden">
+              <b className="tracking-[1px] text-[#69796d]">LIVE PREVIEW</b>
               <span>Landscape · A4</span>
             </div>
             <div className="paper-wrap">
@@ -350,42 +481,41 @@ function Home() {
                 {Array.from({ length: days }, (_, d) => (
                   <div className="print-day" key={d}>
                     <div className="print-head">
-                      {d === 0 && (
-                        <>
-                          <b className="sheet-title">☺ Tiny Daybook</b>
-                          <div className="item-legend">
-                            {items.map((x) => {
-                              const Icon = itemIcon(x, itemIcons);
-                              return (
-                                <span className="legend-item" key={x}>
-                                  <Icon aria-hidden="true" />
-                                  <span>
-                                    {main === "中文" ? zh[x] || x : x}
-                                    {sub === "None"
-                                      ? ""
-                                      : ` / ${sub === "中文" ? zh[x] || x : x}`}
-                                  </span>
-                                </span>
-                              );
-                            })}
-                          </div>
-                        </>
-                      )}
                       <div className="print-date">
                         {main === "中文" ? "日期" : "Date"}
                         {sub !== "None" &&
                           ` / ${sub === "中文" ? "日期" : "Date"}`}
                         <span>________________</span>
                       </div>
+                      {d === 0 && (
+                        <div className="item-legend">
+                          {items.map((x) => {
+                            const Icon = itemIcon(x, itemIcons);
+                            return (
+                              <span className="legend-item" key={x}>
+                                <Icon aria-hidden="true" />
+                                <span>
+                                  {main === "中文" ? zh[x] || x : x}
+                                  {sub === "None"
+                                    ? ""
+                                    : ` / ${
+                                        (itemTranslations[x]?.language ===
+                                          sub &&
+                                          itemTranslations[x].value) ||
+                                        (sub === "中文" ? zh[x] || x : x)
+                                      }`}
+                                </span>
+                              </span>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                     <table
                       className="tracking-table"
                       aria-label={`${
                         main === "中文" ? "每日照护记录" : "Daily care tracker"
                       } ${d + 1}`}
-                      style={
-                        { "--item-count": items.length } as React.CSSProperties
-                      }
                     >
                       <thead>
                         <tr>
@@ -424,23 +554,31 @@ function Home() {
                 ))}
               </div>
             </div>
-            <div className="preview-footer">
-              <span>Updates as you edit</span>
-              <button onClick={() => window.print()}>
-                <Printer /> Print my sheet →
+            <div className="preview-footer mt-[11px] flex items-center justify-end gap-3 max-sm:flex-wrap print:hidden">
+              <span className="mr-auto text-[9px] text-[#929b91]">
+                Updates as you edit
+              </span>
+              <button
+                className="flex items-center gap-[7px] rounded-[9px] bg-[#658a68] px-[13px] py-[10px] text-[10px] font-bold text-white cursor-pointer"
+                onClick={() => window.print()}
+              >
+                <Printer className="w-[15px]" /> Print my sheet →
               </button>
-              <button className="download-link" onClick={() => window.print()}>
-                <Download /> Save as PDF
+              <button
+                className="download-link flex items-center gap-[7px] rounded-[9px] bg-transparent py-[7px] text-[9px] font-bold text-[#748578] cursor-pointer"
+                onClick={() => window.print()}
+              >
+                <Download className="w-[15px]" /> Save as PDF
               </button>
             </div>
           </div>
         </div>
-        <div className="bottom-note">
+        <div className="bottom-note p-[17px] text-center text-[10px] text-[#a1a397] print:hidden">
           ♡ Designed with care for the beautiful chaos of little days.
         </div>
       </section>
-      <footer>
-        © 2026 Tiny Daybook <span>Made for the moments that matter　♥</span>
+      <footer className="flex h-[44px] items-center justify-between border-t border-t-line text-[9px] text-[#a4a69d] print:hidden">
+        © 2026 Toddlebook <span>Made for the moments that matter　♥</span>
       </footer>
     </main>
   );

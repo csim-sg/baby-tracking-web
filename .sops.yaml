@@ -1,0 +1,4 @@
+# Existing Antpolis KMS key. Deployment role also needs kms:Decrypt on this key.
+creation_rules:
+  - path_regex: ^secrets/runtime\.enc\.env$
+    kms: arn:aws:kms:ap-southeast-1:143188609111:key/8fc6f01a-3289-4fb4-b9e7-cab31c54a4ea

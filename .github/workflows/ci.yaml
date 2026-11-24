@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, new-main]
+  push:
+    branches: [main, new-main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Install baseline CJK fallback font
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends fonts-noto-cjk
+          fc-match 'sans-serif:lang=zh-cn' -f '%{family}\n'
+      - name: Install baseline Chrome for Testing
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 3 \
+            https://storage.googleapis.com/chrome-for-testing-public/158.0.8127.36/linux64/chrome-linux64.zip \
+            -o "$RUNNER_TEMP/chrome.zip"
+          echo "dba9cc838e1ce269c33ea68170881127bd15d078fc3ca5891c90802819a4d7c7  $RUNNER_TEMP/chrome.zip" | sha256sum -c -
+          unzip -q "$RUNNER_TEMP/chrome.zip" -d "$RUNNER_TEMP"
+      - name: Verify production sheet parity
+        run: |
+          set -euo pipefail
+          export PARITY_CHROME_EXECUTABLE="$RUNNER_TEMP/chrome-linux64/chrome"
+          "$PARITY_CHROME_EXECUTABLE" --version
+          PORT=3000 npm run start > "$RUNNER_TEMP/toddlebook-server.log" 2>&1 &
+          server=$!
+          trap 'kill "$server" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:3000/ > /dev/null; then break; fi
+            sleep 1
+          done
+          BASE_URL=http://127.0.0.1:3000 npm run parity:verify
+      - name: Build production container
+        run: docker build .

@@ -1,7 +1,6 @@
 services:
-  baby-tracker:
+  toddlebook:
     build: .
-    container_name: baby-tracker
     restart: unless-stopped
     environment:
       NODE_ENV: production

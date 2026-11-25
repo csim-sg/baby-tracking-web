@@ -114,7 +114,7 @@ function itemWatermark(item: string) {
         "'": "&apos;",
       })[character]!,
   );
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><text x="0" y="66" font-family="Arial,sans-serif" font-size="26" fill="#777" fill-opacity=".5">${safeText}</text></svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><text x="40" y="66" font-family="Arial,sans-serif" font-size="26" fill="#777" fill-opacity=".5">${safeText}</text></svg>`;
   return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 }
 function itemIcon(item: string, customIcons: Record<string, string> = {}) {
@@ -157,7 +157,7 @@ function IconPicker({
     <div className="icon-picker relative flex-none">
       <button
         type="button"
-        className="icon-picker-trigger h-full min-w-[42px] flex items-center justify-center gap-1 rounded-lg bg-control-wash px-2.5 py-0 text-control-green cursor-pointer"
+        className="icon-picker-trigger h-[31px] min-w-[42px] flex items-center justify-center gap-1 rounded-lg bg-control-wash px-2.5 py-0 text-control-green cursor-pointer"
         aria-label="Choose icon or initials for custom item"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
@@ -468,7 +468,7 @@ function Home() {
                 onChange={setCustomIcon}
               />
               <button
-                className="h-full flex items-center gap-1 rounded-lg bg-control-wash px-2.5 py-0 text-control-green cursor-pointer"
+                className="h-[31px] flex items-center gap-1 rounded-lg bg-control-wash px-2.5 py-0 text-control-green cursor-pointer"
                 onClick={add}
                 disabled={
                   items.length >= maxItems ||
@@ -590,7 +590,16 @@ function Home() {
                       </thead>
                       <tbody>
                         {items.map((x, i) => (
-                          <tr key={x}>
+                          <tr
+                            key={x}
+                            style={{
+                              backgroundImage: itemWatermark(
+                                main === "中文" ? zh[x] || x : x,
+                              ),
+                              backgroundRepeat: "no-repeat",
+                              backgroundSize: "100% 100%",
+                            }}
+                          >
                             <th
                               className={`item-heading tint-${i % 5}`}
                               scope="row"
@@ -598,19 +607,11 @@ function Home() {
                             >
                               <IconForItem item={x} customIcons={itemIcons} />
                             </th>
-                            {times.map((t, column) => (
+                            {times.map((t) => (
                               <td
                                 className="tracking-cell"
                                 key={`${x}-${t}`}
-                                style={{
-                                  backgroundColor: "transparent",
-                                  backgroundImage: itemWatermark(
-                                    main === "中文" ? zh[x] || x : x,
-                                  ),
-                                  backgroundRepeat: "no-repeat",
-                                  backgroundSize: `${(times.length + 1) * 100}% 100%`,
-                                  backgroundPositionX: `${(column / (times.length - 1)) * 100}%`,
-                                }}
+                                style={{ backgroundColor: "transparent" }}
                               />
                             ))}
                           </tr>

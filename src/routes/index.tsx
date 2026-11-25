@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import {
   Baby,
   CalendarDays,
@@ -448,15 +448,18 @@ function Home() {
                 </p>
               </div>
             </div>
-            <div className="language-fields grid grid-cols-[1fr_1fr] gap-[9px]">
+            <div className="language-fields grid grid-cols-[max-content_minmax(0,1fr)_14px] items-center gap-x-[9px] gap-y-[9px]">
               {[main, sub].map((l, i) => (
-                <label
-                  key={i}
-                  className="text-[8px] font-extrabold text-label-ink"
-                >
-                  {i ? "SUB LANGUAGE" : "MAIN LANGUAGE"}
+                <Fragment key={i}>
+                  <label
+                    htmlFor={i ? "sub-language" : "main-language"}
+                    className="text-[8px] font-extrabold text-label-ink"
+                  >
+                    {i ? "SUB LANGUAGE" : "MAIN LANGUAGE"}
+                  </label>
                   <select
-                    className="mt-[6px] block w-full rounded-lg border border-control-line bg-white p-2 font-body text-[10px] font-normal text-[#526056]"
+                    id={i ? "sub-language" : "main-language"}
+                    className="block min-w-0 w-full rounded-lg border border-control-line bg-white p-2 font-body text-[10px] font-normal text-[#526056]"
                     value={l}
                     onChange={(e) =>
                       i ? setSub(e.target.value) : setMain(e.target.value)
@@ -466,8 +469,8 @@ function Home() {
                       <option key={x}>{x}</option>
                     ))}
                   </select>
-                  <ChevronDown />
-                </label>
+                  <ChevronDown size={14} className="pointer-events-none" />
+                </Fragment>
               ))}
             </div>
           </div>

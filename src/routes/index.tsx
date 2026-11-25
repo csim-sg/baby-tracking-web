@@ -26,16 +26,6 @@ import {
   LucideIcon,
 } from "lucide-react";
 export const Route = createFileRoute("/")({ component: Home });
-const defaults = [
-  "Diaper",
-  "Formula",
-  "Poop",
-  "Breastfeeding",
-  "Temperature",
-  "Medicine",
-  "Food",
-  "Sleep",
-];
 const langs = [
   "English",
   "中文",
@@ -74,6 +64,7 @@ const customIconOptions: Record<string, LucideIcon> = {
   Bed,
   Clock3,
 };
+const NO_ICON = "None";
 const defaultItemIcons: Record<string, string> = {
   diaper: "Baby",
   pee: "Droplets",
@@ -93,20 +84,42 @@ const CHOICE_IDLE_CLASSES =
   "choice border border-chip-line rounded-[9px] bg-white p-[9px] text-chip-ink cursor-pointer";
 const CHOICE_ACTIVE_CLASSES =
   "choice active border border-active-line rounded-[9px] bg-active-wash p-[9px] text-active-green cursor-pointer";
-const CHIP_IDLE_CLASSES =
-  "item-chip inline-flex items-center gap-[5px] rounded-[9px] border border-chip-line bg-white p-[7px] text-[9px] text-chip-ink cursor-pointer disabled:opacity-45 disabled:cursor-not-allowed";
 const CHIP_SELECTED_CLASSES =
   "item-chip selected inline-flex items-center gap-[5px] rounded-[9px] border border-active-line bg-active-wash p-[7px] text-[9px] text-active-green cursor-pointer disabled:opacity-45 disabled:cursor-not-allowed";
 const ADD_ITEM_INPUT_CLASSES =
-  "min-w-0 flex-1 rounded-lg border border-control-line p-2 font-body text-[10px]";
+  "min-w-0 rounded-lg border border-control-line p-2 font-body text-[10px]";
 const PICKER_OPTION_CLASSES =
   "w-full flex items-center gap-2 rounded-md bg-white p-[7px] text-left font-body text-[10px] text-[#58665c] cursor-pointer hover:bg-[#f0f6ec] hover:text-active-green disabled:opacity-40 disabled:cursor-not-allowed";
 const PICKER_OPTION_ACTIVE_CLASSES =
   "active w-full flex items-center gap-2 rounded-md bg-active-wash p-[7px] text-left font-body text-[10px] text-active-green cursor-pointer hover:bg-[#f0f6ec] disabled:opacity-40 disabled:cursor-not-allowed";
+function itemInitials(item: string) {
+  const words = item.trim().split(/\s+/).filter(Boolean);
+  return (
+    words.length > 1
+      ? words.map((word) => Array.from(word)[0]).join("")
+      : Array.from(words[0] || "")
+          .slice(0, 2)
+          .join("")
+  ).toUpperCase();
+}
+function itemWatermark(item: string) {
+  const safeText = item.replace(
+    /[&<>"']/g,
+    (character) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&apos;",
+      })[character]!,
+  );
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><text x="0" y="66" font-family="Arial,sans-serif" font-size="26" fill="#777" fill-opacity=".5">${safeText}</text></svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+}
 function itemIcon(item: string, customIcons: Record<string, string> = {}) {
-  const name =
-    customIcons[item] || defaultItemIcons[item.toLowerCase()] || "Check";
-  return customIconOptions[name] || Check;
+  const name = customIcons[item] ?? defaultItemIcons[item.toLowerCase()];
+  return name === NO_ICON ? null : customIconOptions[name || "Check"] || Check;
 }
 function IconForItem({
   item,
@@ -116,29 +129,46 @@ function IconForItem({
   customIcons: Record<string, string>;
 }) {
   const Icon = itemIcon(item, customIcons);
-  return <Icon className="item-row-icon" aria-hidden="true" />;
+  return Icon ? (
+    <Icon className="item-row-icon" aria-hidden="true" />
+  ) : (
+    <span
+      className="item-row-icon grid h-full w-full place-items-center font-display text-[8px] font-extrabold"
+      aria-hidden="true"
+    >
+      {itemInitials(item)}
+    </span>
+  );
 }
 function IconPicker({
   value,
   usedIcons,
+  itemName,
   onChange,
 }: {
   value: string;
   usedIcons: Set<string>;
+  itemName: string;
   onChange: (value: string) => void;
 }) {
   const [open, setOpen] = useState(false);
-  const Icon = customIconOptions[value] || Check;
+  const Icon = value === NO_ICON ? null : customIconOptions[value] || Check;
   return (
     <div className="icon-picker relative flex-none">
       <button
         type="button"
         className="icon-picker-trigger h-full min-w-[42px] flex items-center justify-center gap-1 rounded-lg bg-control-wash px-2.5 py-0 text-control-green cursor-pointer"
-        aria-label="Choose icon for custom item"
+        aria-label="Choose icon or initials for custom item"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
       >
-        <Icon size={14} />
+        {Icon ? (
+          <Icon size={14} />
+        ) : (
+          <span className="text-[9px] font-extrabold">
+            {itemInitials(itemName || "Item")}
+          </span>
+        )}
         <ChevronDown size={12} className="w-[14px]" />
       </button>
       {open && (
@@ -146,6 +176,25 @@ function IconPicker({
           className="icon-picker-menu absolute bottom-[calc(100%_+_6px)] left-0 z-10 max-h-[200px] w-[150px] overflow-auto rounded-[10px] border border-control-line bg-white p-1 [box-shadow:0_8px_24px_rgba(53,68,63,0.1254901961)]"
           role="listbox"
         >
+          <button
+            type="button"
+            role="option"
+            aria-selected={value === NO_ICON}
+            className={
+              value === NO_ICON
+                ? PICKER_OPTION_ACTIVE_CLASSES
+                : PICKER_OPTION_CLASSES
+            }
+            onClick={() => {
+              onChange(NO_ICON);
+              setOpen(false);
+            }}
+          >
+            <span className="w-[14px] text-center text-[9px] font-extrabold">
+              {itemInitials(itemName || "Item")}
+            </span>
+            <span>No icon (initials)</span>
+          </button>
           {Object.entries(customIconOptions).map(([name, OptionIcon]) => (
             <button
               type="button"
@@ -196,10 +245,11 @@ function Home() {
   );
   const maxItems = days === 1 ? 16 : 7;
   const usedIcons = new Set(
-    items.map(
-      (item) =>
-        itemIcons[item] || defaultItemIcons[item.toLowerCase()] || "Check",
-    ),
+    items.flatMap((item) => {
+      const icon =
+        itemIcons[item] ?? defaultItemIcons[item.toLowerCase()] ?? "Check";
+      return icon === NO_ICON ? [] : [icon];
+    }),
   );
   const toggle = (x: string) =>
     setItems((s) =>
@@ -215,7 +265,7 @@ function Home() {
       value &&
       !items.includes(value) &&
       items.length < maxItems &&
-      !usedIcons.has(customIcon)
+      (customIcon === NO_ICON || !usedIcons.has(customIcon))
     ) {
       setItems([...items, value]);
       setItemIcons({ ...itemIcons, [value]: customIcon });
@@ -367,64 +417,42 @@ function Home() {
               </div>
             </div>
             <div className="item-chips flex flex-wrap gap-1.5">
-              {defaults.map((x) => {
-                const Icon = itemIcon(x);
+              {items.map((x) => {
+                const Icon = itemIcon(x, itemIcons);
                 return (
                   <button
-                    className={
-                      items.includes(x)
-                        ? CHIP_SELECTED_CLASSES
-                        : CHIP_IDLE_CLASSES
-                    }
+                    className={CHIP_SELECTED_CLASSES}
                     onClick={() => toggle(x)}
-                    disabled={!items.includes(x) && items.length >= maxItems}
+                    aria-label={`Remove ${x}`}
                     key={x}
                   >
-                    <Icon className="size-3.5 flex-none align-middle" /> {x}
+                    {Icon ? (
+                      <Icon className="size-3.5 flex-none align-middle" />
+                    ) : (
+                      <span className="grid size-3.5 flex-none place-items-center text-[8px] font-extrabold">
+                        {itemInitials(x)}
+                      </span>
+                    )}{" "}
+                    {x} <span aria-hidden="true">×</span>
                   </button>
                 );
               })}
-              {items
-                .filter((x) => !defaults.includes(x))
-                .map((x) => {
-                  const Icon = itemIcon(x, itemIcons);
-                  return (
-                    <button
-                      className={CHIP_SELECTED_CLASSES}
-                      onClick={() => toggle(x)}
-                      key={x}
-                    >
-                      <Icon className="size-3.5 flex-none align-middle" /> {x}{" "}
-                      <span aria-hidden="true">×</span>
-                    </button>
-                  );
-                })}
             </div>
-            <div className="add-item relative mt-[9px] flex gap-1.5">
+            <div className="add-item relative mt-[9px] grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto_auto] items-center gap-1.5">
               <input
-                className={ADD_ITEM_INPUT_CLASSES}
+                className={
+                  ADD_ITEM_INPUT_CLASSES +
+                  (sub === "None" ? " col-span-2 w-full" : " w-full")
+                }
                 value={custom}
                 onChange={(e) => setCustom(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && add()}
                 placeholder="Add a custom item"
               />
-              <IconPicker
-                value={customIcon}
-                usedIcons={usedIcons}
-                onChange={setCustomIcon}
-              />
-              <button
-                className="flex items-center gap-1 rounded-lg bg-control-wash px-2.5 py-0 text-control-green cursor-pointer"
-                onClick={add}
-                disabled={items.length >= maxItems || usedIcons.has(customIcon)}
-              >
-                <Plus className="w-[14px]" /> Add
-              </button>
               {sub !== "None" && (
                 <input
                   className={
-                    ADD_ITEM_INPUT_CLASSES +
-                    " custom-translation flex-[1_0_100%]"
+                    ADD_ITEM_INPUT_CLASSES + " custom-translation w-full"
                   }
                   value={customTranslation}
                   onChange={(e) => setCustomTranslation(e.target.value)}
@@ -433,6 +461,22 @@ function Home() {
                   placeholder={`${sub} name (optional)`}
                 />
               )}
+              <IconPicker
+                value={customIcon}
+                usedIcons={usedIcons}
+                itemName={custom}
+                onChange={setCustomIcon}
+              />
+              <button
+                className="h-full flex items-center gap-1 rounded-lg bg-control-wash px-2.5 py-0 text-control-green cursor-pointer"
+                onClick={add}
+                disabled={
+                  items.length >= maxItems ||
+                  (customIcon !== NO_ICON && usedIcons.has(customIcon))
+                }
+              >
+                <Plus className="w-[14px]" /> Add
+              </button>
             </div>
             <hr className="my-[15px] border-t border-t-[#f0ede7]" />
             <div className="control-title mb-[13px] flex items-center gap-2.5">
@@ -448,7 +492,7 @@ function Home() {
                 </p>
               </div>
             </div>
-            <div className="language-fields grid grid-cols-[max-content_minmax(0,1fr)_14px] items-center gap-x-[9px] gap-y-[9px]">
+            <div className="language-fields grid grid-cols-[max-content_minmax(0,1fr)] items-center gap-x-[9px] gap-y-[9px]">
               {[main, sub].map((l, i) => (
                 <Fragment key={i}>
                   <label
@@ -469,7 +513,6 @@ function Home() {
                       <option key={x}>{x}</option>
                     ))}
                   </select>
-                  <ChevronDown size={14} className="pointer-events-none" />
                 </Fragment>
               ))}
             </div>
@@ -496,7 +539,16 @@ function Home() {
                             const Icon = itemIcon(x, itemIcons);
                             return (
                               <span className="legend-item" key={x}>
-                                <Icon aria-hidden="true" />
+                                {Icon ? (
+                                  <Icon aria-hidden="true" />
+                                ) : (
+                                  <span
+                                    className="text-[7px] font-extrabold"
+                                    aria-hidden="true"
+                                  >
+                                    {itemInitials(x)}
+                                  </span>
+                                )}
                                 <span>
                                   {main === "中文" ? zh[x] || x : x}
                                   {sub === "None"
@@ -546,8 +598,20 @@ function Home() {
                             >
                               <IconForItem item={x} customIcons={itemIcons} />
                             </th>
-                            {times.map((t) => (
-                              <td className="tracking-cell" key={`${x}-${t}`} />
+                            {times.map((t, column) => (
+                              <td
+                                className="tracking-cell"
+                                key={`${x}-${t}`}
+                                style={{
+                                  backgroundColor: "transparent",
+                                  backgroundImage: itemWatermark(
+                                    main === "中文" ? zh[x] || x : x,
+                                  ),
+                                  backgroundRepeat: "no-repeat",
+                                  backgroundSize: `${(times.length + 1) * 100}% 100%`,
+                                  backgroundPositionX: `${(column / (times.length - 1)) * 100}%`,
+                                }}
+                              />
                             ))}
                           </tr>
                         ))}

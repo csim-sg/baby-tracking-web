@@ -16,6 +16,15 @@
 //   selfhost-unready           DEPLOYMENT_MODE=selfhost            (no vars)
 //   selfhost-unready-vars      DEPLOYMENT_MODE=selfhost + vars     (DB check registered; the placeholder DATABASE_URL fails it)
 //
+// Issue #24 updates: database+auth+smtp are registered and evaluated at
+// server start (per-scenario `checks` expectations assert auth/smtp
+// evaluated and stripe still UNINITIALIZED — #29 owns it, so a
+// launch-enabled cloud keeps /readyz at 503 naming stripe: never claim
+// cloud readiness 200); /app and the auth pages are real SSR routes with an
+// equivalent fail-closed gate INSIDE the route/server-function boundary,
+// with $.tsx splats covering unknown subpaths — every digital path must
+// still answer gate JSON, never the SSR catch-all 200 text/html.
+//
 // Every check asserts HTTP status AND content-type AND a body marker — the
 // SSR catch-all returns 200 text/html for unmatched paths, so a status-only
 // check cannot distinguish fail-closed responses from a leaked `/` document.
@@ -34,24 +43,32 @@ const SCENARIOS = {
     readyz: { status: 503, problemVariable: "DEPLOYMENT_MODE", ready: false },
     digital: 503,
     webhook: 404,
+    // No known mode: the catalog is not evaluated.
+    checks: "none",
   },
   "mode-unknown": {
     gtmOnRoot: false,
     readyz: { status: 503, problemVariable: "DEPLOYMENT_MODE", ready: false },
     digital: 503,
     webhook: 404,
+    checks: "none",
   },
   "cloud-launch-disabled": {
     gtmOnRoot: true,
     readyz: { status: 200, problemVariable: null, ready: true },
     digital: 404,
     webhook: 404,
+    // Launch-disabled cloud: /readyz reports 200 with NO checks evaluated
+    // (unchanged #22 behavior; stripe is #29).
+    checks: "none",
   },
   "cloud-enabled-unready": {
     gtmOnRoot: true,
     readyz: { status: 503, problemVariable: "DATABASE_URL", ready: false },
     digital: 503,
     webhook: 503,
+    // #24: auth+smtp are registered and evaluated; stripe stays #29.
+    checks: "auth-smtp-stripe",
   },
   "cloud-enabled-unready-vars": {
     gtmOnRoot: true,
@@ -63,12 +80,14 @@ const SCENARIOS = {
     },
     digital: 503,
     webhook: 503,
+    checks: "auth-smtp-stripe",
   },
   "selfhost-unready": {
     gtmOnRoot: false,
     readyz: { status: 503, problemVariable: "DATABASE_URL", ready: false },
     digital: 503,
     webhook: 404,
+    checks: "auth-only",
   },
   "selfhost-unready-vars": {
     gtmOnRoot: false,
@@ -80,6 +99,42 @@ const SCENARIOS = {
     },
     digital: 503,
     webhook: 404,
+    checks: "auth-only",
+  },
+  // Issue #24 readiness matrix: valid self-host configuration + migrated,
+  // reachable database → /readyz 200 with database+auth ok, digital pages
+  // SERVE (auth pages HTML without GTM; /app redirects to /sign-in).
+  "selfhost-ready": {
+    gtmOnRoot: false,
+    readyz: {
+      status: 200,
+      problemVariable: null,
+      ready: true,
+      checkStatus: { name: "database", status: "ok" },
+    },
+    digital: "ready-html",
+    webhook: 404,
+    checks: "auth-only",
+  },
+  // Cloud launch-enabled with a real database: database/auth/smtp all ok but
+  // stripe is still UNINITIALIZED (#29), so /readyz MUST stay 503 naming
+  // stripe — cloud readiness 200 must not be claimed by #24.
+  "cloud-enabled-ready-db": {
+    gtmOnRoot: true,
+    readyz: {
+      status: 503,
+      problemVariable: null,
+      ready: false,
+      checkStatus: { name: "stripe", status: "uninitialized" },
+      alsoOk: [
+        { name: "database", status: "ok" },
+        { name: "auth", status: "ok" },
+        { name: "smtp", status: "ok" },
+      ],
+    },
+    digital: 503,
+    webhook: 503,
+    checks: "auth-smtp-stripe",
   },
 };
 
@@ -89,9 +144,64 @@ const MODE_BY_SCENARIO = {
   "cloud-launch-disabled": "cloud",
   "cloud-enabled-unready": "cloud",
   "cloud-enabled-unready-vars": "cloud",
+  "cloud-enabled-ready-db": "cloud",
   "selfhost-unready": "selfhost",
   "selfhost-unready-vars": "selfhost",
+  "selfhost-ready": "selfhost",
 };
+
+/**
+ * Expected evaluated checks per scenario (issue #24 readiness matrix):
+ * - "auth-smtp-stripe": auth+smtp evaluated, stripe UNINITIALIZED (#29) —
+ *   cloud launch-enabled /readyz stays 503 naming stripe; never claim 200;
+ * - "auth-only": self-host has no smtp/stripe catalog entries;
+ * - "none": no checks evaluated (unknown/missing mode, launch-disabled).
+ */
+function assertChecks(parsed, assert) {
+  const mode = MODE_BY_SCENARIO[scenario];
+  const checks = parsed.checks ?? [];
+  const byName = Object.fromEntries(checks.map((entry) => [entry.name, entry]));
+  const expectation = SCENARIOS[scenario].checks;
+  if (expectation === "none") {
+    assert(
+      checks.length === 0,
+      `expected no checks; got ${JSON.stringify(checks)}`,
+    );
+    return;
+  }
+  assert(
+    byName.auth?.status === "ok" || byName.auth?.status === "fail",
+    `auth check must be evaluated (registered at server start); got ${JSON.stringify(byName.auth)}`,
+  );
+  assert(
+    byName.database?.status === "ok" || byName.database?.status === "fail",
+    `database check must be evaluated; got ${JSON.stringify(byName.database)}`,
+  );
+  if (expectation === "auth-smtp-stripe") {
+    assert(
+      byName.smtp?.status === "ok" || byName.smtp?.status === "fail",
+      `smtp check must be evaluated in cloud; got ${JSON.stringify(byName.smtp)}`,
+    );
+    const smtpPresent = expected.readyz.checkStatus !== undefined;
+    assert(
+      byName.smtp?.status === (smtpPresent ? "ok" : "fail"),
+      `smtp check must ${smtpPresent ? "pass (settings present)" : "fail (settings missing)"}; got ${JSON.stringify(byName.smtp)}`,
+    );
+    assert(
+      byName.stripe?.status === "uninitialized",
+      `stripe must stay uninitialized until #29; got ${JSON.stringify(byName.stripe)}`,
+    );
+  } else if (expectation === "auth-only") {
+    assert(
+      byName.smtp === undefined,
+      `self-host has no smtp check; got ${JSON.stringify(byName.smtp)}`,
+    );
+    assert(
+      byName.stripe === undefined,
+      `self-host has no stripe check; got ${JSON.stringify(byName.stripe)}`,
+    );
+  }
+}
 
 const { values } = parseArgs({
   options: {
@@ -225,7 +335,15 @@ async function runRouteChecks() {
         entry?.status === expected.readyz.checkStatus.status,
         `expected ${expected.readyz.checkStatus.name} ${expected.readyz.checkStatus.status}; checks ${JSON.stringify(parsed.checks)}`,
       );
+      for (const also of expected.readyz.checkStatus.alsoOk ?? []) {
+        const entry2 = (parsed.checks ?? []).find((c) => c.name === also.name);
+        assert(
+          entry2?.status === also.status,
+          `expected ${also.name} ${also.status}; got ${JSON.stringify(entry2)}`,
+        );
+      }
     }
+    assertChecks(parsed, assert);
     assert(
       (parsed.status === "ok") === expected.readyz.ready,
       `ready flag ${parsed.status} (expected ${expected.readyz.ready ? "ok" : "unavailable"})`,
@@ -233,39 +351,104 @@ async function runRouteChecks() {
   });
 
   // --- digital surfaces ---
-  const expectDigital = expectJsonWithStatus(expected.digital);
-  const digitalPaths = ["/app", "/app/logs", "/sign-in", "/api/auth/session"];
-  for (const path of digitalPaths) {
-    await checkRoute("GET digital", path, null, (ctx, assert) => {
-      const parsed = expectDigital(ctx, assert);
-      if (!parsed) return;
-      if (expected.digital === 404) {
-        assert(parsed.error === "not_found", `error ${parsed.error}`);
-      } else {
-        assert(parsed.error === "digital_unavailable", `error ${parsed.error}`);
-      }
+  // #24: /app and the auth pages are now real SSR routes gated INSIDE their
+  // route/server-function boundary; /api/auth/* stays a nitro handler (no
+  // real endpoint — T1 F4). Every path must answer the gate JSON, never the
+  // SSR catch-all 200 text/html — except in a READY surface, where the auth
+  // pages serve HTML and /app redirects to /sign-in.
+  if (expected.digital === "ready-html") {
+    const authPage = await checkRoute("GET auth page ready", "/sign-in", null, (ctx, assert) => {
+      assert(ctx.response.status === 200, `status ${ctx.response.status}`);
+      assert(
+        ctx.contentType.includes("text/html"),
+        `content-type ${ctx.contentType} — gate leaked into a ready surface`,
+      );
+      assert(
+        !ctx.body.includes(GTM_MARKER) && !ctx.body.includes(GTM_ID),
+        "GTM found on a ready auth page — must never load there",
+      );
     });
-  }
-
-  // --- POST /api/stripe/webhook --- fail-closed (only /api contract route)
-  await checkRoute(
-    "POST webhook",
-    "/api/stripe/webhook",
-    {
+    const appRedirect = await checkRoute("GET /app unauthenticated", "/app", null, (ctx, assert) => {
+      assert(
+        [302, 303, 307, 308].includes(ctx.response.status),
+        `status ${ctx.response.status} — /app must redirect to /sign-in`,
+      );
+      assert(
+        (ctx.response.headers.get("location") ?? "").includes("/sign-in"),
+        `location ${ctx.response.headers.get("location")}`,
+      );
+    });
+    // Unknown app subpath: the gate answers 404 JSON even when ready —
+    // never the renderer's catch-all.
+    const appSplat = await checkRoute("GET /app/unknown-subpage", "/app/unknown-subpage", null, (ctx, assert) => {
+      const parsed = expectJsonWithStatus(404)(ctx, assert);
+      if (parsed) assert(parsed.error === "not_found", `error ${parsed.error}`);
+    });
+    const webhookGate = await checkRoute("POST webhook selfhost", "/api/stripe/webhook", {
       method: "POST",
       body: "{}",
       headers: { "content-type": "application/json" },
-    },
-    (ctx, assert) => {
-      const parsed = expectJsonWithStatus(expected.webhook)(ctx, assert);
-      if (!parsed) return;
-      if (expected.webhook === 404) {
-        assert(parsed.error === "not_found", `error ${parsed.error}`);
-      } else {
-        assert(parsed.error === "digital_unavailable", `error ${parsed.error}`);
-      }
-    },
-  );
+    }, (ctx, assert) => {
+      const parsed = expectJsonWithStatus(404)(ctx, assert);
+      if (parsed) assert(parsed.error === "not_found", `error ${parsed.error}`);
+    });
+    // /api/auth/* is ALWAYS gated (no real endpoint exists on this stack —
+    // T1 F4; auth runs through server functions), ready or not.
+    const apiAuthGate = await checkRoute("GET /api/auth/session", "/api/auth/session", null, (ctx, assert) => {
+      const parsed = expectJsonWithStatus(503)(ctx, assert);
+      if (parsed) assert(parsed.error === "digital_unavailable", `error ${parsed.error}`);
+    });
+    void [authPage, appRedirect, appSplat, webhookGate, apiAuthGate];
+  } else {
+    const expectDigital = expectJsonWithStatus(expected.digital);
+    const digitalPaths = [
+      "/app",
+      "/app/settings",
+      "/app/unknown-subpage",
+      "/sign-in",
+      "/sign-in/unknown-subpage",
+      "/sign-up",
+      "/sign-up/unknown-subpage",
+      "/forgot-password",
+      "/forgot-password/unknown-subpage",
+      "/reset-password",
+      "/reset-password/unknown-subpage",
+      "/verify-email",
+      "/verify-email/unknown-subpage",
+      "/api/auth/session",
+    ];
+    for (const path of digitalPaths) {
+      await checkRoute("GET digital", path, null, (ctx, assert) => {
+        const parsed = expectDigital(ctx, assert);
+        if (!parsed) return;
+        if (expected.digital === 404) {
+          assert(parsed.error === "not_found", `error ${parsed.error}`);
+        } else {
+          assert(parsed.error === "digital_unavailable", `error ${parsed.error}`);
+        }
+      });
+    }
+
+    // --- POST /api/stripe/webhook --- fail-closed (only /api contract route)
+    await checkRoute(
+      "POST webhook",
+      "/api/stripe/webhook",
+      {
+        method: "POST",
+        body: "{}",
+        headers: { "content-type": "application/json" },
+      },
+      (ctx, assert) => {
+        const parsed = expectJsonWithStatus(expected.webhook)(ctx, assert);
+        if (!parsed) return;
+        if (expected.webhook === 404) {
+          assert(parsed.error === "not_found", `error ${parsed.error}`);
+        } else {
+          assert(parsed.error === "digital_unavailable", `error ${parsed.error}`);
+        }
+      },
+    );
+  }
 
   // --- root-level-only contract: /api/healthz must NOT be a health endpoint ---
   await checkRoute("GET decoy", "/api/healthz", null, (ctx, assert) => {

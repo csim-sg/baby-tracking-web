@@ -15,8 +15,10 @@ canonical models and ownership.
   read-only `database` digital dependency check registered at server start
   and observed by `/readyz`.
 - `auth-migration-config.ts` — minimal Better Auth 1.7.28 options used only
-  by the migration runner for the auth-owned tables. The runtime auth
-  instance is issue #24 scope; no auth routes are wired here.
+  by the migration runner for the auth-owned tables (built on the shared
+  `src/server/auth/base-options.ts`). The runtime auth instance is
+  `src/server/auth/instance.ts` (issue #24) and shares that builder, so the
+  migrated table set cannot drift from the runtime options.
 
 ## Ownership
 
@@ -34,8 +36,17 @@ canonical models and ownership.
   each run, and the application migrations are idempotent by construction
   (`IF NOT EXISTS` everywhere, constraints inside the guarded `CREATE
   TABLE`). A catalog probe (`to_regclass`) is how readiness verifies schema
-  presence — never a bookkeeping table (guardrail: no tables outside the
-  SPEC set).
+  presence.
+
+  **Disclosed exception (`rate_limit`, issue #24):** ADR-002 §1 control 2
+  mandates a PostgreSQL-backed rate limiter in the same schema, and T1 F4
+  proved the library limiter cannot run on this wiring. Migration
+  `0002_rate_limit.sql` therefore adds ONE application-owned operational
+  counter table — `rate_limit` (`key` = SHA-256 of action scope + IP/email
+  identifier, `window_start`, `count`; no clear email/IP, no owner FK). It
+  is in `REQUIRED_SCHEMA_TABLES` and the "exactly N tables" integration
+  assertion, and its internal state must never appear in the FR-35 export
+  (#28).
 
 ## The one-shot command: `npm run migrate`
 
@@ -109,8 +120,11 @@ import it. The check:
   classes — never the URL, host, user, password, driver error text, or care
   data.
 
-Overall `/readyz` stays unavailable (503) until #24 registers the `auth`
-check; assert `checks[name="database"]`, not the overall flag.
+Since issue #24 the `auth` (both modes) and `smtp` (cloud, config-derived)
+checks are registered here too; `stripe` stays unregistered until #29, so a
+launch-enabled cloud still reports 503 naming `stripe: uninitialized` while
+a self-host instance with a valid configuration and migrated schema reaches
+200 with `database` and `auth` ok.
 
 ## Packaging note (issue #37)
 

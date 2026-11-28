@@ -7,7 +7,8 @@ import {
 import { getPublicRenderFlags } from "../server/server-flags";
 import "../styles/app.css";
 export const Route = createRootRoute({
-  loader: () => getPublicRenderFlags(),
+  loader: ({ location }) =>
+    getPublicRenderFlags({ data: { pathname: location.pathname } }),
   component: RootComponent,
   head: () => ({
     meta: [
@@ -21,11 +22,12 @@ export const Route = createRootRoute({
 });
 
 // GTM renders on cloud `/` only (FR-03). The flag is computed server-side by
-// getPublicRenderFlags; no digital/DB/auth/billing module is imported here
-// and no environment value reaches the client. Transitions from `/` to any
-// digital surface are full-document loads (the digital routes are non-HTML
-// gate responses in this slice), so a loaded GTM container cannot persist
-// into those surfaces.
+// getPublicRenderFlags from the ROUTE's pathname — auth pages and /app never
+// load it, in either mode — and no environment value reaches the client. No
+// digital/DB/auth/billing module is imported here (the import-boundary test
+// pins that), and transitions from `/` to any digital surface are
+// full-document loads via plain anchors, so a loaded GTM container cannot
+// persist into those surfaces.
 function RootComponent() {
   const { gtmEnabled } = Route.useLoaderData();
   return (

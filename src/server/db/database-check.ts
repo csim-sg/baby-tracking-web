@@ -26,9 +26,11 @@ import {
 
 /**
  * Every table `npm run migrate` must leave behind: the six SPEC application
- * tables plus the four auth-owned tables. Connectivity alone is not
- * readiness — a database missing any of these reports `fail` with the
- * missing names (sanitized; table names are public in the repository).
+ * tables, the four auth-owned tables, and the ADR-002-mandated rate-limit
+ * counter table (#24; the one disclosed exception to "no tables outside the
+ * SPEC set"). Connectivity alone is not readiness — a database missing any
+ * of these reports `fail` with the missing names (sanitized; table names are
+ * public in the repository).
  */
 export const REQUIRED_SCHEMA_TABLES = [
   // Auth-owned (Better Auth migration runner).
@@ -43,6 +45,8 @@ export const REQUIRED_SCHEMA_TABLES = [
   "care_entry",
   "subscription",
   "stripe_event",
+  // Application-owned operational table (ADR-002 §1 control 2; issue #24).
+  "rate_limit",
 ] as const;
 
 /** Minimal query surface used by the probe (satisfied by a pg client). */

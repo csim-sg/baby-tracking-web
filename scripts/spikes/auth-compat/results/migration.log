@@ -1,0 +1,10 @@
+Migration plan:
+{
+  "databaseUrl": "postgres://***@postgres:5432/spiketest",
+  "tablesToCreate": [],
+  "tablesToAlter": [],
+  "indexesToAdd": [],
+  "unsafeChanges": [],
+  "schemaProblems": []
+}
+Migrations applied successfully.

@@ -1,0 +1,210 @@
+
+> build
+> vite build
+
+vite v8.3.8 building client environment for production...
+transforming...
+[plugin rolldown:vite-resolve] Module "node:child_process" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/sendmail-transport/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/sendmail-transport/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:events" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/smtp-transport/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:net" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/mailer/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/shared/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:fs" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/shared/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:dns" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/mailer/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:util" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/shared/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:events" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/mailer/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/mailer/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:util" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/mailer/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:url" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/shared/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:dns" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/shared/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:net" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/shared/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:os" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/shared/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/mime-node/le-windows.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "events" has been externalized for browser compatibility, imported by "/harness/node_modules/pg/lib/client.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:events" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/smtp-pool/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/mime-node/le-unix.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "util" has been externalized for browser compatibility, imported by "/harness/node_modules/pg/lib/client.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:events" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/ses-transport/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:zlib" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/fetch/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:http" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/fetch/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/fetch/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:net" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/fetch/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:https" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/fetch/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "util" has been externalized for browser compatibility, imported by "/harness/node_modules/pg/lib/utils.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "util/types" has been externalized for browser compatibility, imported by "/harness/node_modules/pg/lib/utils.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "events" has been externalized for browser compatibility, imported by "/harness/node_modules/pg-pool/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "net" has been externalized for browser compatibility, imported by "/harness/node_modules/pg/lib/connection.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "events" has been externalized for browser compatibility, imported by "/harness/node_modules/pg/lib/connection.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:tls" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/smtp-connection/http-proxy-client.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:net" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/smtp-connection/http-proxy-client.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:url" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/shared/url.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:net" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/shared/url.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:path" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/dkim/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/xoauth2/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/xoauth2/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:path" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/mime-funcs/mime-types.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:fs" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/dkim/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/dkim/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/dkim/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "fs" has been externalized for browser compatibility, imported by "/harness/node_modules/pgpass/lib/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "path" has been externalized for browser compatibility, imported by "/harness/node_modules/pgpass/lib/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "events" has been externalized for browser compatibility, imported by "/harness/node_modules/pg/lib/native/client.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "util" has been externalized for browser compatibility, imported by "/harness/node_modules/pg/lib/native/client.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "dns" has been externalized for browser compatibility, imported by "/harness/node_modules/pg/lib/connection-parameters.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "crypto" has been externalized for browser compatibility, imported by "/harness/node_modules/pg/lib/crypto/utils.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "events" has been externalized for browser compatibility, imported by "/harness/node_modules/pg/lib/query.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/dkim/sign.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/dkim/relaxed-body.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/dkim/relaxed-body.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:tls" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/smtp-connection/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:events" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/smtp-connection/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/smtp-connection/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/smtp-connection/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:net" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/smtp-connection/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:os" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/smtp-connection/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/dkim/message-parser.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "net" has been externalized for browser compatibility, imported by "/harness/node_modules/pg/lib/stream.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "tls" has been externalized for browser compatibility, imported by "/harness/node_modules/pg/lib/stream.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:events" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/smtp-pool/pool-resource.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:net" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/fetch/cookies.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "fs" has been externalized for browser compatibility, imported by "/harness/node_modules/pg-connection-string/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "util" has been externalized for browser compatibility, imported by "/harness/node_modules/pg/lib/native/query.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "path" has been externalized for browser compatibility, imported by "/harness/node_modules/pgpass/lib/helper.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "stream" has been externalized for browser compatibility, imported by "/harness/node_modules/pgpass/lib/helper.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "events" has been externalized for browser compatibility, imported by "/harness/node_modules/pg/lib/native/query.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "util" has been externalized for browser compatibility, imported by "/harness/node_modules/pgpass/lib/helper.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:fs" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/mime-node/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/mime-node/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/mime-node/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/smtp-connection/data-stream.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "stream" has been externalized for browser compatibility, imported by "/harness/node_modules/split2/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/mime-node/last-newline.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/qp/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/harness/node_modules/nodemailer/dist/esm/base64/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+✓ 887 modules transformed.
+rendering chunks...
+computing gzip size...
+.output/public/assets/kysely-adapter-wbAPI-Nz.js                  0.07 kB │ gzip:   0.08 kB
+.output/public/assets/compiled-query-Dm_T9C73.js                  0.18 kB │ gzip:   0.17 kB
+.output/public/assets/-components-6mmYPrn2.js                     0.20 kB │ gzip:   0.17 kB
+.output/public/assets/verify-email-CWis3xkA.js                    0.20 kB │ gzip:   0.17 kB
+.output/public/assets/change-password-BS2X46sj.js                 0.20 kB │ gzip:   0.17 kB
+.output/public/assets/forget-password-C3BKuV8S.js                 0.20 kB │ gzip:   0.17 kB
+.output/public/assets/origin-check-BUXaya6Z.js                    0.20 kB │ gzip:   0.17 kB
+.output/public/assets/rate-limit-D-uvDMnc.js                      0.20 kB │ gzip:   0.17 kB
+.output/public/assets/reset-password-C97pZ99t.js                  0.20 kB │ gzip:   0.17 kB
+.output/public/assets/revoke-all-LWb-u1Lq.js                      0.20 kB │ gzip:   0.17 kB
+.output/public/assets/signin-CHma8GZC.js                          0.20 kB │ gzip:   0.17 kB
+.output/public/assets/signout-LYZy5lVc.js                         0.20 kB │ gzip:   0.17 kB
+.output/public/assets/signout-all-Bf-pgjcH.js                     0.20 kB │ gzip:   0.17 kB
+.output/public/assets/signup-C0wBH9xH.js                          0.20 kB │ gzip:   0.17 kB
+.output/public/assets/routes-kcHwyceb.js                          0.51 kB │ gzip:   0.34 kB
+.output/public/assets/sqlite-adapter-2vaQrsUu.js                  0.92 kB │ gzip:   0.46 kB
+.output/public/assets/node-sqlite-dialect-Dvm5pN02.js             1.81 kB │ gzip:   0.83 kB
+.output/public/assets/bun-sqlite-dialect-C1xgdqho-DPHLSvmB.js     1.81 kB │ gzip:   0.83 kB
+.output/public/assets/d1-sqlite-dialect-CFQyWgtB-BDls_fRb.js      3.02 kB │ gzip:   1.27 kB
+.output/public/assets/dist-VFPXlHrO.js                            5.52 kB │ gzip:   2.11 kB
+.output/public/assets/dist-BNtKey03.js                           82.58 kB │ gzip:  20.29 kB
+.output/public/assets/sqlite-introspector-DeY-XxNH-D-u4kPnL.js  110.05 kB │ gzip:  21.69 kB
+.output/public/assets/factory-D7ziyhvP.js                       139.76 kB │ gzip:  41.59 kB
+.output/public/assets/index-BdFQa6Fe.js                         232.19 kB │ gzip:  72.94 kB
+.output/public/assets/auth-fns-BnBrHrSC.js                      853.75 kB │ gzip: 250.89 kB
+
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 2.42s
+vite v8.3.8 building ssr environment for production...
+transforming...
+✓ 292 modules transformed.
+rendering chunks...
+computing gzip size...
+node_modules/.nitro/vite/services/ssr/nitro-service.json                                0.02 kB │ gzip:   0.04 kB
+node_modules/.nitro/vite/services/ssr/assets/kysely-adapter-D-xPxMTM.js                 0.07 kB │ gzip:   0.08 kB
+node_modules/.nitro/vite/services/ssr/assets/start-COmmreO7.js                          0.12 kB │ gzip:   0.12 kB
+node_modules/.nitro/vite/services/ssr/assets/empty-plugin-adapters-CeyhLWeJ.js          0.20 kB │ gzip:   0.14 kB
+node_modules/.nitro/vite/services/ssr/assets/core-Dw9UEf1i.js                           0.23 kB │ gzip:   0.17 kB
+node_modules/.nitro/vite/services/ssr/assets/-components-Cem9KQCf.js                    0.27 kB │ gzip:   0.22 kB
+node_modules/.nitro/vite/services/ssr/assets/verify-email-x8zn0CWh.js                   0.33 kB │ gzip:   0.23 kB
+node_modules/.nitro/vite/services/ssr/assets/signin-Bq4RmTnq.js                         0.33 kB │ gzip:   0.23 kB
+node_modules/.nitro/vite/services/ssr/assets/signup-Bz26Ikdi.js                         0.33 kB │ gzip:   0.23 kB
+node_modules/.nitro/vite/services/ssr/assets/signout-IY0wy19Y.js                        0.33 kB │ gzip:   0.23 kB
+node_modules/.nitro/vite/services/ssr/assets/signout-all-CGSrjm9h.js                    0.34 kB │ gzip:   0.23 kB
+node_modules/.nitro/vite/services/ssr/assets/reset-password-DR2-pw2F.js                 0.34 kB │ gzip:   0.24 kB
+node_modules/.nitro/vite/services/ssr/assets/forget-password-At58Yzcg.js                0.34 kB │ gzip:   0.24 kB
+node_modules/.nitro/vite/services/ssr/assets/change-password-IzHCl6R3.js                0.34 kB │ gzip:   0.24 kB
+node_modules/.nitro/vite/services/ssr/assets/rate-limit-DJYZurUs.js                     0.41 kB │ gzip:   0.28 kB
+node_modules/.nitro/vite/services/ssr/assets/origin-check-4znGdBL5.js                   0.41 kB │ gzip:   0.28 kB
+node_modules/.nitro/vite/services/ssr/assets/revoke-all-BxqXHKe7.js                     0.62 kB │ gzip:   0.41 kB
+node_modules/.nitro/vite/services/ssr/assets/routes-DOIjGnIs.js                         1.02 kB │ gzip:   0.59 kB
+node_modules/.nitro/vite/services/ssr/assets/auth-fns-C-eLnvNb.js                       1.39 kB │ gzip:   0.82 kB
+node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v-CRhjv2k4.js     2.84 kB │ gzip:   0.71 kB
+node_modules/.nitro/vite/services/ssr/assets/bun-sqlite-dialect-C1xgdqho-XzO9CsgB.js    3.04 kB │ gzip:   1.04 kB
+node_modules/.nitro/vite/services/ssr/assets/node-sqlite-dialect-DMVn6faF.js            3.04 kB │ gzip:   1.03 kB
+node_modules/.nitro/vite/services/ssr/assets/d1-sqlite-dialect-CFQyWgtB-DJVpwelZ.js     5.14 kB │ gzip:   1.69 kB
+node_modules/.nitro/vite/services/ssr/assets/auth-fns-Byh7O-gV.js                       7.22 kB │ gzip:   2.26 kB
+node_modules/.nitro/vite/services/ssr/assets/router-D1iXq2Kz.js                         9.17 kB │ gzip:   2.29 kB
+node_modules/.nitro/vite/services/ssr/assets/dist-izkb4-mR.js                          15.61 kB │ gzip:   4.36 kB
+node_modules/.nitro/vite/services/ssr/index.js                                        101.17 kB │ gzip:  25.56 kB
+node_modules/.nitro/vite/services/ssr/assets/dist-CDtXIOP_.js                         142.59 kB │ gzip:  34.88 kB
+node_modules/.nitro/vite/services/ssr/assets/auth-BlC-svRy.js                         610.59 kB │ gzip: 141.96 kB
+
+✓ built in 741ms
+
+[nitro] ◐ Building [Nitro] (preset: node-server, compatibility: 2026-11-28)
+[nitro] ✔ Generated public .output/public
+vite v8.3.8 building nitro environment for production...
+transforming...
+✓ 715 modules transformed.
+rendering chunks...
+computing gzip size...
+.output/server/_ssr/kysely-adapter-D-xPxMTM.mjs                 0.07 kB │ gzip:   0.08 kB
+.output/server/_ssr/start-COmmreO7.mjs                          0.12 kB │ gzip:   0.11 kB
+.output/server/_ssr/empty-plugin-adapters-CeyhLWeJ.mjs          0.21 kB │ gzip:   0.15 kB
+.output/server/_ssr/core-Dw9UEf1i.mjs                           0.23 kB │ gzip:   0.19 kB
+.output/server/_ssr/-components-Cem9KQCf.mjs                    0.42 kB │ gzip:   0.30 kB
+.output/server/_ssr/signin-Bq4RmTnq.mjs                         0.46 kB │ gzip:   0.30 kB
+.output/server/_ssr/signup-Bz26Ikdi.mjs                         0.46 kB │ gzip:   0.30 kB
+.output/server/_ssr/signout-IY0wy19Y.mjs                        0.46 kB │ gzip:   0.30 kB
+.output/server/_ssr/verify-email-x8zn0CWh.mjs                   0.46 kB │ gzip:   0.30 kB
+.output/server/_ssr/signout-all-CGSrjm9h.mjs                    0.46 kB │ gzip:   0.30 kB
+.output/server/_ssr/reset-password-DR2-pw2F.mjs                 0.47 kB │ gzip:   0.30 kB
+.output/server/_ssr/forget-password-At58Yzcg.mjs                0.47 kB │ gzip:   0.30 kB
+.output/server/_ssr/change-password-IzHCl6R3.mjs                0.47 kB │ gzip:   0.30 kB
+.output/server/_ssr/rate-limit-DJYZurUs.mjs                     0.54 kB │ gzip:   0.35 kB
+.output/server/_ssr/origin-check-4znGdBL5.mjs                   0.54 kB │ gzip:   0.35 kB
+.output/server/_ssr/revoke-all-BxqXHKe7.mjs                     0.74 kB │ gzip:   0.48 kB
+.output/server/_chunks/ssr-renderer.mjs                         1.13 kB │ gzip:   0.56 kB
+.output/server/_ssr/routes-DOIjGnIs.mjs                         1.22 kB │ gzip:   0.65 kB
+.output/server/_libs/defu.mjs                                   1.38 kB │ gzip:   0.57 kB
+.output/server/_runtime.mjs                                     1.89 kB │ gzip:   0.84 kB
+.output/server/_tanstack-start-manifest_v-CRhjv2k4.mjs          2.90 kB │ gzip:   0.75 kB
+.output/server/_ssr/bun-sqlite-dialect-C1xgdqho-XzO9CsgB.mjs    3.04 kB │ gzip:   1.05 kB
+.output/server/_ssr/node-sqlite-dialect-DMVn6faF.mjs            3.04 kB │ gzip:   1.04 kB
+.output/server/_ssr/d1-sqlite-dialect-CFQyWgtB-DJVpwelZ.mjs     5.13 kB │ gzip:   1.70 kB
+.output/server/_ssr/auth-fns-Byh7O-gV.mjs                       7.18 kB │ gzip:   2.24 kB
+.output/server/_ssr/router-D1iXq2Kz.mjs                        10.35 kB │ gzip:   2.87 kB
+.output/server/_libs/tanstack__history.mjs                     12.29 kB │ gzip:   3.64 kB
+.output/server/_ssr/dist-izkb4-mR.mjs                          15.60 kB │ gzip:   4.38 kB
+.output/server/_libs/seroval.mjs                               16.25 kB │ gzip:   3.88 kB
+.output/server/index.mjs                                       21.15 kB │ gzip:   6.51 kB
+.output/server/_libs/noble__hashes.mjs                         26.70 kB │ gzip:   8.84 kB
+.output/server/_libs/@tanstack/react-router+[2...].mjs         31.85 kB │ gzip:   8.53 kB
+.output/server/_libs/noble__ciphers.mjs                        47.29 kB │ gzip:  14.64 kB
+.output/server/_libs/h3+rou3+srvx.mjs                          73.25 kB │ gzip:  19.15 kB
+.output/server/_libs/jose.mjs                                  79.32 kB │ gzip:  19.60 kB
+.output/server/_ssr/ssr.mjs                                    99.51 kB │ gzip:  25.39 kB
+.output/server/_libs/@tanstack/router-core+[...].mjs          107.68 kB │ gzip:  25.62 kB
+.output/server/_libs/pg.mjs                                   149.12 kB │ gzip:  34.74 kB
+.output/server/_libs/zod.mjs                                  182.19 kB │ gzip:  40.19 kB
+.output/server/_libs/kysely.mjs                               435.05 kB │ gzip:  72.13 kB
+.output/server/_libs/nodemailer.mjs                           446.11 kB │ gzip: 114.25 kB
+.output/server/_libs/@tanstack/react-router+[...].mjs         708.26 kB │ gzip: 151.13 kB
+.output/server/_ssr/auth-BlC-svRy.mjs                         737.49 kB │ gzip: 173.93 kB
+
+✓ built in 1.35s
+ℹ Generated .output/nitro.json
+
+[nitro] ✔ You can preview this build using npx vite preview

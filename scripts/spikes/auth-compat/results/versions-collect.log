@@ -1,0 +1,55 @@
+{
+  "collectedAt": "2026-11-28T12:34:33.213Z",
+  "executionEnvironment": {
+    "mode": "container (compose runner service)",
+    "runnerImage": "node:22-bookworm",
+    "note": "container-images.txt records image IDs/RepoDigests captured from the host side by run-all.sh"
+  },
+  "node": {
+    "processVersion": "v22.23.5",
+    "ciBaseline": "22 (CI workflows/Dockerfile use node 22)",
+    "npm": "10.9.9",
+    "platform": "linux x64"
+  },
+  "harness": {
+    "path": "scripts/spikes/auth-compat/",
+    "isolatedFromRootPackage": true,
+    "declaredExact": {
+      "dependencies": {
+        "@tanstack/react-router": "1.170.46",
+        "@tanstack/react-start": "1.169.7",
+        "@vitejs/plugin-react": "5.2.0",
+        "better-auth": "1.7.28",
+        "nitro": "3.0.261103-rc",
+        "nodemailer": "10.6.1",
+        "pg": "8.23.1",
+        "react": "19.3.1",
+        "react-dom": "19.3.1",
+        "vite": "8.3.8"
+      },
+      "devDependencies": {
+        "typescript": "5.9.3"
+      }
+    },
+    "installed": {
+      "@tanstack/react-router": "1.170.46",
+      "@tanstack/react-start": "1.169.7",
+      "@vitejs/plugin-react": "5.2.0",
+      "better-auth": "1.7.28",
+      "nitro": "3.0.261103-rc",
+      "nodemailer": "10.6.1",
+      "pg": "8.23.1",
+      "react": "19.3.1",
+      "react-dom": "19.3.1",
+      "vite": "8.3.8",
+      "typescript": "5.9.3"
+    }
+  },
+  "postgresServer": "PostgreSQL 16.16 (Debian 16.16-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+  "cliPairing": {
+    "betterAuthCliInvoked": "not used; deprecated @better-auth/cli@1.4.22 cannot drive better-auth@1.7.28 (verified 2026-11-28). Harness migrates via better-auth@1.7.28's own db/migration export: node --experimental-strip-types scripts/migrate.mjs",
+    "note": "One-shot migration command paired exactly with the runtime version (FR-41); plan + result recorded in results/migration.log"
+  }
+}
+
+Written: /harness/results/versions.json

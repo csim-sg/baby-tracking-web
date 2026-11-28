@@ -1,0 +1,40 @@
+➜ Listening on: http://localhost:3300/ (all interfaces)
+2026-11-28T12:34:57.714Z WARN [Better Auth]: Password is too short
+2026-11-28T12:34:57.733Z WARN [Better Auth]: Password is too long
+2026-11-28T12:34:58.967Z WARN [Better Auth]: Invalid password
+2026-11-28T12:35:08.208Z WARN [Better Auth]: Invalid password
+2026-11-28T12:35:09.513Z WARN [Better Auth]: User not found
+2026-11-28T12:35:09.657Z WARN [Better Auth]: User not found
+2026-11-28T12:35:09.810Z WARN [Better Auth]: User not found
+2026-11-28T12:35:09.948Z WARN [Better Auth]: User not found
+2026-11-28T12:35:10.151Z WARN [Better Auth]: User not found
+2026-11-28T12:35:10.319Z WARN [Better Auth]: User not found
+2026-11-28T12:35:10.465Z WARN [Better Auth]: User not found
+2026-11-28T12:35:10.602Z WARN [Better Auth]: User not found
+2026-11-28T12:35:10.739Z WARN [Better Auth]: User not found
+2026-11-28T12:35:10.886Z WARN [Better Auth]: User not found
+2026-11-28T12:35:11.036Z WARN [Better Auth]: User not found
+2026-11-28T12:35:11.172Z WARN [Better Auth]: User not found
+2026-11-28T12:35:11.310Z WARN [Better Auth]: User not found
+2026-11-28T12:35:11.449Z WARN [Better Auth]: User not found
+2026-11-28T12:35:11.594Z WARN [Better Auth]: User not found
+2026-11-28T12:35:11.759Z WARN [Better Auth]: User not found
+2026-11-28T12:35:11.970Z WARN [Better Auth]: User not found
+2026-11-28T12:35:12.120Z WARN [Better Auth]: User not found
+2026-11-28T12:35:12.263Z WARN [Better Auth]: User not found
+2026-11-28T12:35:12.419Z WARN [Better Auth]: User not found
+2026-11-28T12:35:12.562Z WARN [Better Auth]: User not found
+2026-11-28T12:35:12.714Z WARN [Better Auth]: User not found
+2026-11-28T12:35:12.859Z WARN [Better Auth]: User not found
+2026-11-28T12:35:13.002Z WARN [Better Auth]: User not found
+2026-11-28T12:35:13.135Z WARN [Better Auth]: User not found
+2026-11-28T12:35:13.313Z WARN [Better Auth]: User not found
+2026-11-28T12:35:13.470Z WARN [Better Auth]: User not found
+2026-11-28T12:35:13.645Z WARN [Better Auth]: User not found
+2026-11-28T12:35:13.777Z WARN [Better Auth]: User not found
+2026-11-28T12:35:13.931Z WARN [Better Auth]: User not found
+2026-11-28T12:35:14.167Z WARN [Better Auth]: User not found
+2026-11-28T12:35:14.312Z WARN [Better Auth]: User not found
+2026-11-28T12:35:14.483Z WARN [Better Auth]: User not found
+2026-11-28T12:35:14.637Z WARN [Better Auth]: User not found
+

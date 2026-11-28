@@ -1,0 +1,40 @@
+# Test-only ephemeral infrastructure for the auth compatibility spike.
+# Ephemeral credentials (spiketest) are for local throwaway containers only;
+# they are not production secrets. Ports are bound to 127.0.0.1 only.
+services:
+  postgres:
+    image: postgres:16
+    container_name: auth-spike-pg16
+    environment:
+      POSTGRES_USER: spiketest
+      POSTGRES_PASSWORD: spiketest
+      POSTGRES_DB: spiketest
+    ports:
+      - "127.0.0.1:55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U spiketest -d spiketest"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: auth-spike-mailpit
+    ports:
+      - "127.0.0.1:8125:1025"
+      - "127.0.0.1:18025:8025"
+    healthcheck:
+      test: ["CMD", "busybox", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8025/api/v1/messages?limit=1"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  # Node 22 runner used when the spike runs inside the compose network
+  # (e.g. remote Docker daemon where bind mounts and published ports are not
+  # on the local host). run-all.sh syncs the harness source into /harness via
+  # docker cp and copies results back. Produces Node 22 evidence matching CI.
+  runner:
+    image: node:22-bookworm
+    container_name: auth-spike-runner
+    working_dir: /harness
+    command: ["sleep", "infinity"]

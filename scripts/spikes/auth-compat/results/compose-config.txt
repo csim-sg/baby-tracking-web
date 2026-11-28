@@ -1,0 +1,64 @@
+name: auth-compat
+services:
+  mailpit:
+    container_name: auth-spike-mailpit
+    image: axllent/mailpit:latest
+    networks:
+      default: null
+    healthcheck:
+      test:
+        - CMD
+        - busybox
+        - wget
+        - -q
+        - -O
+        - /dev/null
+        - http://127.0.0.1:8025/api/v1/messages?limit=1
+      timeout: 5s
+      interval: 2s
+      retries: 30
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 1025
+        published: "8125"
+        protocol: tcp
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 8025
+        published: "18025"
+        protocol: tcp
+  postgres:
+    container_name: auth-spike-pg16
+    environment:
+      POSTGRES_DB: spiketest
+      POSTGRES_PASSWORD: spiketest
+      POSTGRES_USER: spiketest
+    image: postgres:16
+    networks:
+      default: null
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U spiketest -d spiketest
+      timeout: 5s
+      interval: 2s
+      retries: 30
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 5432
+        published: "55432"
+        protocol: tcp
+  runner:
+    container_name: auth-spike-runner
+    command:
+      - sleep
+      - infinity
+    image: node:22-bookworm
+    networks:
+      default: null
+    working_dir: /harness
+networks:
+  default:
+    name: auth-compat_default

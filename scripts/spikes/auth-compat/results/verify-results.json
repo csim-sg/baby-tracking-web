@@ -1,0 +1,476 @@
+{
+  "startedAt": "2026-11-28T12:34:57.184Z",
+  "finishedAt": "2026-11-28T12:35:26.686Z",
+  "baseUrl": "http://127.0.0.1:3300",
+  "counts": {
+    "pass": 20,
+    "fail": 0,
+    "unsupported": 4,
+    "info": 3
+  },
+  "results": [
+    {
+      "id": "C01",
+      "name": "Ephemeral infrastructure reachable (postgres + Mailpit)",
+      "status": "pass",
+      "specRefs": [
+        "FR-41"
+      ],
+      "evidence": {
+        "pgVersion": "PostgreSQL 16.16 (Debian 16.16-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+        "mailpitOk": true
+      }
+    },
+    {
+      "id": "C02",
+      "name": "Better Auth tables migrated (postgres:16, one-shot CLI migrate)",
+      "status": "pass",
+      "specRefs": [
+        "FR-41"
+      ],
+      "evidence": {
+        "tables": [
+          "account",
+          "session",
+          "user",
+          "verification"
+        ],
+        "missing": [],
+        "note": "Migration command output captured separately in results/migration.log"
+      }
+    },
+    {
+      "id": "C03",
+      "name": "Sign-up succeeds; user persisted; cookie behavior recorded (no session while email verification required)",
+      "status": "pass",
+      "specRefs": [
+        "FR-08",
+        "FR-05",
+        "FR-06"
+      ],
+      "evidence": {
+        "userRow": {
+          "email": "hash@spike-1795869297258-245850.test.local",
+          "emailVerified": false
+        },
+        "sessionCookieIssuedOnSignup": false,
+        "rawSetCookie": null,
+        "attrs": [],
+        "verificationEmailSent": true,
+        "note": "FR-06 requires verified email before access; FR-08 cookie attributes are recorded at sign-in in C11/C12"
+      }
+    },
+    {
+      "id": "C05",
+      "name": "Password stored hashed (not plaintext)",
+      "status": "pass",
+      "specRefs": [
+        "FR-05"
+      ],
+      "evidence": {
+        "providerId": "credential",
+        "hashLength": 161,
+        "hashPrefix": "b8e5b2650ad5"
+      }
+    },
+    {
+      "id": "C04",
+      "name": "Email normalization (FR-05: trimmed + lowercased)",
+      "status": "info",
+      "specRefs": [
+        "FR-05"
+      ],
+      "evidence": {
+        "paddedSubmitted": " Norm.Case@spike-1795869297498-norm.test.local ",
+        "paddedOutcome": {
+          "status": 400,
+          "code": "APIError",
+          "message": "[body.email] Invalid email address"
+        },
+        "mixedCaseSubmitted": "Norm.Case@spike-1795869297498-norm.test.local",
+        "stored": "norm.case@spike-1795869297498-norm.test.local",
+        "betterAuthLowercased": true,
+        "finding": "better-auth 1.7.28 lowercases email on storage (FR-05 lowercase satisfied) but REJECTS space-padded input with 400 INVALID_EMAIL instead of trimming. FR-05 'trimmed' must be enforced at the app boundary (input normalization before the auth call) — include in the implementation slice."
+      }
+    },
+    {
+      "id": "C06",
+      "name": "Password below 12 chars rejected",
+      "status": "pass",
+      "specRefs": [
+        "FR-05"
+      ],
+      "evidence": {
+        "statusName": "BAD_REQUEST",
+        "code": "APIError",
+        "message": "Password too short"
+      }
+    },
+    {
+      "id": "C07",
+      "name": "Password above 128 chars rejected",
+      "status": "pass",
+      "specRefs": [
+        "FR-05"
+      ],
+      "evidence": {
+        "statusName": "BAD_REQUEST",
+        "code": "APIError",
+        "message": "Password too long"
+      }
+    },
+    {
+      "id": "C08",
+      "name": "Duplicate-email response behavior (FR-05 non-disclosure)",
+      "status": "pass",
+      "specRefs": [
+        "FR-05"
+      ],
+      "evidence": {
+        "outcomeShape": {
+          "ok": true,
+          "token": null,
+          "hasUser": true
+        },
+        "userRowCount": {
+          "before": 1,
+          "after": 1
+        },
+        "revealsExistence": false,
+        "finding": "better-auth 1.7.28 returns a GENERIC duplicate response (ok, token:null, synthetic user) and hashes the submitted password to blur timing, when requireEmailVerification is enabled (or autoSignIn:false). FR-05 non-disclosure satisfied by default under this configuration."
+      }
+    },
+    {
+      "id": "C09",
+      "name": "Sign-in blocked before email verification",
+      "status": "pass",
+      "specRefs": [
+        "FR-06"
+      ],
+      "evidence": {
+        "code": "APIError",
+        "message": "Email not verified",
+        "setCookies": []
+      }
+    },
+    {
+      "id": "C10",
+      "name": "Verification callback marks user verified; auto-sign-in behavior recorded",
+      "status": "pass",
+      "specRefs": [
+        "FR-06"
+      ],
+      "evidence": {
+        "emailVerified": true,
+        "autoSignInCookies": [
+          "better-auth.session_token"
+        ]
+      }
+    },
+    {
+      "id": "C11",
+      "name": "Sign-in sets DB-backed session; expiry matches 30-day config",
+      "status": "pass",
+      "specRefs": [
+        "FR-08"
+      ],
+      "evidence": {
+        "cookiePresent": true,
+        "dbSession": {
+          "expiresAt": "2026-12-28T12:34:58.737Z",
+          "createdAt": "2026-11-28T12:34:58.737Z",
+          "ipAddress": ""
+        },
+        "expectedExpiry": "2026-12-28T12:34:58.749Z"
+      }
+    },
+    {
+      "id": "C12",
+      "name": "Session cookie attributes (HttpOnly, SameSite, Secure-on-https)",
+      "status": "info",
+      "specRefs": [
+        "FR-08"
+      ],
+      "evidence": {
+        "rawSetCookie": "better-auth.session_token=9W10p5yLE8t6GzgQ4HFBcQaQK7Wd8znF.9DzF3HTmh%2BaADbaN%2Ff9FX6ybOX%2BsjzE5Q2mVtn9tXGo%3D; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax",
+        "note": "FR-08 requires HttpOnly, SameSite=Lax, Secure except localhost"
+      }
+    },
+    {
+      "id": "C13",
+      "name": "SSR reads DB-backed session from cookie in a TanStack Start server function",
+      "status": "pass",
+      "specRefs": [
+        "FR-08",
+        "AC-02"
+      ],
+      "evidence": {
+        "authenticatedMarkerFound": true,
+        "anonymousMarkerFound": true,
+        "cookieSent": "better-auth.session_token=...(present)",
+        "sessionFnOutput": {
+          "authenticated": true,
+          "user": {
+            "email": "hash@spike-1795869297258-245850.test.local",
+            "name": "Hash",
+            "emailVerified": true
+          },
+          "session": {
+            "id": "AKNCcrPcUtr3sZXaZkGFaLn4JzlApIQu",
+            "expiresAt": "2026-12-28T12:34:58.737Z",
+            "token": "9W10p5yLE8t6GzgQ4HFBcQaQK7Wd8znF",
+            "ipAddress": "",
+            "userAgent": "node"
+          }
+        }
+      }
+    },
+    {
+      "id": "C14",
+      "name": "Wrong password rejected, no session issued",
+      "status": "pass",
+      "specRefs": [
+        "FR-05"
+      ],
+      "evidence": {
+        "code": "APIError",
+        "setCookies": []
+      }
+    },
+    {
+      "id": "C15",
+      "name": "Session refresh on activity (expiresAt/updatedAt advance after use)",
+      "status": "pass",
+      "specRefs": [
+        "FR-08"
+      ],
+      "evidence": {
+        "expiresBefore": "2026-12-28T12:34:58.737Z",
+        "expiresAfter": "2026-12-28T12:35:01.983Z",
+        "updatedAdvanced": true,
+        "note": "harness uses updateAge=1s to make refresh observable"
+      }
+    },
+    {
+      "id": "C16",
+      "name": "Sign-out revokes current session (cookie cleared, DB row deleted, SSR anonymous)",
+      "status": "pass",
+      "specRefs": [
+        "FR-08"
+      ],
+      "evidence": {
+        "dbRowDeleted": true,
+        "clearCookies": [
+          "better-auth.dont_remember"
+        ],
+        "anonymousAfter": true
+      }
+    },
+    {
+      "id": "C17",
+      "name": "Sign-out-all revokes every session",
+      "status": "pass",
+      "specRefs": [
+        "FR-08"
+      ],
+      "evidence": {
+        "remainingSessions": 0,
+        "jar2Anonymous": true,
+        "jar3Anonymous": true
+      }
+    },
+    {
+      "id": "C18",
+      "name": "Session revocation is DB-backed (row deletion invalidates cookie)",
+      "status": "pass",
+      "specRefs": [
+        "FR-08"
+      ],
+      "evidence": {
+        "deletedRow": "I1Fl7NnyLsFNtCQVKJ1oJK4dtTrFbfDu",
+        "anonymousAfterDelete": true
+      }
+    },
+    {
+      "id": "C19",
+      "name": "Reset email over SMTP; single-use reset works; old password dead (FR-07)",
+      "status": "pass",
+      "specRefs": [
+        "FR-07"
+      ],
+      "evidence": {
+        "oldPasswordRejected": true,
+        "newPasswordAccepted": true,
+        "preResetSessionRevoked": false,
+        "sessionsBeforeReset": 0,
+        "sessionsAfterReset": 2,
+        "finding": "better-auth 1.7.28 resetPassword does NOT revoke existing sessions on success (FR-07 requires it; pre-reset session stayed valid in this run). ADR-002 must pair reset success with an explicit revokeSessions + re-sign-in (demonstrated in C19b)."
+      }
+    },
+    {
+      "id": "C19b",
+      "name": "FR-07-compliant pattern: reset + explicit revokeSessions",
+      "status": "pass",
+      "specRefs": [
+        "FR-07"
+      ],
+      "evidence": {
+        "revokeAllOk": true,
+        "staleSessionInvalidAfterRevoke": true,
+        "note": "Harness pattern for ADR-002: after reset success, call auth.api.revokeSessions; user re-authenticates."
+      }
+    },
+    {
+      "id": "C20",
+      "name": "Reset token is single-use (replay rejected)",
+      "status": "pass",
+      "specRefs": [
+        "FR-07"
+      ],
+      "evidence": {
+        "code": "APIError",
+        "message": "Invalid token"
+      }
+    },
+    {
+      "id": "C23",
+      "name": "Change-password with revokeOtherSessions=true (built-in behavior)",
+      "status": "unsupported",
+      "specRefs": [
+        "FR-08"
+      ],
+      "evidence": {
+        "changeOk": true,
+        "currentSessionValid": true,
+        "otherSessionRevoked": false,
+        "finding": "Reproduced: better-auth 1.7.28 changePassword with revokeOtherSessions=true rotates the CURRENT session but other sessions stay valid (the in-transaction deleteUserSessions does not persist with the built-in pg/Kysely adapter; standalone auth.api.revokeSessions works). FR-08 'password changes MUST revoke all sessions' requires the app-level pattern demonstrated in C23b."
+      }
+    },
+    {
+      "id": "C23b",
+      "name": "FR-08-compliant pattern: changePassword + explicit revokeSessions",
+      "status": "pass",
+      "specRefs": [
+        "FR-08"
+      ],
+      "evidence": {
+        "revokeAllOk": true,
+        "sessionAInvalidAfterRevoke": true,
+        "sessionBInvalidAfterRevoke": true,
+        "note": "Harness pattern for ADR-002: changePassword, then auth.api.revokeSessions, then force re-authentication."
+      }
+    },
+    {
+      "id": "C21",
+      "name": "Verification/reset token TTL recorded (pre-consumption)",
+      "status": "info",
+      "specRefs": [
+        "FR-06",
+        "FR-07"
+      ],
+      "evidence": {
+        "observedTtls": [
+          {
+            "identifier": null,
+            "source": "email-verification",
+            "ttlHours": null,
+            "note": "row not found pre-consumption"
+          },
+          {
+            "identifier": "reset-password:M4tz6A1h5Ctx72AUnRkLKnhz",
+            "source": "password-reset",
+            "ttlHours": 1
+          }
+        ],
+        "configTargets": {
+          "resetToken": "resetPasswordTokenExpiresIn: 3600s (60 min) per FR-07",
+          "verificationLink": "FR-06 target 24h; better-auth emailVerification.expiresIn configuration observed in docs defaults (recorded if captured)"
+        }
+      }
+    },
+    {
+      "id": "C24",
+      "name": "Origin/CSRF check: disallowed Origin with cookies rejected; trusted Origin passes the gate",
+      "status": "unsupported",
+      "specRefs": [
+        "AC-02"
+      ],
+      "evidence": {
+        "evilWithCookie": {
+          "statusName": "UNAUTHORIZED",
+          "code": "APIError",
+          "message": "Invalid email or password"
+        },
+        "evilWithoutCookie": {
+          "statusName": "UNAUTHORIZED",
+          "code": "APIError",
+          "message": "Invalid email or password"
+        },
+        "trustedWithCookie": {
+          "statusName": "UNAUTHORIZED",
+          "code": "APIError",
+          "message": "Invalid email or password"
+        },
+        "finding": "better-auth validateOrigin only engages when the request carries a cookie header (useCookies) or forceValidate; without cookies the origin gate is skipped entirely (recorded as observed behavior)."
+      }
+    },
+    {
+      "id": "C25",
+      "name": "Rate limiting: excessive failures produce 429 within window",
+      "status": "unsupported",
+      "specRefs": [
+        "AC-02"
+      ],
+      "evidence": {
+        "statusesSample": [
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED",
+          "UNAUTHORIZED"
+        ],
+        "first429Index": -1,
+        "config": "window=10s max=20 (memory storage)",
+        "note": "storage=memory is single-instance; horizontal scaling needs database/redis storage - recorded as limitation"
+      }
+    },
+    {
+      "id": "C26",
+      "name": "Raw HTTP mount of Better Auth handler via nitro server route (/api/auth/*)",
+      "status": "unsupported",
+      "specRefs": [
+        "FR-08"
+      ],
+      "evidence": {
+        "mounted": false,
+        "httpFlow": null,
+        "note": "@tanstack/react-start@1.169.7 + nitro vite plugin did not register harness server/routes; programmatic auth.api surface is the available integration path (see C24 for origin behavior through it)."
+      }
+    }
+  ]
+}

@@ -2,19 +2,24 @@
 
 ## Repository Identity
 
-This repository is `csim-sg/baby-tracking-web`. Toddlebook is a printable 24-hour child-care log. The current product is a browser-based sheet configurator and print view. Paid accounts, digital tracking, spreadsheet export, saved profiles and history, caregiver access, and a mobile app are planned direction only; they are not implemented or specified here.
+This repository is `csim-sg/baby-tracking-web`. Toddlebook is a printable 24-hour child-care log. The current product is a browser-based sheet configurator and print view. The founder-approved [SPEC-002](https://github.com/Antpolis/documentation/blob/docs/spec-002-baby-tracking-web/02-Architecture-Landscape/projects/baby-tracking-web/SPEC-002-cloud-and-self-hosted-digital-care-logs.md) adds optional owner-only digital care logs, history, saved sheet-setting templates, filled-log browser printing, a cloud subscription, and an equivalent self-hosted deployment. That work is specified and architected but **not implemented** here: [ARCH-002](https://github.com/Antpolis/documentation/blob/docs/spec-002-baby-tracking-web/02-Architecture-Landscape/projects/baby-tracking-web/architecture/ARCH-002-digital-care-log-target-architecture.md) is the target architecture and [ADR-002](https://github.com/Antpolis/documentation/blob/docs/spec-002-baby-tracking-web/02-Architecture-Landscape/projects/baby-tracking-web/architecture/ADR-002-cloud-self-host-auth-persistence-billing.md) records the technical decisions. Spreadsheet export, caregiver/household sharing, doctor-review reporting, native apps, offline/sync, and server-side PDF remain out of scope.
 
 ## Project Structure
 
 - `src/routes/index.tsx` contains the sheet configuration, preview, and print action.
 - `src/routes/__root.tsx`, `src/main.tsx`, `src/router.tsx`, and `src/ssr.tsx` are the TanStack Start and router entry points.
 - `src/styles/app.css` contains the Tailwind-managed application and print styles.
+- `scripts/parity/` contains the committed styling/print parity harness and baseline; `scripts/spikes/auth-compat/` retains the test-only auth compatibility evidence for ADR-002.
 - `vite.config.ts` configures the Vite/TanStack Start build and Nitro Node server output.
 - `Dockerfile`, `compose.yaml`, and `compose.prod.yaml` define the container build, local Compose runtime, and production Traefik overlay.
+
+Planned SPEC-002 modules (not present at `main`): `src/routes/app/*`, `src/routes/api/*`, `src/domain/sheet-config`, and `src/server/{db,auth,billing,care}`. See ARCH-002 for the target boundaries; do not describe them as current.
 
 ## Architecture And Runtime
 
 TanStack Start renders the application with SSR. Sheet configuration is held in browser-side React state; there is no application database, login, or server-side sheet processing. The GTM script loads immediately on every page (no consent gate). Printing uses the browser print dialog. The production build emits Nitro output, and the container starts `node .output/server/index.mjs` on port 3000.
+
+**Target architecture (SPEC-002) is not implemented.** ARCH-002 defines a modular monolith: one TanStack Start/Nitro application plus one PostgreSQL 16+ schema, with `/` free of digital imports, `/app` routes, an immutable log snapshot for filled print, self-hostable Better Auth sessions, and cloud-only Stripe composition. `DEPLOYMENT_MODE=cloud|selfhost` and `CLOUD_APP_ENABLED` control the digital surface; `/healthz` and `/readyz` separate liveness from digital readiness. No target module, database, auth, billing, migration, or self-host PostgreSQL path exists at `main` yet.
 
 ## Commands
 
@@ -25,7 +30,7 @@ TanStack Start renders the application with SSR. Sheet configuration is held in 
 - `npm run parity:verify` verifies the served production build against the committed styling baseline. Build and serve the production build first (`npm run build && npm run start`), then run it with `BASE_URL` pointing at that server (see `scripts/parity/README.md`).
 - `npm run parity:capture` captures a parity baseline document. Widening a tolerance or recapturing the committed baseline to make a run pass is a specification change, not a fix.
 
-The styling parity harness under `scripts/parity/` guards visual and print equivalence against the committed baseline (`scripts/parity/baseline/baseline.json`). GitHub Actions CI runs build, parity, and container build; production deployment is gated and disabled until configured (see `README.md`). There is no conventional unit-test suite.
+The styling parity harness under `scripts/parity/` guards visual and print equivalence against the committed baseline (`scripts/parity/baseline/baseline.json`). GitHub Actions CI runs build, parity, and container build; production deployment runs only after successful CI on `main` and only when `DEPLOY_ENABLED=true` (see `README.md` and `.github/workflows/deploy.yaml`). There is no conventional unit-test suite yet. Planned digital-service commands (one-shot migration and operator password reset) do not exist; their names and packaging are defined by the implementation issues and ARCH-002, so do not assume a command exists.
 
 ## Delivery Workflow
 
@@ -34,7 +39,7 @@ The styling parity harness under `scripts/parity/` guards visual and print equiv
 3. Use GitHub for issue status, ownership, handoffs, blockers, review, and approval.
 4. Use `/Users/chrissim/.agents/scripts/gh_project_helper.sh` for GitHub workflow operations. It loads this repository's `.github-project.env` itself.
 5. The configured GitHub repository is `csim-sg/baby-tracking-web`, and the project board is #4. Board workflow operations use its canonical `Workflow State` field.
-6. Durable project documentation lives at `/Users/chrissim/Projects/Docs/02-Architecture-Landscape/projects/baby-tracking-web`. Start with `PROJECT_OVERVIEW.md` and follow its linked architecture and project-structure notes.
+6. Durable project documentation lives at `/Users/chrissim/Projects/Docs/02-Architecture-Landscape/projects/baby-tracking-web`. Start with `PROJECT_OVERVIEW.md` and follow its linked architecture and project-structure notes. ARCH-001 is current state only; ARCH-002 is the SPEC-002 target. The SPEC-002/ARCH-002/ADR-002 records currently live on the `docs/spec-002-baby-tracking-web` branch, so use the branch-pinned links from the issue until they are merged to `master`.
 
 ## Project Configuration
 
@@ -67,4 +72,4 @@ export ANT_TEAM_DOCS_PROJECT_PATH='/Users/chrissim/Projects/Docs/02-Architecture
 
 ## Change Guidance
 
-Keep sheet configuration and print behavior aligned between the interactive preview and printed A4 landscape output. Do not add server persistence, paid account behavior, spreadsheet integrations, or mobile architecture without an approved requirement and recorded durable context.
+Keep sheet configuration and print behavior aligned between the interactive preview and printed A4 landscape output. Do not add server persistence, paid account behavior, spreadsheet integrations, or mobile architecture outside an approved requirement and recorded durable context (SPEC-002, ARCH-002, ADR-002, and later issue evidence). Follow ARCH-002's module boundaries: `/` imports no database, auth, billing, or `/app` server module; care services import no Stripe, subscription state, or deployment mode; one PostgreSQL schema and one auth path serve both modes; no native/offline/sync/sharing scope; preserve the committed `/` parity baseline and the ADR-001 styling/print convention.

@@ -9,17 +9,18 @@ This repository is `csim-sg/baby-tracking-web`. Toddlebook is a printable 24-hou
 - `src/routes/index.tsx` contains the sheet configuration, preview, and print action.
 - `src/routes/__root.tsx`, `src/main.tsx`, `src/router.tsx`, and `src/ssr.tsx` are the TanStack Start and router entry points.
 - `src/styles/app.css` contains the Tailwind-managed application and print styles.
-- `scripts/parity/` contains the committed styling/print parity harness and baseline; `scripts/spikes/auth-compat/` retains the test-only auth compatibility evidence for ADR-002.
+- `src/server/` holds the SPEC-002 server foundation: runtime mode configuration and the digital readiness state (`runtime-config.ts`, `readiness.ts`, `server-flags.ts`, `digital-gate.ts`, `handlers/` — root-level `/healthz` and `/readyz` plus the fail-closed digital gate; issue #22), and `src/server/db/` — the Drizzle/PostgreSQL schema, committed SQL migrations, the one-shot `npm run migrate` command (`scripts/migrate.mjs`), and the read-only `database` readiness check (issue #23). See `src/server/db/README.md` for migration ownership and semantics.
+- `scripts/parity/` contains the committed styling/print parity harness and baseline; `scripts/smoke/` contains built-server smoke scripts; `scripts/spikes/auth-compat/` retains the test-only auth compatibility evidence for ADR-002.
 - `vite.config.ts` configures the Vite/TanStack Start build and Nitro Node server output.
 - `Dockerfile`, `compose.yaml`, and `compose.prod.yaml` define the container build, local Compose runtime, and production Traefik overlay.
 
-Planned SPEC-002 modules (not present at `main`): `src/routes/app/*`, `src/routes/api/*`, `src/domain/sheet-config`, and `src/server/{db,auth,billing,care}`. See ARCH-002 for the target boundaries; do not describe them as current.
+SPEC-002 modules still planned (not present at `main`): `src/routes/app/*`, `src/routes/api/*`, `src/domain/sheet-config`, and `src/server/{auth,billing,care}` (auth wiring, billing composition, care services; issues #24+). See ARCH-002 for the target boundaries; do not describe planned modules as current.
 
 ## Architecture And Runtime
 
-TanStack Start renders the application with SSR. Sheet configuration is held in browser-side React state; there is no application database, login, or server-side sheet processing. The GTM script loads immediately on every page (no consent gate). Printing uses the browser print dialog. The production build emits Nitro output, and the container starts `node .output/server/index.mjs` on port 3000.
+TanStack Start renders the application with SSR. Sheet configuration is held in browser-side React state; there is no login and no server-side sheet processing, and no route reads or writes the database yet. The server computes the deployment mode and digital-readiness state from `DEPLOYMENT_MODE=cloud|selfhost` and `CLOUD_APP_ENABLED`, serves root-level `/healthz` (liveness, database-free) and `/readyz` (digital readiness), and fails the digital surface (`/app`, auth pages, `/api/auth/*`, `/api/stripe/webhook`) closed. `/readyz` observes a registered, read-only, bounded `database` dependency check (connectivity plus schema presence); the app never migrates at startup. The GTM script loads on cloud `/` only (no consent gate). Printing uses the browser print dialog. The production build emits Nitro output, and the container starts `node .output/server/index.mjs` on port 3000.
 
-**Target architecture (SPEC-002) is not implemented.** ARCH-002 defines a modular monolith: one TanStack Start/Nitro application plus one PostgreSQL 16+ schema, with `/` free of digital imports, `/app` routes, an immutable log snapshot for filled print, self-hostable Better Auth sessions, and cloud-only Stripe composition. `DEPLOYMENT_MODE=cloud|selfhost` and `CLOUD_APP_ENABLED` control the digital surface; `/healthz` and `/readyz` separate liveness from digital readiness. No target module, database, auth, billing, migration, or self-host PostgreSQL path exists at `main` yet.
+**Target architecture (SPEC-002) is partially implemented.** ARCH-002 defines a modular monolith: one TanStack Start/Nitro application plus one PostgreSQL 16+ schema, with `/` free of digital imports, `/app` routes, an immutable log snapshot for filled print, self-hostable Better Auth sessions, and cloud-only Stripe composition. At `main`, the foundation (modes, readiness, fail-closed gates), the database schema and migrations, and the `database` readiness check exist; auth wiring, billing, care services, `/app` routes, and self-host packaging do not (issues #24+).
 
 ## Commands
 
@@ -27,10 +28,13 @@ TanStack Start renders the application with SSR. Sheet configuration is held in 
 - `npm run build` creates the production build.
 - `npm run start` starts the built Nitro server.
 - `npm run format` formats the source files.
+- `npm run typecheck` runs `tsc --noEmit`.
+- `npm test` runs the Vitest suite. Unit tests under `tests/unit/` need no services; schema integration tests under `tests/integration/` require a disposable PostgreSQL 16 (`TEST_DATABASE_URL`) and skip when it is unset.
+- `npm run migrate` is the one-shot migration command (FR-41): it runs the Better Auth 1.7.28 migration runner for the auth-owned tables first, then the committed SQL migrations for the application tables. Forward-only, transactional per application migration file, idempotent on re-run, fail-fast non-zero. The app never migrates at startup; see `src/server/db/README.md`.
 - `npm run parity:verify` verifies the served production build against the committed styling baseline. Build and serve the production build first (`npm run build && npm run start`), then run it with `BASE_URL` pointing at that server (see `scripts/parity/README.md`).
 - `npm run parity:capture` captures a parity baseline document. Widening a tolerance or recapturing the committed baseline to make a run pass is a specification change, not a fix.
 
-The styling parity harness under `scripts/parity/` guards visual and print equivalence against the committed baseline (`scripts/parity/baseline/baseline.json`). GitHub Actions CI runs build, parity, and container build; production deployment runs only after successful CI on `main` and only when `DEPLOY_ENABLED=true` (see `README.md` and `.github/workflows/deploy.yaml`). There is no conventional unit-test suite yet. Planned digital-service commands (one-shot migration and operator password reset) do not exist; their names and packaging are defined by the implementation issues and ARCH-002, so do not assume a command exists.
+The styling parity harness under `scripts/parity/` guards visual and print equivalence against the committed baseline (`scripts/parity/baseline/baseline.json`). GitHub Actions CI runs `npm ci`, build, parity verify, and container build; production deployment runs only after successful CI on `main` and only when `DEPLOY_ENABLED=true` (see `README.md` and `.github/workflows/deploy.yaml`). CI does **not** run `npm run typecheck` or `npm test` — those are builder/reviewer evidence until issue #35 wires them into CI. An operator password-reset command does not exist yet (issue #24+); do not assume one does.
 
 ## Delivery Workflow
 

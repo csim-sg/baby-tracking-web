@@ -12,9 +12,9 @@
 //   mode-unknown               DEPLOYMENT_MODE=nonsense
 //   cloud-launch-disabled      DEPLOYMENT_MODE=cloud               (CLOUD_APP_ENABLED defaults false)
 //   cloud-enabled-unready      DEPLOYMENT_MODE=cloud CLOUD_APP_ENABLED=true          (no digital vars)
-//   cloud-enabled-unready-vars DEPLOYMENT_MODE=cloud CLOUD_APP_ENABLED=true + all digital vars (DB module uninitialized)
+//   cloud-enabled-unready-vars DEPLOYMENT_MODE=cloud CLOUD_APP_ENABLED=true + all digital vars (DB check registered; the placeholder DATABASE_URL fails it)
 //   selfhost-unready           DEPLOYMENT_MODE=selfhost            (no vars)
-//   selfhost-unready-vars      DEPLOYMENT_MODE=selfhost + vars     (DB module uninitialized)
+//   selfhost-unready-vars      DEPLOYMENT_MODE=selfhost + vars     (DB check registered; the placeholder DATABASE_URL fails it)
 //
 // Every check asserts HTTP status AND content-type AND a body marker — the
 // SSR catch-all returns 200 text/html for unmatched paths, so a status-only
@@ -59,7 +59,7 @@ const SCENARIOS = {
       status: 503,
       problemVariable: null,
       ready: false,
-      checkUninitialized: "database",
+      checkStatus: { name: "database", status: "fail" },
     },
     digital: 503,
     webhook: 503,
@@ -76,7 +76,7 @@ const SCENARIOS = {
       status: 503,
       problemVariable: null,
       ready: false,
-      checkUninitialized: "database",
+      checkStatus: { name: "database", status: "fail" },
     },
     digital: 503,
     webhook: 404,
@@ -217,13 +217,13 @@ async function runRouteChecks() {
         `readyz must name ${expected.readyz.problemVariable}; problems ${JSON.stringify(parsed.problems)}`,
       );
     }
-    if (expected.readyz.checkUninitialized) {
+    if (expected.readyz.checkStatus) {
       const entry = (parsed.checks ?? []).find(
-        (entry) => entry.name === expected.readyz.checkUninitialized,
+        (entry) => entry.name === expected.readyz.checkStatus.name,
       );
       assert(
-        entry?.status === "uninitialized",
-        `expected ${expected.readyz.checkUninitialized} uninitialized; checks ${JSON.stringify(parsed.checks)}`,
+        entry?.status === expected.readyz.checkStatus.status,
+        `expected ${expected.readyz.checkStatus.name} ${expected.readyz.checkStatus.status}; checks ${JSON.stringify(parsed.checks)}`,
       );
     }
     assert(

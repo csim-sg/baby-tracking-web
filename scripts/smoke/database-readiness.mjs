@@ -13,9 +13,10 @@
 // --database-status fail  PostgreSQL stopped OR schema missing/partial
 //
 // Asserts, in the requested state:
-// - GET /readyz JSON: checks contains { name: "database", status } — the
-//   check was REGISTERED AT SERVER START, so the very first cold-start
-//   request already evaluates it (never "uninitialized");
+// - GET /readyz JSON: checks contains { name: "database", status } AND
+//   { name: "auth", status } (issue #24: the auth check is registered at
+//   server start alongside the database check — both evaluated on the very
+//   first cold-start request, never "uninitialized"; stripe stays #29);
 // - when ok is requested, the database entry is "ok"; when fail is
 //   requested, "fail" with a SANITIZED detail (no URL/scheme, no "@", no
 //   credential-ish material, no driver error text);
@@ -76,6 +77,32 @@ check(
   databaseCheck?.status === expectedDatabaseStatus,
   `checks ${JSON.stringify(parsed?.checks)}`,
 );
+
+// Issue #24: the auth check is registered at server start too — it must be
+// evaluated on the same cold-start request (ok when the database is ok, a
+// sanitized failure otherwise; never "uninitialized"), and stripe must stay
+// uninitialized until #29 registers it.
+const authCheck = (parsed?.checks ?? []).find((c) => c.name === "auth");
+check(
+  `checks contains auth, evaluated (never uninitialized)`,
+  authCheck !== undefined && authCheck.status !== "uninitialized",
+  `checks ${JSON.stringify(parsed?.checks)}`,
+);
+check(
+  `auth check status follows the database state (expected ${expectedDatabaseStatus})`,
+  authCheck?.status === expectedDatabaseStatus,
+  `checks ${JSON.stringify(parsed?.checks)}`,
+);
+if (parsed?.digitalEnabled) {
+  const stripeCheck = (parsed?.checks ?? []).find(
+    (c) => c.name === "stripe",
+  );
+  check(
+    "stripe stays uninitialized until #29 (cloud readiness 200 must not be claimed)",
+    stripeCheck === undefined || stripeCheck.status === "uninitialized",
+    `checks ${JSON.stringify(parsed?.checks)}`,
+  );
+}
 
 if (expectedDatabaseStatus === "fail") {
   const detail = String(databaseCheck?.detail ?? "");

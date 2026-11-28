@@ -153,7 +153,7 @@ describeDb("PostgreSQL schema and owner constraints (#23)", () => {
     expect(second.output).not.toContain("FAILED");
   });
 
-  it("all ten tables exist: six application + four auth-owned", async () => {
+  it("exactly the required tables exist: six application + four auth-owned + rate_limit", async () => {
     const tables = (
       await query(
         `SELECT table_name FROM information_schema.tables
@@ -161,33 +161,39 @@ describeDb("PostgreSQL schema and owner constraints (#23)", () => {
           ORDER BY table_name`,
       )
     ).map((row) => String(row.table_name));
-    for (const expected of [
+    const expected = [
       "account",
       "care_entry",
       "child_profile",
       "day_log",
+      "rate_limit",
       "session",
       "sheet_template",
       "stripe_event",
       "subscription",
       "user",
       "verification",
-    ]) {
-      expect(tables).toContain(expected);
+    ];
+    for (const name of expected) {
+      expect(tables).toContain(name);
     }
-    // No migration-state table beyond the SPEC set.
-    expect(tables).toEqual([
-      "account",
-      "care_entry",
-      "child_profile",
-      "day_log",
-      "session",
-      "sheet_template",
-      "stripe_event",
-      "subscription",
-      "user",
-      "verification",
-    ]);
+    // No migration-state table beyond the SPEC set + the one disclosed
+    // ADR-002 operational table (rate_limit, issue #24 carry-forward #6).
+    expect(tables).toEqual(expected);
+  });
+
+  it("the rate_limit table stores hashed opaque keys only (no clear email/IP)", async () => {
+    const columns = await query(
+      `SELECT column_name, data_type, is_nullable, column_default
+        FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'rate_limit'
+        ORDER BY ordinal_position`,
+    );
+    const names = columns.map((column) => String(column.column_name));
+    expect(names).toEqual(["key", "window_start", "count"]);
+    expect(String(columns.find((c) => String(c.column_name) === "key")?.data_type)).toBe(
+      "text",
+    );
   });
 
   it("SPEC columns, types and defaults exist (spot-checked per table)", async () => {

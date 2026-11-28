@@ -6,15 +6,22 @@
  * → `runMigrations()`, invoked first by `npm run migrate` because the
  * application tables reference `user`).
  *
- * This module is NOT the runtime auth instance: no routes, handlers or
- * session flows are wired here (issue #24 owns auth lifecycle wiring and may
- * extend or supersede this configuration). The options mirror the FR-05–FR-08
- * knobs the #18 compatibility spike proved so the migrated table set matches
- * the intended runtime shape (password 12–128, 30-day sessions). Telemetry is
- * disabled — self-host must not phone home (FR-03/FR-42/AC-12).
+ * RUNNER-ONLY by design (carry-forward #5/#8): this module must never grow
+ * routes, handlers or session flows — the runtime auth instance is
+ * `src/server/auth/instance.ts`. Both consumers spread the SAME
+ * schema-relevant core from `src/server/auth/base-options.ts`, so the
+ * migrated table set cannot drift from the runtime options; if the runtime
+ * options ever change the migrated auth table set, `npm run migrate`
+ * idempotency and the exactly-N-tables integration assertion must be
+ * re-proven in the same change. Telemetry is disabled — self-host must not
+ * phone home (FR-03/FR-42/AC-12).
  */
 
 import type { BetterAuthOptions } from "better-auth";
+// Explicit .ts extension: this module is loaded by `scripts/migrate.mjs`
+// under Node's --experimental-strip-types, which resolves relative imports
+// only with extensions (tsconfig allows importing TS extensions).
+import { baseAuthOptions } from "../auth/base-options.ts";
 
 /**
  * Builds the migration-runner options. `database` accepts the pg Pool the
@@ -23,18 +30,7 @@ import type { BetterAuthOptions } from "better-auth";
 export function authMigrationOptions(
   database: BetterAuthOptions["database"],
 ): BetterAuthOptions {
-  return {
-    appName: "toddlebook",
-    baseURL: process.env.APP_URL ?? "http://127.0.0.1:3000",
-    database,
-    emailAndPassword: {
-      enabled: true,
-      minPasswordLength: 12,
-      maxPasswordLength: 128,
-    },
-    session: {
-      expiresIn: 60 * 60 * 24 * 30,
-    },
-    telemetry: { enabled: false },
-  } satisfies BetterAuthOptions;
+  return baseAuthOptions(
+    database as NonNullable<BetterAuthOptions["database"]>,
+  );
 }

@@ -3,7 +3,7 @@
 // the 503/404 gate response for every method so no digital path can fall
 // through to the SSR catch-all (which would return the `/` document, GTM
 // included, with a 200).
-import { defineEventHandler, setResponseStatus } from "h3";
+import { defineEventHandler, setResponseStatus } from "nitro/h3";
 
 import { digitalGateResponse, type DigitalSurface } from "../digital-gate";
 

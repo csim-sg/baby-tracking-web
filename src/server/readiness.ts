@@ -9,8 +9,9 @@
  * not initialized or its check fails, the digital surface is not ready and
  * must fail closed.
  *
- * Pure functions; the server caches one state per process (the process
- * environment is static after boot) via `getDigitalReadiness()`.
+ * Pure functions; `getDigitalReadiness()` recomputes the state from the
+ * live environment and the registry on every call (FR-43: readiness must
+ * reflect per-request reachability, so nothing is memoized).
  */
 
 import type {
@@ -57,15 +58,39 @@ export type DigitalReadiness = {
  * check at initialization time; until then the readiness state reports the
  * dependency as uninitialized, which fails `/readyz` and the digital
  * routes closed.
+ *
+ * The registry array is anchored on `globalThis` under a stable namespaced
+ * key instead of module scope: the bundler can emit a shared server module
+ * into more than one server graph (main bundle and SSR bundle), and each
+ * copy would then own a different module-scope array. A check registered
+ * through any copy must be visible to every copy in the process, so the
+ * array itself is process-wide.
  */
-const dependencyChecks: DependencyCheck[] = [];
+type GlobalWithRegistry = typeof globalThis & {
+  /**
+   * Process-wide digital dependency check registry, shared by every bundled
+   * copy of this module (see above). Never set by anything else.
+   */
+  __toddlebook_digital_dependency_checks__?: DependencyCheck[];
+};
+
+function dependencyChecksRegistry(): DependencyCheck[] {
+  const store = globalThis as GlobalWithRegistry;
+  const existing = store.__toddlebook_digital_dependency_checks__;
+  if (existing) {
+    return existing;
+  }
+  const created: DependencyCheck[] = [];
+  store.__toddlebook_digital_dependency_checks__ = created;
+  return created;
+}
 
 export function registerDigitalDependencyCheck(check: DependencyCheck): void {
-  dependencyChecks.push(check);
+  dependencyChecksRegistry().push(check);
 }
 
 export function getRegisteredDependencyChecks(): readonly DependencyCheck[] {
-  return dependencyChecks;
+  return dependencyChecksRegistry();
 }
 
 /**
@@ -169,13 +194,12 @@ export async function computeReadiness(
   };
 }
 
-let cachedReadiness: Promise<DigitalReadiness> | null = null;
-
 /**
- * Process-wide readiness state, computed once from the live environment.
- * Server-side only.
+ * Current readiness state from the live environment, recomputed on every
+ * call (FR-43: live per-request reachability — the result is never cached,
+ * so lazily registered checks and later dependency failures/recoveries are
+ * observed on the next request). Server-side only.
  */
 export function getDigitalReadiness(): Promise<DigitalReadiness> {
-  cachedReadiness ??= computeReadiness(readRuntimeConfig());
-  return cachedReadiness;
+  return computeReadiness(readRuntimeConfig());
 }

@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   computeReadiness,
+  getDigitalReadiness,
   getRegisteredDependencyChecks,
   registerDigitalDependencyCheck,
   type DependencyCheck,
@@ -235,5 +236,55 @@ describe("dependency registry", () => {
       status: "uninitialized",
       detail: "auth module not initialized",
     });
+  });
+});
+
+describe("getDigitalReadiness — per-request recomputation (FR-43)", () => {
+  it("observes a registered check's state change on the next call instead of replaying the first result", async () => {
+    const savedEnv = { ...process.env };
+    // Stateful dependency: its reachability changes between calls, like a
+    // dependency that initializes lazily or goes down and recovers.
+    let stripeUp = true;
+    try {
+      // Enabled cloud configuration: every catalog dependency participates.
+      Object.assign(process.env, CLOUD_ENABLED_ENV);
+
+      registerDigitalDependencyCheck({
+        name: "stripe",
+        modes: ["cloud"],
+        run: () =>
+          stripeUp
+            ? { ok: true, detail: "reachable" }
+            : { ok: false, detail: "went down" },
+      });
+
+      const first = await getDigitalReadiness();
+      expect(first.checks).toContainEqual({
+        name: "stripe",
+        status: "ok",
+        detail: "reachable",
+      });
+
+      // Dependency degrades after the first observation:
+      stripeUp = false;
+      const second = await getDigitalReadiness();
+      expect(second.checks).toContainEqual({
+        name: "stripe",
+        status: "fail",
+        detail: "went down",
+      });
+      expect(second.ready).toBe(false);
+
+      // And recovers — nothing is cached in either direction:
+      stripeUp = true;
+      const third = await getDigitalReadiness();
+      expect(third.checks).toContainEqual({
+        name: "stripe",
+        status: "ok",
+        detail: "reachable",
+      });
+    } finally {
+      process.env = savedEnv;
+    }
   });
 });

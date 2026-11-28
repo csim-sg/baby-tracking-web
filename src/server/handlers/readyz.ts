@@ -2,7 +2,7 @@
 // digital dependencies are reachable; otherwise 503 with a structured reason
 // naming the missing/invalid variable or failed dependency. Values of
 // configuration variables are never included.
-import { defineEventHandler, setResponseStatus } from "h3";
+import { defineEventHandler, setResponseStatus } from "nitro/h3";
 
 import { getDigitalReadiness } from "../readiness";
 

@@ -7,6 +7,8 @@
     "build": "vite build",
     "start": "node .output/server/index.mjs",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" vite.config.ts index.html package.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "parity:capture": "node scripts/parity/capture.mjs",
     "parity:verify": "node scripts/parity/verify.mjs"
   },
@@ -22,9 +24,13 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.3.5",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.3.3",
+    "@types/react-dom": "^19.3.0",
     "playwright-core": "1.65.1",
     "prettier": "^3.10.1",
     "tailwindcss": "4.3.5",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vitest": "^5.1.2"
   }
 }

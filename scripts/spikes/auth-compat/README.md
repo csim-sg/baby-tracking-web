@@ -38,6 +38,8 @@ bash scripts/run-all.sh
 6. serves it on `http://127.0.0.1:3300`
 7. runs the verification matrix (`results/verify-results.json` + console log)
 
+Exit status is a verification gate: `verify.mjs` exits nonzero when the matrix records any `fail` row, and `run-all.sh` propagates that status after fetching evidence and cleanup — a failed matrix makes `bash scripts/run-all.sh` exit nonzero (individual `unsupported`/`info` rows do not fail the run).
+
 Two execution modes are auto-detected: **local** (published ports reachable on 127.0.0.1) and **container** (everything runs inside the compose network through a `node:22-bookworm` `runner` service — used for remote Docker daemons and to keep the evidence on Node 22). Both produce identical evidence; the recorded evidence in `results/` was produced in container mode with Node v22.23.5 (image digest in `results/container-images.txt`).
 
 ## Notable version findings (do not miss these in ADR-002)

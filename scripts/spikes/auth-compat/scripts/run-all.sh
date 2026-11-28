@@ -150,15 +150,17 @@ done
 [ "$ready" = 1 ] && grep -q "Listening" "$RESULTS/server.log" && echo "app ready on $AUTH_BASE_URL" || { echo "FATAL: app did not become ready (results/server.log)"; tail -20 "$RESULTS/server.log"; exit 1; }
 
 step "7/7 verification matrix"
-run_in_env node scripts/verify.mjs
-VERIFY_EXIT=$?
+VERIFY_EXIT=0
+# `|| VERIFY_EXIT=$?` keeps errexit from aborting before the status is
+# captured, and results/evidence fetching below still runs on failure.
+run_in_env node scripts/verify.mjs || VERIFY_EXIT=$?
 echo "verify exit code: $VERIFY_EXIT"
 
 if [ "$MODE" = container ]; then
-  fetch_results
+  fetch_results || echo "WARN: could not fetch container results (verifier status still propagated)"
 fi
 
 echo
 echo "Done. Evidence in $RESULTS:"
 ls -la "$RESULTS"
-exit 0
+exit "$VERIFY_EXIT"

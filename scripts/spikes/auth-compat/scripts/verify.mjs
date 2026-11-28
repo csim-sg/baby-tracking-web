@@ -839,9 +839,19 @@ async function main() {
   writeFileSync(resultsUrl, JSON.stringify(summary, null, 2));
   console.log(`\nSummary: ${JSON.stringify(summary.counts)}`);
   console.log(`Written: ${resultsUrl.pathname}`);
+  // Evidence is written above; only now decide the exit status so a failing
+  // matrix fails loudly while the results file is still produced.
+  return summary.counts.fail > 0 ? 1 : 0;
 }
 
-main().catch((e) => {
-  console.error("verify runner crashed:", e);
-  process.exit(1);
-});
+main()
+  .then((code) => {
+    if (code !== 0) {
+      console.error("verify finished with failing checks (see results/verify-results.json)");
+    }
+    process.exit(code);
+  })
+  .catch((e) => {
+    console.error("verify runner crashed:", e);
+    process.exit(1);
+  });

@@ -1,6 +1,6 @@
 {
-  "startedAt": "2026-11-28T12:34:57.184Z",
-  "finishedAt": "2026-11-28T12:35:26.686Z",
+  "startedAt": "2026-11-28T12:54:36.407Z",
+  "finishedAt": "2026-11-28T12:55:05.555Z",
   "baseUrl": "http://127.0.0.1:3300",
   "counts": {
     "pass": 20,
@@ -50,7 +50,7 @@
       ],
       "evidence": {
         "userRow": {
-          "email": "hash@spike-1795869297258-245850.test.local",
+          "email": "hash@spike-1795870476558-438238.test.local",
           "emailVerified": false
         },
         "sessionCookieIssuedOnSignup": false,
@@ -70,7 +70,7 @@
       "evidence": {
         "providerId": "credential",
         "hashLength": 161,
-        "hashPrefix": "b8e5b2650ad5"
+        "hashPrefix": "2c2ff95ad9e0"
       }
     },
     {
@@ -81,14 +81,14 @@
         "FR-05"
       ],
       "evidence": {
-        "paddedSubmitted": " Norm.Case@spike-1795869297498-norm.test.local ",
+        "paddedSubmitted": " Norm.Case@spike-1795870476906-norm.test.local ",
         "paddedOutcome": {
           "status": 400,
           "code": "APIError",
           "message": "[body.email] Invalid email address"
         },
-        "mixedCaseSubmitted": "Norm.Case@spike-1795869297498-norm.test.local",
-        "stored": "norm.case@spike-1795869297498-norm.test.local",
+        "mixedCaseSubmitted": "Norm.Case@spike-1795870476906-norm.test.local",
+        "stored": "norm.case@spike-1795870476906-norm.test.local",
         "betterAuthLowercased": true,
         "finding": "better-auth 1.7.28 lowercases email on storage (FR-05 lowercase satisfied) but REJECTS space-padded input with 400 INVALID_EMAIL instead of trimming. FR-05 'trimmed' must be enforced at the app boundary (input normalization before the auth call) — include in the implementation slice."
       }
@@ -177,11 +177,11 @@
       "evidence": {
         "cookiePresent": true,
         "dbSession": {
-          "expiresAt": "2026-12-28T12:34:58.737Z",
-          "createdAt": "2026-11-28T12:34:58.737Z",
+          "expiresAt": "2026-12-28T12:54:38.465Z",
+          "createdAt": "2026-11-28T12:54:38.466Z",
           "ipAddress": ""
         },
-        "expectedExpiry": "2026-12-28T12:34:58.749Z"
+        "expectedExpiry": "2026-12-28T12:54:38.476Z"
       }
     },
     {
@@ -192,7 +192,7 @@
         "FR-08"
       ],
       "evidence": {
-        "rawSetCookie": "better-auth.session_token=9W10p5yLE8t6GzgQ4HFBcQaQK7Wd8znF.9DzF3HTmh%2BaADbaN%2Ff9FX6ybOX%2BsjzE5Q2mVtn9tXGo%3D; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax",
+        "rawSetCookie": "better-auth.session_token=IRMq5TDA5tQFnVOJs0Kk1KosVCRHZXB2.4waJcT4bpPhfEjYlisA2jirwN8vbniac3jNBsc89dWM%3D; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax",
         "note": "FR-08 requires HttpOnly, SameSite=Lax, Secure except localhost"
       }
     },
@@ -211,14 +211,14 @@
         "sessionFnOutput": {
           "authenticated": true,
           "user": {
-            "email": "hash@spike-1795869297258-245850.test.local",
+            "email": "hash@spike-1795870476558-438238.test.local",
             "name": "Hash",
             "emailVerified": true
           },
           "session": {
-            "id": "AKNCcrPcUtr3sZXaZkGFaLn4JzlApIQu",
-            "expiresAt": "2026-12-28T12:34:58.737Z",
-            "token": "9W10p5yLE8t6GzgQ4HFBcQaQK7Wd8znF",
+            "id": "8rV8dkRCyovC9a1sNSidZcIp5X0Yijba",
+            "expiresAt": "2026-12-28T12:54:38.465Z",
+            "token": "IRMq5TDA5tQFnVOJs0Kk1KosVCRHZXB2",
             "ipAddress": "",
             "userAgent": "node"
           }
@@ -245,8 +245,8 @@
         "FR-08"
       ],
       "evidence": {
-        "expiresBefore": "2026-12-28T12:34:58.737Z",
-        "expiresAfter": "2026-12-28T12:35:01.983Z",
+        "expiresBefore": "2026-12-28T12:54:38.465Z",
+        "expiresAfter": "2026-12-28T12:54:41.889Z",
         "updatedAdvanced": true,
         "note": "harness uses updateAge=1s to make refresh observable"
       }
@@ -287,7 +287,7 @@
         "FR-08"
       ],
       "evidence": {
-        "deletedRow": "I1Fl7NnyLsFNtCQVKJ1oJK4dtTrFbfDu",
+        "deletedRow": "KrvmdAHiXlB8gOwHJuN68hxzVqewc9nm",
         "anonymousAfterDelete": true
       }
     },
@@ -377,7 +377,7 @@
             "note": "row not found pre-consumption"
           },
           {
-            "identifier": "reset-password:M4tz6A1h5Ctx72AUnRkLKnhz",
+            "identifier": "reset-password:Vdju5PbwgBzxuki4RLrz5rSj",
             "source": "password-reset",
             "ttlHours": 1
           }

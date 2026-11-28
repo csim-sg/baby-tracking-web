@@ -5,6 +5,11 @@
 // included, with a 200).
 import { defineEventHandler, setResponseStatus } from "nitro/h3";
 
+// Side-effect import: register the `database` check at server start so the
+// fail-closed gate's readiness evaluation includes live database state
+// (registration is idempotent by name+modes on the process-wide registry).
+import "../db/register-database-check";
+
 import { digitalGateResponse, type DigitalSurface } from "../digital-gate";
 
 function surfaceForPath(pathname: string): DigitalSurface {
